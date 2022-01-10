@@ -396,6 +396,59 @@ namespace OutlookSafetyChex
             Properties.Settings.Default.DNSBL_sites.AddRange(newList.ToArray());
             Properties.Settings.Default.Save();
         }
+
+        public static List<String> getCommonMIMETYPEs()
+        {
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.common_MIMETYPEs.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+
+        public static void saveCommonMIMETYPEs(List<String> newList)
+        {
+            Properties.Settings.Default.common_MIMETYPEs.Clear();
+            Properties.Settings.Default.common_MIMETYPEs.AddRange(newList.ToArray());
+            Properties.Settings.Default.Save();
+        }
+
+        public static List<String> getCommonCODEPAGEs()
+        {
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.common_CODEPAGEs.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+        public static void saveCommonCODEPAGEs(List<String> newList)
+        {
+            Properties.Settings.Default.common_CODEPAGEs.Clear();
+            Properties.Settings.Default.common_CODEPAGEs.AddRange(newList.ToArray());
+            Properties.Settings.Default.Save();
+        }
+
+        public static List<String> getCommonENCODINGs()
+        {
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.common_ENCODINGs.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+        public static void saveCommonENCODINGs(List<String> newList)
+        {
+            Properties.Settings.Default.common_ENCODINGs.Clear();
+            Properties.Settings.Default.common_ENCODINGs.AddRange(newList.ToArray());
+            Properties.Settings.Default.Save();
+        }
+
         #endregion
 
         #region internal utilities
@@ -437,20 +490,37 @@ namespace OutlookSafetyChex
 
         #region sanity checks
         public String checkPUNYcode(String fqdn)
-		{
-			String rc = "";
+        {
+            String rc = "";
+            try
+            {
+                if (cst_Util.isValidString(fqdn) && fqdn.Contains("xn--"))
+                {
+                    String tReason = "\"" + fqdn + "\" uses PUNYcode";
+                    rc += "[PUNYcode misdirection]: " + tReason + "\r\n";
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::checkPUNYcode(" + fqdn + ")");
+            }
+            return rc;
+        }
+        public String checkIDNchars(String fqdn)
+        {
+            String rc = "";
             try
             {
                 String aStr = cst_Util.idnMapping.GetAscii(fqdn);
                 if (aStr != fqdn)
                 {
                     String tReason = "\"" + aStr + "\" masquerading as \"" + fqdn + "\"";
-                    rc += "[PUNYcode misdirection]: " + tReason + "\r\n";
+                    rc += "[IDN misdirection]: " + tReason + "\r\n";
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkPUNYcode("+fqdn+")");
+                cst_Util.logException(ex, "AddInSafetyCheck::checkPUNYcode(" + fqdn + ")");
             }
             return rc;
         }
@@ -689,6 +759,7 @@ namespace OutlookSafetyChex
                 String tHost = tMailAddress.Host;
                 try
                 {
+                    rc += checkIDNchars(tAddr);
                     rc += checkPUNYcode(tAddr);
                     String myDomain = cst_Util.pullDomain(tHost);
                     String tReason = null;
@@ -770,6 +841,7 @@ namespace OutlookSafetyChex
             String rc = "";
             try
             {
+                rc += checkIDNchars(fqdn);
                 rc += checkPUNYcode(fqdn);
                 rc += checkLeetSpeak(fqdn);
                 if (Properties.Settings.Default.opt_Lookup_HIBP)

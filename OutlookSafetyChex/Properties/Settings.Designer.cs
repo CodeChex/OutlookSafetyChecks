@@ -323,5 +323,46 @@ namespace OutlookSafetyChex.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["DNSBL_sites"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>text/html</string>
+  <string>text/plain</string>
+  <string>application/rtf</string>
+  <string>multipart/alternative</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection common_MIMETYPEs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["common_MIMETYPEs"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>utf-8</string>
+  <string>utf-16</string>
+  <string>windows-1250</string>
+  <string>windows-1252</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection common_CODEPAGEs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["common_CODEPAGEs"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>8bit</string>\r\n  <string>quoted-printable</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection common_ENCODINGs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["common_ENCODINGs"]));
+            }
+        }
     }
 }
