@@ -10,6 +10,11 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "OutlookSafetyChexSetup", "O
 		{863D8CD6-7B5D-4D08-BF2C-8CAACDE5F546} = {863D8CD6-7B5D-4D08-BF2C-8CAACDE5F546}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BEACA0DB-9029-4C7F-8A8D-F399BEAEA01A}"
+	ProjectSection(SolutionItems) = preProject
+		Outlook Safety Check.pptx = Outlook Safety Check.pptx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
