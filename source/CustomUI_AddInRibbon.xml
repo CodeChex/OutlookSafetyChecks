@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="CustomUI_Load">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabAddIn">
+        <group id="OutlookSafetyChecks1" label="✓ Safety Checks" >
+          <button id="SafetyCheckButton" label="✓ Safety Checks" onAction="SafetyCheck_Inspector"  imageMso="TraceError" />
+          <!--
+          <button id="ShowEnvelope1" label="Envelope Info" onAction="ShowEnvelope_Inspector"
+                  description="Display the Email Envelope Information" />
+          <button id="DumpHeaders1" label="View Header Info" onAction="DumpHeaders_Inspector"
+                  description="Display the Raw Email Headers" />
+          <button id="CheckReplyTo1" label="ReplyTo Check" onAction="CheckReplyTo_Inspector" 
+                  description="Compares the From: and ReplyTo: fields" />
+          <button id="CheckLinks1" label="Link Check" onAction="CheckLinks_Inspector" 
+                  description="List all the Links embnedded in the email" />
+          <button id="CheckAttachments1" label="Attachments Check" onAction="CheckAttachments_Inspector" getEnabled="EnableAttachments_Inspector"
+                  description="List all the Attachments (and optionally compares the file extension to the file header)" />
+          <button id="CheckRouting1" label="Routing Check" onAction="CheckRouting_Inspector" getEnabled="EnableRouting_Inspector" 
+                  description="List all the email server relays used to deliver this message" />
+          <separator id="separator" />
+          <toggleButton id="OptionWHOIS1" label="WHOIS Lookup" onAction="Toggle_WHOIS" getPressed="IsSelected_WHOIS" 
+                    description="Query WHOIS for the official owner of each server/IP listed" />
+          <toggleButton id="OptionDNSBL1" label="DNSBL Lookup" onAction="Toggle_DNSBL" getPressed="IsSelected_DNSBL"
+                    description="Check various Blacklists for each server/IP listed" />
+          <toggleButton id="OptionCACHE1" label="Cache Lookups" onAction="Toggle_CACHE" getPressed="IsSelected_CACHE"
+                    description="Cache WHOIS and DNSBL results for optimal performance" />
+        -->
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+

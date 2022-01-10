@@ -1,0 +1,69 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OutlookSafetyChecks.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="WhoisXml_ApiKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">TBD</Value>
+    </Setting>
+    <Setting Name="opt_Use_CACHE" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="opt_Lookup_WHOIS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="opt_Lookup_DNSBL" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="opt_Lookup_HIBP" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="opt_Force_REFRESH" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="opt_Lookup_CONTACTS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="opt_Flag_UNKNOWN_CONTACTS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="opt_Local_BLACKLIST" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="opt_Local_WHITELIST" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="opt_DeepInspect_LINKS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="opt_DeepInspect_ATTACHMENTS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="test_Contacts" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="test_Routes" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="test_Links" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="test_Attachments" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="local_Blacklist" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.cn;.tk;.ru;.cm;.jp</Value>
+    </Setting>
+    <Setting Name="local_Whitelist" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.org;.net;.com;.edu;.gov;.mil;.us;.uk;.ca;.nyc;.co;bit.ly;goog.le</Value>
+    </Setting>
+    <Setting Name="base_Whitelist" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">.org;.net;.com;.edu;.gov;.mil;.us;.uk;.ca;.nyc;.co;bit.ly;goog.le</Value>
+    </Setting>
+    <Setting Name="base_Blacklist" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">.cn;.tk;.ru;.cm;.jp</Value>
+    </Setting>
+    <Setting Name="list_Delimiter" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

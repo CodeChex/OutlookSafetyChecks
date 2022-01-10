@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product
+		Id="*"
+		Name="Outlook Safety Chex"
+		Language="1033"
+		Version="1.03.22.0107"
+		Manufacturer="@CodeChex"
+		UpgradeCode="9f857fb4-9cb7-45ff-a096-9923bd8d5687">
+		<Package
+			InstallerVersion="200"
+			Compressed="yes"
+			InstallScope="perMachine"
+			/>
+
+		<MajorUpgrade
+			DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+			/>
+
+		<Media
+			Id="1"
+	        Cabinet="OutlookSafetyChex.cab"
+	        EmbedCab="yes"
+		    />
+
+		<!-- Verify VSTO Office Runtime installed -->
+		<Property
+			Id="VSTORUNTIMEREDIST">
+			<RegistrySearch
+				Id="VSTORuntimeRedist"
+				Root="HKLM"
+				Key="SOFTWARE\Microsoft\VSTO Runtime Setup\v4R"
+				Name="Version"
+				Type="raw"
+			/>
+		</Property>
+
+		<Condition
+			Message="The Visual Studio Tools for Office Runtime is not installed. 
+  Please download and install from https://www.microsoft.com/en-us/download/details.aspx?id=48217.">
+			<![CDATA[Installed OR VSTORUNTIMEREDIST>="10.0.30319"]]>
+		</Condition>
+
+		<!-- Verify if .NET Framework is installed -->
+		<PropertyRef
+			Id="NETFRAMEWORK40FULL"
+		/>
+		<Condition
+			Message="This application requires .NET Framework 4.0.">
+			<![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+		</Condition>
+
+		<!--Set values for display on setup progeam UI-->
+		<Feature Id="ProductFeature" Title="Outlook Safety Chex" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentRef Id="Registry_FriendlyName" />
+			<ComponentRef Id="Registry_Description" />
+			<ComponentRef Id="Registry_Manifest" />
+			<ComponentRef Id="Registry_LoadBehavior" />
+		</Feature>
+
+		<!--Specify that the WiXUI_Minimal UI should be used, i.e, the simplest UI available -->
+		<UIRef Id="WixUI_Minimal" />
+
+		<!-- Customized EULA -->
+		<WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
+
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="Outlook Safety Chex" />
+
+				<!-- Add required VSTO registry entries for 32-bit and 64-bit Outlook -->
+				<Component Id="Registry_FriendlyName">
+					<RegistryValue Id="RegKey_FriendlyName" Root="HKCU"
+								   Key="Software\Microsoft\Office\Outlook\AddIns\OutlookSafetyChex.AddIn"
+								   Name="FriendlyName"
+								   Value="Outlook Safety Chex"
+								   Type="string" KeyPath="yes" />
+				</Component>
+				<Component Id="Registry_Description">
+					<RegistryValue Id="RegKey_Description" Root="HKCU"
+								   Key="Software\Microsoft\Office\Outlook\AddIns\OutlookSafetyChex.AddIn"
+								   Name="Description"
+								   Value="Outlook Safety Chex"
+								   Type="string" KeyPath="yes" />
+				</Component>
+				<Component Id="Registry_Manifest">
+					<RegistryValue Id="RegKey_Manifest" Root="HKCU"
+								   Key="Software\Microsoft\Office\Outlook\AddIns\OutlookSafetyChex.AddIn"
+								   Name="Manifest" Value="[INSTALLFOLDER]OutlookSafetyChex.vsto|vstolocal"
+								   Type="string" KeyPath="yes" />
+				</Component>
+				<Component Id="Registry_LoadBehavior">
+					<RegistryValue Id="RegKey_LoadBehavior" Root="HKCU"
+								   Key="Software\Microsoft\Office\Outlook\AddIns\OutlookSafetyChex.AddIn"
+								   Name="LoadBehavior" Value="3"
+								   Type="integer" KeyPath="yes" />
+				</Component>
+
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<!-- Add refs to the components of the VSTO-->
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+
+			<!-- Main Program -->
+			<Component Id="OutlookSafetyChex.vsto_Component">
+				<File Id="OutlookSafetyChex.vsto" KeyPath="yes"
+				  Name="OutlookSafetyChex.vsto" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="OutlookSafetyChex.dll_Component">
+				<File Id="OutlookSafetyChex.dll" KeyPath="yes"
+				  Name="OutlookSafetyChex.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component Id="OutlookSafetyChex.dll.manifest_Component">
+				<File Id="OutlookSafetyChex.dll.manifest" KeyPath="yes"
+				  Name="OutlookSafetyChex.dll.manifest" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<!-- Configuration Files -->
+			<Component Id="OutlookSafetyChex.dll.config_Component">
+				<File Id="OutlookSafetyChex.dll.config" KeyPath="yes"
+				  Name="OutlookSafetyChex.dll.config" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component Id="log4net.config_Component">
+				<File Id="log4net.config" KeyPath="yes"
+				  Name="log4net.config" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<!-- Microsoft Libraries -->
+			<Component  Id="Microsoft.Office.Tools.Common.v4.0.Utilities.dll_Component">
+				<File Id="Microsoft.Office.Tools.Common.v4.0.Utilities.dll" KeyPath="yes"
+				  Name="Microsoft.Office.Tools.Common.v4.0.Utilities.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll_Component">
+				<File Id="Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll" KeyPath="yes"
+				  Name="Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<!-- Supporting Libraries -->
+			<Component  Id="DCSoft.RTF.dll_Component">
+				<File Id="DCSoft.RTF.dll" KeyPath="yes"
+					  Name="DCSoft.RTF.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="DnsClient.dll_Component">
+				<File Id="DnsClient.dll" KeyPath="yes"
+					  Name="DnsClient.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="HtmlAgilityPack.dll_Component">
+				<File Id="HtmlAgilityPack.dll" KeyPath="yes"
+				  Name="HtmlAgilityPack.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="IPAddressRange.dll_Component">
+				<File Id="IPAddressRange.dll" KeyPath="yes"
+				  Name="IPAddressRange.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="log4net.dll_Component">
+				<File Id="log4net.dll" KeyPath="yes"
+				  Name="log4net.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="MimeTypesMap.dll_Component">
+				<File Id="MimeTypesMap.dll" KeyPath="yes"
+				  Name="MimeTypesMap.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="Newtonsoft.Json.dll_Component">
+				<File Id="Newtonsoft.Json.dll" KeyPath="yes"
+				  Name="Newtonsoft.Json.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="Spamhaus.Net.dll_Component">
+				<File Id="Spamhaus.Net.dll" KeyPath="yes"
+				  Name="Spamhaus.Net.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Buffers.dll_Component">
+				<File Id="System.Buffers.dll" KeyPath="yes"
+				  Name="System.Buffers.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Net.Http.Extensions.dll_Component">
+				<File Id="System.Net.Http.Extensions.dll" KeyPath="yes"
+				  Name="System.Net.Http.Extensions.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Net.Http.Primitives.dll_Component">
+				<File Id="System.Net.Http.Primitives.dll" KeyPath="yes"
+				  Name="System.Net.Http.Primitives.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="Tireless.IPTree.dll_Component">
+				<File Id="Tireless.IPTree.dll" KeyPath="yes"
+				  Name="Tireless.IPTree.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="TrID.dll_Component">
+				<File Id="TrID.dll" KeyPath="yes"
+				  Name="TrID.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="WhoisClient.dll_Component">
+				<File Id="WhoisClient.dll" KeyPath="yes"
+				  Name="WhoisClient.dll" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<!-- Assembly Files -->
+			<Component  Id="DnsClient.xml_Component">
+				<File Id="DnsClient.xml" KeyPath="yes"
+				Name="DnsClient.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="HtmlAgilityPack.xml_Component">
+				<File Id="HtmlAgilityPack.xml" KeyPath="yes"
+				Name="HtmlAgilityPack.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="IPAddressRange.xml_Component">
+				<File Id="IPAddressRange.xml" KeyPath="yes"
+				Name="IPAddressRange.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="log4net.xml_Component">
+				<File Id="log4net.xml" KeyPath="yes"
+				Name="log4net.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="Newtonsoft.Json.xml_Component">
+				<File Id="Newtonsoft.Json.xml" KeyPath="yes"
+				Name="Newtonsoft.Json.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Buffers.xml_Component">
+				<File Id="System.Buffers.xml" KeyPath="yes"
+				Name="System.Buffers.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Net.Http.Extensions.xml_Component">
+				<File Id="System.Net.Http.Extensions.xml" KeyPath="yes"
+				Name="System.Net.Http.Extensions.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Net.Http.Primitives.xml_Component">
+				<File Id="System.Net.Http.Primitives.xml" KeyPath="yes"
+				Name="System.Net.Http.Primitives.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="WhoisClient.xml_Component">
+				<File Id="WhoisClient.xml" KeyPath="yes"
+				Name="WhoisClient.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+		</ComponentGroup>
+	</Fragment>
+</Wix>
