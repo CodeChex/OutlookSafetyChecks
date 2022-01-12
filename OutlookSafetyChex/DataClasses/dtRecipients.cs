@@ -21,7 +21,8 @@ namespace OutlookSafetyChex
         {
 			int iRec = 0;
 			String logTitle = Properties.Resources.Title_Contacts + " / Recipient";
-			foreach (Outlook.Recipient tRecipient in myItem.Recipients)
+            cst_Log.logVerbose("Count: [" + myItem.Recipients.Count + "]", "Recipients");
+            foreach (Outlook.Recipient tRecipient in myItem.Recipients)
 			{
 				iRec++;
 				String tName = cst_Util.sanitizeEmail(tRecipient.Name,false);
@@ -30,6 +31,7 @@ namespace OutlookSafetyChex
 				String tType = cst_Outlook.getRecipientType(tRecipient);
 				String tOwner = "[not checked]";
 				String tResults = "";
+                cst_Log.logVerbose(tTag + ": [" + tEmail + "]", "Recipient");
                 tResults += Globals.AddInSafetyCheck.suspiciousLabel(tName);
                 try
                 {
@@ -68,7 +70,7 @@ namespace OutlookSafetyChex
                         }
                         catch (Exception ex)
                         {
-                            cst_Util.logException(ex, "dtRecipients::build cannot find Sender table");
+                            cst_Log.logException(ex, "dtRecipients::build cannot find Sender table");
                         }
                         // get additional info
                         if (Properties.Settings.Default.opt_Lookup_WHOIS)

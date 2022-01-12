@@ -26,7 +26,7 @@ namespace OutlookSafetyChex
             String logArea = Properties.Resources.Title_Attachments;
             foreach (Outlook.Attachment tAttachment in myItem.Attachments)
             {
-                cst_Util.logVerbose(tAttachment.DisplayName, "Attachments");
+                cst_Log.logVerbose(tAttachment.DisplayName, "Attachments");
                 String tMimeType = "[not checked]";
                 String tFileSig = "[not checked]";
                 String tNotes = Globals.AddInSafetyCheck.suspiciousAttachment(tAttachment, out tMimeType, out tFileSig);

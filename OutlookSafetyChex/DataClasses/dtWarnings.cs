@@ -11,7 +11,7 @@ namespace OutlookSafetyChex
 		{
 			this.TableName = this.GetType().Name;
 			this.Columns.Add("Area", Type.GetType("System.String"));
-			this.Columns.Add("Severity", Type.GetType("System.String"));
+			//this.Columns.Add("Severity", Type.GetType("System.String"));
 			this.Columns.Add("Finding", Type.GetType("System.String"));
 			this.Columns.Add("Details", Type.GetType("System.String"));
 		}

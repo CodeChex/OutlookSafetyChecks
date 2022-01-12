@@ -54,7 +54,7 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_WHOISNET_API::whoisOwner(" + fqdn + ")");
+                cst_Log.logException(ex, "cst_WHOISNET_API::whoisOwner(" + fqdn + ")");
             }
 			if (!cst_Util.isValidString(rc))
             {
@@ -90,7 +90,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Util.logException(ex, "cst_WHOISNET_API::queryWHOIS(" + tDomain + ")");
+				cst_Log.logException(ex, "cst_WHOISNET_API::queryWHOIS(" + tDomain + ")");
 			}
 			return rc;
 		}
@@ -131,7 +131,7 @@ namespace CheccoSafetyTools
 				}
 				catch (Exception ex)
 				{
-					cst_Util.logException(ex, "cst_WHOISNET_API::parseRawDataBlock(" + tHeader + ")");
+					cst_Log.logException(ex, "cst_WHOISNET_API::parseRawDataBlock(" + tHeader + ")");
 				}
 			}
 			return rc;

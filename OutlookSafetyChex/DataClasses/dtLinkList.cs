@@ -44,16 +44,12 @@ namespace OutlookSafetyChex
                             {
                                 tDisplay = tNode.InnerHtml;
                             }
-                            String tLink = "";
                             try
                             {
-                                tLink = tNode.Attributes["href"].Value;
+                                String tLink = tNode.Attributes["href"].Value;
                                 arrLinks.Add(new DictionaryEntry(tLink, tDisplay));
                             }
-                            catch 
-                            { 
-                                // ignore this error
-                            }
+                            catch { }
                         }
                     }
                     break;
@@ -69,20 +65,10 @@ namespace OutlookSafetyChex
                 case Outlook.OlBodyFormat.olFormatPlain:
                     format = "Text";
                     String tText = myItem.Body;
-                    Regex urlRx = new Regex(@"(?<url>(http(s?):[/][/]|mailto:|(s?)ftp(s?):|scp:|www.)([a-z]|[A-Z]|[0-9]|[\\-]|[/.]|[~])*)", RegexOptions.IgnoreCase);
-                    MatchCollection matches = urlRx.Matches(tText);         
-                    foreach (Match match in matches)
+                    List<cst_URL> arrFound = cst_URL.parseTextForURLs(tText);
+                    foreach (cst_URL tLink in arrFound)
                     {
-                         String tLink = "";
-                        try
-                        {
-                            tLink = match.Groups["url"].Value;
-                            arrLinks.Add(new DictionaryEntry(tLink, tLink));
-                        }
-                        catch
-                        {
-                            // ignore this error
-                        }
+                        arrLinks.Add(new DictionaryEntry(tLink.mURL, tLink.mURL));
                     }
                     break;
                 default:
@@ -96,7 +82,7 @@ namespace OutlookSafetyChex
                 String tDisplay = tEntry.Value as String;
                 String tProtocol = "[unknown]";
                 String tMimeType = "[not checked]";
-                cst_Util.logVerbose(tDisplay, "Link");
+                cst_Log.logVerbose(tDisplay, "Link");
                 String tNotes = "";
                 if (!cst_Util.isValidString(tDisplay))
                 {
@@ -113,8 +99,8 @@ namespace OutlookSafetyChex
                     tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tDisplay);
                     try
                     {
-                        Uri tUri = new Uri(tLink);
-                        tProtocol = tUri.Scheme;
+                        cst_URL tURL = cst_URL.parseURL(tLink);
+                        tProtocol = tURL.mUri.Scheme;
                         if (tProtocol == Uri.UriSchemeMailto)
                         {
                             tMimeType = "[Email-Address]";
@@ -126,7 +112,7 @@ namespace OutlookSafetyChex
                     }
                     catch (Exception ex)
                     {
-                        cst_Util.logException(ex, "dtLinkList::buildData(" + tLink + ")");
+                        cst_Log.logException(ex, "dtLinkList::buildData(" + tLink + ")");
                     }
                 }
                 String[] rowData = new[] { tDisplay, tLink, tMimeType, tNotes };

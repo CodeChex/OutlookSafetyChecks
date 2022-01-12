@@ -66,7 +66,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Util.logException(ex, "cst_HIBP::parseHIBP");
+				cst_Log.logException(ex, "cst_HIBP::parseHIBP");
 			}
 			return rc;
 		}
@@ -89,7 +89,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Util.logException(ex, "cst_HIBP::wasEmailPasted(" + tEmail+")");
+				cst_Log.logException(ex, "cst_HIBP::wasEmailPasted(" + tEmail+")");
 			}
 			return rc;
 		}
@@ -112,7 +112,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Util.logException(ex, "cst_HIBP::wasEmailBreached(" + tStr + ")");
+                cst_Log.logException(ex, "cst_HIBP::wasEmailBreached(" + tStr + ")");
             }
             return rc;
 		}
@@ -135,7 +135,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Util.logException(ex, "cst_HIBP::wasDomainBreached(" + tStr + ")");
+                cst_Log.logException(ex, "cst_HIBP::wasDomainBreached(" + tStr + ")");
             }
             return rc;
 		}

@@ -47,214 +47,207 @@ namespace OutlookSafetyChex
             int nHop = 0;
             foreach (String s in arrRECVD)
             {
-                nHop++;
-                // cst_Util.logInfo(s,"dtRouteList::buildData [Received Header]");
-                /* (https://www.pobox.com/helpspot/index.php?pg=kb.page&id=253)
-                 The structure of a "Received:" header
-                     from 
-                        the name the sending computer gave for itself (the name associated with that computer's IP address [its IP address])
-                     by
-                        the receiving computer's name (the software that computer uses) (usually Sendmail, qmail or Postfix)
-                     with 
-                        protocol (usually SMTP, ESMTP or ESMTPS)
-                     id 
-                        id assigned by local computer for logging;
-                     for
-                        <recipient>
-                     ;
-                        timestamp (usually given in the computer's localtime; see below for how you can convert these all to your time)
-                 */
-                // REGEX? "(?<=from|by|with|id|for)\s+(.*);\s+(.*)\s+"
-                // manually parse this crap in reverse order (because regex is greedy)
-                String[] sep;
-                String[] arrS;
-				String tFROM = "";
-				String tFROM_HOST = "";
-				String tFROM_IP = "";
-				String tBY = "";
-				String tBY_HOST = "";
-				String tBY_APP = "";
-				String tWITH = "";
-				String tID = "";
-				String tFOR = "";
-				String tTIMESTAMP = "";
+                if (cst_Util.isValidString(s))
+                {
+                    nHop++;
+                    cst_Log.logVerbose(nHop + ": " + s, "Route");
+                    // cst_Log.logInfo(s,"dtRouteList::buildData [Received Header]");
+                    /* (https://www.pobox.com/helpspot/index.php?pg=kb.page&id=253)
+                     The structure of a "Received:" header
+                         from 
+                            the name the sending computer gave for itself (the name associated with that computer's IP address [its IP address])
+                         by
+                            the receiving computer's name (the software that computer uses) (usually Sendmail, qmail or Postfix)
+                         with 
+                            protocol (usually SMTP, ESMTP or ESMTPS)
+                         id 
+                            id assigned by local computer for logging;
+                         for
+                            <recipient>
+                         ;
+                            timestamp (usually given in the computer's localtime; see below for how you can convert these all to your time)
+                     */
+                    // REGEX? "(?<=from|by|with|id|for)\s+(.*);\s+(.*)\s+"
+                    // manually parse this crap in reverse order (because regex is greedy)
+                    String[] sep;
+                    String[] arrS;
+                    String tFROM = "";
+                    String tFROM_HOST = "";
+                    String tFROM_IP = "";
+                    String tBY = "";
+                    String tBY_HOST = "";
+                    String tBY_APP = "";
+                    String tWITH = "";
+                    String tID = "";
+                    String tFOR = "";
+                    String tTIMESTAMP = "";
 
-				String test = s;
-                // - TIMESTAMP
-                tTIMESTAMP = "";
-                try
-                {
-                    sep = new String[] { ";" };
-                    arrS = test.Split(sep, 2, StringSplitOptions.None);
-                    test = arrS[0].Trim();
-                    if (arrS.Length > 1)
+                    String test = s;
+                    // - TIMESTAMP
+                    tTIMESTAMP = "";
+                    try
                     {
-                        tTIMESTAMP = arrS[1].Trim();
-                    }
-                }
-                catch 
-                {
-                    if ( !cst_Util.isValidString(tTIMESTAMP) )
-                        tTIMESTAMP = "[N/A]";
-                }
-                // - FOR
-                tFOR = "";
-                try 
-                { 
-                    sep = new String[] { " for " };
-                    arrS = test.Split(sep, 2, StringSplitOptions.None);
-                    test = arrS[0].Trim();
-                    if (arrS.Length > 1)
-                    {
-                        tFOR = arrS[1].Trim();
-                    }
-                }
-                catch 
-                {
-                    if (!cst_Util.isValidString(tFOR))
-                        tFOR = "[N/A]";
-                }
-                // - ID
-                tID = "";
-                try 
-                { 
-                    sep = new String[] { " id " };
-                    arrS = test.Split(sep, 2, StringSplitOptions.None);
-                    test = arrS[0].Trim();
-                    if (arrS.Length > 1)
-                    {
-                        tID = arrS[1].Trim();
-                    }
-                }
-                catch 
-                {
-                    if (!cst_Util.isValidString(tID))
-                        tID = "[N/A]";
-                }
-                // - WITH
-                tWITH = "";
-                try
-                {
-                    sep = new String[] { " with " };
-                    arrS = test.Split(sep, 2, StringSplitOptions.None);
-                    test = arrS[0].Trim();
-                    if (arrS.Length > 1)
-                    {
-                        tWITH = arrS[1].Trim();
-                    }
-
-                }
-                catch 
-                {
-                    if (!cst_Util.isValidString(tWITH))
-                        tWITH = "[N/A]";
-                }
-                // - BY
-                tBY = "";
-                tBY_APP = "";
-                tBY_HOST = "";
-                try
-                {
-                    sep = new String[] { "by " };
-                    arrS = test.Split(sep, 2, StringSplitOptions.None);
-                    test = arrS[0].Trim();
-                    if (arrS.Length > 1)
-                    {
-                        tBY = arrS[1].Trim();
-                        // parse out server name(s) and email application
-                        String rgxStr = "([A-Za-z0-9\\.\\-]+)(.*\\((.*)\\))?";
-                        Regex rgx = new Regex(rgxStr);
-                        Match m = rgx.Match(arrS[1]);
-                        if (m.Groups.Count > 1)
+                        sep = new String[] { ";" };
+                        arrS = test.Split(sep, 2, StringSplitOptions.None);
+                        test = arrS[0].Trim();
+                        if (arrS.Length > 1)
                         {
-                            tBY_HOST = m.Groups[1].Value.Trim();
-                            if (m.Groups.Count > 2)
+                            tTIMESTAMP = arrS[1].Trim();
+                        }
+                    }
+                    catch
+                    {
+                        if (!cst_Util.isValidString(tTIMESTAMP))
+                            tTIMESTAMP = "[N/A]";
+                    }
+                    // - FOR
+                    tFOR = "";
+                    try
+                    {
+                        sep = new String[] { " for " };
+                        arrS = test.Split(sep, 2, StringSplitOptions.None);
+                        test = arrS[0].Trim();
+                        if (arrS.Length > 1)
+                        {
+                            tFOR = arrS[1].Trim();
+                        }
+                    }
+                    catch
+                    {
+                        if (!cst_Util.isValidString(tFOR))
+                            tFOR = "[N/A]";
+                    }
+                    // - ID
+                    tID = "";
+                    try
+                    {
+                        sep = new String[] { " id " };
+                        arrS = test.Split(sep, 2, StringSplitOptions.None);
+                        test = arrS[0].Trim();
+                        if (arrS.Length > 1)
+                        {
+                            tID = arrS[1].Trim();
+                        }
+                    }
+                    catch
+                    {
+                        if (!cst_Util.isValidString(tID))
+                            tID = "[N/A]";
+                    }
+                    // - WITH
+                    tWITH = "";
+                    try
+                    {
+                        sep = new String[] { " with " };
+                        arrS = test.Split(sep, 2, StringSplitOptions.None);
+                        test = arrS[0].Trim();
+                        if (arrS.Length > 1)
+                        {
+                            tWITH = arrS[1].Trim();
+                        }
+
+                    }
+                    catch
+                    {
+                        if (!cst_Util.isValidString(tWITH))
+                            tWITH = "[N/A]";
+                    }
+                    // - BY
+                    tBY = "";
+                    tBY_APP = "";
+                    tBY_HOST = "";
+                    try
+                    {
+                        sep = new String[] { "by " };
+                        arrS = test.Split(sep, 2, StringSplitOptions.None);
+                        test = arrS[0].Trim();
+                        if (arrS.Length > 1)
+                        {
+                            tBY = arrS[1].Trim();
+                            // parse out server name(s) and email application
+                            String rgxStr = "([A-Za-z0-9\\.\\-]+)(.*\\((.*)\\))?";
+                            Regex rgx = new Regex(rgxStr);
+                            Match m = rgx.Match(arrS[1]);
+                            if (m.Groups.Count > 1)
                             {
-                                tBY_APP = m.Groups[2].Value.Trim();
+                                tBY_HOST = m.Groups[1].Value.Trim();
+                                if (m.Groups.Count > 2)
+                                {
+                                    tBY_APP = m.Groups[2].Value.Trim();
+                                }
                             }
                         }
                     }
-                }
-                catch 
-                {
-                    if (!cst_Util.isValidString(tBY))
-                        tBY = "[N/A]";
-                    if (!cst_Util.isValidString(tBY_HOST))
-                        tBY_HOST = "[N/A]";
-                    if (!cst_Util.isValidString(tBY_APP))
-                        tBY_APP = "[N/A]";
-                }
-                // - FROM
-                tFROM = "";
-                tFROM_HOST = "";
-                tFROM_IP = "";
-                try
-                {
-                    sep = new String[] { "from " };
-                    arrS = test.Split(sep, 2, StringSplitOptions.None);
-                    test = arrS[0].Trim();
-                    if (arrS.Length > 1)
+                    catch
                     {
-                        tFROM = arrS[1].Trim();
-                        // parse out server name(s) and IP
-                        /* formats: 
-                                server (IP)
-                                server (alias [IP])
-                                server (alias) ([IP])
-                                server (ACK alias) (IP)
-                                server (ACK alias) ([IP])
-                         */
-                        //String rgxStr = "@([A-Za-z0-9\-\.]+).*\((?:.*)\[(\d+\.\d+\.\d+\.\d+)\]\)";
-                        String rgxStr = @"([A-Za-z0-9\-\.]+)\b.*\D(\d+\.\d+\.\d+\.\d+)\D";
-                        Regex rgx = new Regex(rgxStr);
-                        Match m = rgx.Match(arrS[1]);
-                        if (m.Groups.Count > 1)
+                        if (!cst_Util.isValidString(tBY))
+                            tBY = "[N/A]";
+                        if (!cst_Util.isValidString(tBY_HOST))
+                            tBY_HOST = "[N/A]";
+                        if (!cst_Util.isValidString(tBY_APP))
+                            tBY_APP = "[N/A]";
+                    }
+                    // - FROM
+                    tFROM = "";
+                    tFROM_HOST = "";
+                    tFROM_IP = "";
+                    try
+                    {
+                        sep = new String[] { "from " };
+                        arrS = test.Split(sep, 2, StringSplitOptions.None);
+                        test = arrS[0].Trim();
+                        if (arrS.Length > 1)
                         {
-                            tFROM_HOST = m.Groups[1].Value.Trim();
-                            if (m.Groups.Count > 2)
+                            tFROM = arrS[1].Trim();
+                            // parse out server name(s) and IP
+                            /* formats: 
+                                    server (IP)
+                                    server (alias [IP])
+                                    server (alias) ([IP])
+                                    server (ACK alias) (IP)
+                                    server (ACK alias) ([IP])
+                             */
+                            //String rgxStr = "@([A-Za-z0-9\-\.]+).*\((?:.*)\[(\d+\.\d+\.\d+\.\d+)\]\)";
+                            String rgxStr = @"([A-Za-z0-9\-\.]+)\b.*\D(\d+\.\d+\.\d+\.\d+)\D";
+                            Regex rgx = new Regex(rgxStr);
+                            Match m = rgx.Match(arrS[1]);
+                            if (m.Groups.Count > 1)
                             {
-                                tFROM_IP = m.Groups[2].Value.Trim();
+                                tFROM_HOST = m.Groups[1].Value.Trim();
+                                if (m.Groups.Count > 2)
+                                {
+                                    tFROM_IP = m.Groups[2].Value.Trim();
+                                }
                             }
                         }
                     }
+                    catch
+                    {
+                        if (!cst_Util.isValidString(tFROM))
+                            tFROM = "[N/A]";
+                        if (!cst_Util.isValidString(tFROM_HOST))
+                            tFROM_HOST = "[N/A]";
+                        if (!cst_Util.isValidString(tFROM_IP))
+                            tFROM_IP = "[N/A]";
+                    }
+                    // simple checks
+                    String tNotes = "";
+                    if (cst_Util.isValidIPAddress(tFROM_HOST) && cst_Util.isValidIPAddress(tFROM_IP) && tFROM_HOST != tFROM_IP)
+                    {
+                        tNotes += "FROM route specifies mismatched IP addresses\r\n";
+                    }
+                    // log it
+                    if (cst_Util.isValidString(tNotes))
+                    {
+                        parent.log(Properties.Resources.Title_Routing, "4", "ROUTING", tNotes);
+                    }
+                    // populate it
+                    String[] rowData = new[] { nHop.ToString(), s,
+                        tFROM, tFROM_HOST, tFROM_IP, tBY, tBY_HOST, tBY_APP,
+                        tWITH, tID, tFOR, tTIMESTAMP, tNotes };
+                    this.Rows.Add(rowData);
                 }
-                catch 
-                {
-                    if (!cst_Util.isValidString(tFROM))
-                        tFROM = "[N/A]";
-                    if (!cst_Util.isValidString(tFROM_HOST))
-                        tFROM_HOST = "[N/A]";
-                    if (!cst_Util.isValidString(tFROM_IP))
-                        tFROM_IP = "[N/A]";
-                }
-                // simple checks
-                String tNotes = "";
-                if (cst_Util.isValidIPAddress(tFROM_HOST) && cst_Util.isValidIPAddress(tFROM_IP) && tFROM_HOST != tFROM_IP)
-                {
-                    tNotes += "FROM route specifies mismatched IP addresses\r\n";
-                }
-                // log it
-                if (cst_Util.isValidString(tNotes))
-                {
-                    parent.log(Properties.Resources.Title_Routing, "4", "ROUTING", tNotes);
-                }
-                // populate it
-                String[] rowData = new[] { nHop.ToString(), s,
-						tFROM, tFROM_HOST, tFROM_IP,
-						tBY, tBY_HOST, tBY_APP,
-						tWITH, tID, tFOR,
-						tTIMESTAMP,
-                        tNotes
-				};
-				this.Rows.Add(rowData);
 			}
-            /*
-            if (this.Rows.Count == 0)
-            {
-                String tReason = "Route List is EMPTY";
-                parent.log(Properties.Resources.Title_Routing, "4", "ROUTE LIST", tReason);
-            }
-            */
             return this.Rows.Count;
         }
     } // class

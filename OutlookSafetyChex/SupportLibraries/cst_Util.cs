@@ -13,8 +13,127 @@ using System.Windows.Forms;
 
 namespace CheccoSafetyTools
 {
-    abstract class cst_Util
-	{
+    public class cst_URL
+    {
+        public readonly String mURL = null;
+        public readonly String mProtocol = null;
+        public readonly String mHost = null;
+        public readonly String mPort = null;
+        public readonly String mPath = null;
+        public readonly String mQuery = null;
+        public readonly String mRef = null;
+        public readonly Uri mUri = null;
+
+        private static String rgxURIpattern = @"(?<url>"
+                + @"(?<protocol>[a-z]+):(//)?"
+                + @"(?<host>[^\s:/\?#]+)?"
+                + @"(:(?<port>[\d]+))?"
+                + @"(?<path>/+[^\?#]+)?"
+                + @"(\?(?<query>[^#]+))?"
+                + @"(#(?<ref>.+))?"
+                + @")";
+        // @"(?<url>(http(s?)://|file://|mailto:|(s?)ftp(s?):|scp:|www.)([a-z]|[A-Z]|[0-9]|[\\-]|[/.]|[~])*)";
+
+        public cst_URL(string tURL, 
+            string tProtocol, string tHost, string tPort,
+            string tPath, string tQuery, string tRef)
+        {
+            this.mURL = tURL;
+            this.mProtocol = tProtocol;
+            this.mHost = tHost;
+            this.mPort = tPort;
+            this.mPath = tPath;
+            this.mQuery = tQuery;
+            this.mRef = tRef;
+            if ( !cst_Util.isValidString(tProtocol) ||
+                (!cst_Util.isValidString(tHost) && !cst_Util.isValidString(tPath)))
+            {
+                throw new Exception("Does not meet minimum URL Fields");
+            }
+            this.mUri = new Uri(tURL);
+        }
+
+        public cst_URL(string tURL)
+        {
+            this.mUri = new Uri(tURL);
+            this.mURL = tURL;
+            this.mProtocol = this.mUri.Scheme;
+            this.mHost = this.mUri.Host;
+            this.mPort = this.mUri.Port.ToString();
+            this.mPath = this.mUri.AbsolutePath;
+            this.mQuery = this.mUri.Query;
+            this.mRef = this.mUri.Fragment;
+        }
+
+        private static cst_URL parseFields(GroupCollection tFound)
+        {
+            cst_URL rc = null;
+            try
+            {
+                String tURL = tFound["url"].Value;
+                String tProtocol = tFound["protocol"].Value;
+                String tHost = tFound["host"].Value;
+                String tPort = tFound["port"].Value;
+                String tPath = tFound["path"].Value;
+                String tQuery = tFound["query"].Value;
+                String tRef = tFound["ref"].Value;
+                if (cst_Util.isValidString(tProtocol) &&
+                    (cst_Util.isValidString(tHost) || cst_Util.isValidString(tPath)))
+                {
+                    rc = new cst_URL(tURL, tProtocol, tHost, tPort, tPath, tQuery, tRef);
+                }
+            }
+            catch { }
+            return rc;
+        }
+
+        public static cst_URL parseURL(String tStr,bool strict=true)
+        {
+            cst_URL rc = null;
+            try
+            {
+                // look for exactly one instance
+                String localPattern = strict ? 
+                    @"^" + rgxURIpattern + @"$" : 
+                    @"\b*" + rgxURIpattern + @"\b*";
+                Regex rgxURI = new Regex(localPattern,
+                                        RegexOptions.Compiled |
+                                        RegexOptions.IgnoreCase |
+                                        RegexOptions.ExplicitCapture);
+                MatchCollection matches = rgxURI.Matches(tStr);
+                if (matches.Count == 1)
+                {
+                    rc = cst_URL.parseFields(matches[0].Groups);
+                }
+            }
+            catch { }
+            return rc;
+        }
+
+        public static List<cst_URL> parseTextForURLs(String tStr, ushort max = 0)
+        {
+            List<cst_URL> rc = new List<cst_URL>();
+            try
+            {
+                Regex rgxURI = new Regex(rgxURIpattern,
+                                        RegexOptions.Compiled |
+                                        RegexOptions.IgnoreCase |
+                                        RegexOptions.ExplicitCapture);
+                MatchCollection matches = rgxURI.Matches(tStr);
+                foreach (Match match in matches)
+                {
+                    cst_URL tFound = cst_URL.parseFields(matches[0].Groups);
+                    if ( tFound != null ) rc.Add(tFound);
+                }
+            }
+            catch { }
+            return rc;
+        }
+
+    }
+
+    public abstract class cst_Log
+    {
         public const ushort LOG_NONE = 0;
         public const ushort LOG_ERROR = 1;
         public const ushort LOG_INFO = 2;
@@ -23,9 +142,126 @@ namespace CheccoSafetyTools
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static IdnMapping idnMapping = new IdnMapping();
         public static Control ctlLogger = null;
         private static Control ctlStatus = null;
+
+        #region logging
+        private static void prependLogUI(String s, bool erase = false)
+        {
+            // update logging window
+            if (ctlLogger != null)
+            {
+                try
+                {
+                    if (erase) ctlLogger.Text = "";
+                    if (cst_Util.isValidString(s))
+                    {
+                        ctlLogger.Text = s.Trim() + "\r\n" + ctlLogger.Text;
+                    }
+                    ctlLogger.Refresh();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("cst_Util::prependLogUI(logWindow)", ex);
+                }
+            }
+            // update status line
+            if (ctlStatus != null)
+            {
+                try
+                {
+                    if (erase) ctlStatus.Text = "";
+                    if (cst_Util.isValidString(s))
+                    {
+                        ctlStatus.Text = s.Trim();
+                    }
+                    ctlStatus.Refresh();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("cst_Util::prependLogUI(statusLine)", ex);
+                }
+            }
+        }
+
+        private static String prepareLogMsg(String details, String context)
+        {
+            String rc = "";
+            if (cst_Util.isValidString(context))
+            {
+                rc += context.Trim();
+            }
+            if (cst_Util.isValidString(details))
+            {
+                rc += " - " + details.Trim();
+            }
+            return rc;
+        }
+
+        public static void logVerbose(String details, String context, bool erase = false)
+        {
+            if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_VERBOSE
+                && cst_Util.isValidString(details))
+            {
+                String msg = prepareLogMsg(details, context);
+                log.Debug(msg);
+                prependLogUI("[VERBOSE]: " + msg, erase);
+            }
+        }
+
+        public static void logInfo(String details, String context, bool erase = false)
+        {
+            if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_INFO &&
+                cst_Util.isValidString(details))
+            {
+                String msg = prepareLogMsg(details, context);
+                log.Info(msg);
+                prependLogUI("[INFO]: " + msg, erase);
+            }
+        }
+
+        public static void logException(Exception ex, String context, bool erase = false)
+        {
+            if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_ERROR &&
+                ex != null)
+            {
+                String msg = prepareLogMsg(ex.Message, context);
+                log.Error(context, ex);
+                prependLogUI("[EXCEPTION]: " + msg, erase);
+            }
+
+        }
+
+        public static void logMessage(String details, String context, bool erase = false)
+        {
+            if (cst_Util.isValidString(details))
+            {
+                String msg = prepareLogMsg(details, context);
+                log.Info(msg);
+                prependLogUI(msg, erase);
+            }
+        }
+
+        public static void setLoggingUI(Control wndLogger, Control wndStatus = null)
+        {
+            ctlLogger = wndLogger;
+            ctlStatus = wndStatus;
+        }
+
+        #endregion
+
+    }
+
+    public abstract class cst_Util
+    { 
+        public static IdnMapping idnMapping = new IdnMapping();
+ 
+        private static String rgxWordPattern = @"\b(\w+)\b"; 
+        private static Regex rgxWord = new Regex(rgxWordPattern, RegexOptions.Compiled);
+        private static String rgxLeetPattern = @"([a-zA-Z]\d+[a-zA-Z])";
+        private static Regex rgxLeet = new Regex(rgxLeetPattern, RegexOptions.Compiled);
+        private static String rgxIPAddrPattern = @"(\d+\.\d+\.\d+\.\d+)";
+        private static Regex rgxIPAddr = new Regex(rgxIPAddrPattern, RegexOptions.Compiled);
 
         #region  Array/list utils
         public static bool isValidArray(dynamic[] tArr)
@@ -43,11 +279,53 @@ namespace CheccoSafetyTools
         #endregion
 
         #region string utils
+        public static List<String> getWordList(String tStr)
+        {
+            List<String> rc = new List<String>();
+            try
+            {
+                // looking for strings that display leetspeak
+                if (isValidString(tStr))
+                {
+                    // foreach word in the string:
+                    MatchCollection mWords = rgxWord.Matches(tStr);
+                    foreach (Match match in mWords)
+                    {
+                        String word = match.Value.Trim();
+                        if (isValidString(word) && word.Length > 1)
+                        {
+                            rc.Add(word);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Log.logException(ex, "AddInSafetyCheck::getWordList(" + tStr + ")");
+            }
+            return rc;
+        }
+        
         public static bool isValidString(String tStr, bool trimFirst = true)
         {
             if (tStr == null) return false;
             String chk = trimFirst ? tStr.Trim() : tStr;
             return (chk.Length > 0);
+        }
+
+        public static bool isValidURL(String tStr)
+        {
+            cst_URL tURL = cst_URL.parseURL(tStr);
+            return (tURL != null);
+        }
+
+        public static bool containsLeet(String word)
+        {
+            bool rc = false;
+            // Determine Leet substitutions (O=0, I=1, Z=2, E=3, H=4, S=5, G=6, T=7, B=8, Q=9)
+            Match mLeet = rgxLeet.Match(word);
+            rc = (mLeet.Groups.Count > 1 );
+            return rc;
         }
 
         public static String toAscii(String tStr)
@@ -127,7 +405,7 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::pullDomain(" + fqdn + ")");
+                cst_Log.logException(ex, "cst_Util::pullDomain(" + fqdn + ")");
             }
 			// trying to be safe
 			return rc;
@@ -144,7 +422,7 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::pullTLD(" + fqdn + ")");
+                cst_Log.logException(ex, "cst_Util::pullTLD(" + fqdn + ")");
             }
             // trying to be safe
             return rc;
@@ -157,9 +435,7 @@ namespace CheccoSafetyTools
             {
                 if (isValidString(tStr))
                 {
-                    String rgxStr = @"(\d+\.\d+\.\d+\.\d+)";
-                    Regex rgx = new Regex(rgxStr);
-                    Match m = rgx.Match(tStr.Trim());
+                    Match m = rgxIPAddr.Match(tStr.Trim());
                     if (m.Groups.Count > 1)
                     {
                         rc = m.Groups[1].Value.Trim();
@@ -168,18 +444,18 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::parseIPaddress(" + tStr + ")");
+                cst_Log.logException(ex, "cst_Util::parseIPaddress(" + tStr + ")");
             }
             return rc;
         }
 
-        public static IPAddress toIPaddress(String tStr)
+         public static IPAddress toIPaddress(String tStr)
         {
             IPAddress rc = null;
             try
             {
                 IPAddressRange rcIP = IPAddressRange.Parse(tStr);
-                rc = rcIP.Begin;
+                if ( rcIP != null ) rc = rcIP.Begin;
             }
             catch { }
             return rc;
@@ -191,10 +467,16 @@ namespace CheccoSafetyTools
             try
             {
                 IPAddressRange rcIP = IPAddressRange.Parse(tStr);
-                foreach ( IPAddress ip in rcIP)
+                if (rcIP != null)
                 {
-                    rc.Add(ip);
-                    if (rc.Count == maxLen) break;
+                    foreach (IPAddress ip in rcIP)
+                    {
+                        if (ip != null)
+                        {
+                            rc.Add(ip);
+                            if (rc.Count == maxLen) break;
+                        }
+                    }
                 }
             }
             catch { }
@@ -218,7 +500,7 @@ namespace CheccoSafetyTools
             }
 			catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::isValidIPAddress(" + tStr + ")");
+                cst_Log.logException(ex, "cst_Util::isValidIPAddress(" + tStr + ")");
 			}
             */
             return rc;
@@ -240,7 +522,7 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::sanitizeEmail(" + inAddr + ")");
+                cst_Log.logException(ex, "cst_Util::sanitizeEmail(" + inAddr + ")");
             }
             return rc;
         }
@@ -286,12 +568,12 @@ namespace CheccoSafetyTools
             }
             catch (WebException we)
             {
-                cst_Util.logException(we, "cst_Util::wgetHead(" + tURL + ")");
+                cst_Log.logException(we, "cst_Util::wgetHead(" + tURL + ")");
                 rc.Add("[Exception]",we.Message);
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::wgetHead(" + tURL + ")");
+                cst_Log.logException(ex, "cst_Util::wgetHead(" + tURL + ")");
                 rc.Add("[Exception]", ex.Message);
             }
             return rc;
@@ -334,7 +616,7 @@ namespace CheccoSafetyTools
                         }
                         if (foundContent == 0)
                         {
-                            cst_Util.logInfo("No Allowable Content-Type Found", "cst_Util::wgetBinary(" + tURL + ")");
+                            cst_Log.logInfo("No Allowable Content-Type Found", "cst_Util::wgetBinary(" + tURL + ")");
                             rc = null;
                         }
                     }
@@ -342,11 +624,11 @@ namespace CheccoSafetyTools
             }
             catch (WebException webEx)
             {
-                cst_Util.logException(webEx, "cst_Util::wgetData(" + tURL + ")");
+                cst_Log.logException(webEx, "cst_Util::wgetData(" + tURL + ")");
             }
             catch (Exception ex)
 			{
-				cst_Util.logException(ex, "cst_Util::wgetData(" + tURL+")");
+				cst_Log.logException(ex, "cst_Util::wgetData(" + tURL+")");
             }
 			return rc;
 		}
@@ -388,7 +670,7 @@ namespace CheccoSafetyTools
                         }
                         if ( foundContent == 0 )
                         {
-                            cst_Util.logInfo("No Allowable Content-Type Found", "cst_Util::wgetString(" + tURL + ")");
+                            cst_Log.logInfo("No Allowable Content-Type Found", "cst_Util::wgetString(" + tURL + ")");
                             rc = null;
                         }
                     }
@@ -396,11 +678,11 @@ namespace CheccoSafetyTools
             }
             catch (WebException webEx)
             {
-                cst_Util.logException(webEx, "cst_Util::wgetString(" + tURL + ")");
+                cst_Log.logException(webEx, "cst_Util::wgetString(" + tURL + ")");
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::wgetString(" + tURL + ")");
+                cst_Log.logException(ex, "cst_Util::wgetString(" + tURL + ")");
             }
             return rc;
         }
@@ -421,7 +703,7 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::wgetHTML(" + tURL + ")");
+                cst_Log.logException(ex, "cst_Util::wgetHTML(" + tURL + ")");
             }
             return rc;
         }
@@ -445,115 +727,10 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::wgetJSON(" + tURL + ")");
+                cst_Log.logException(ex, "cst_Util::wgetJSON(" + tURL + ")");
             }
             return rc;
         }
-        #endregion
-
-        #region logging
-        private static void prependLogUI(String s, bool erase = false)
-        {
-            // update logging window
-            if (ctlLogger != null)
-            {
-                try
-                {
-                    if (erase) ctlLogger.Text = "";
-                    if (cst_Util.isValidString(s))
-                    {
-                        ctlLogger.Text = s.Trim() + "\r\n" + ctlLogger.Text;
-                    }
-                    ctlLogger.Refresh();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("cst_Util::prependLogUI(logWindow)", ex);
-                }
-            }
-            // update status line
-            if (ctlStatus != null)
-            {
-                try
-                {
-                    if (erase) ctlStatus.Text = "";
-                    if (cst_Util.isValidString(s))
-                    {
-                        ctlStatus.Text = s.Trim();
-                    }
-                    ctlStatus.Refresh();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("cst_Util::prependLogUI(statusLine)", ex);
-                }
-            }
-        }
-
-        private static String prepareLogMsg(String details, String context)
-        {
-            String rc = "";
-            if (cst_Util.isValidString(context))
-            {
-                rc += context.Trim();
-            }
-            if (cst_Util.isValidString(details))
-            {
-                rc += " - " + details.Trim();
-            }
-            return rc;
-        }
-
-        public static void logVerbose(String details, String context, bool erase = false)
-        {
-            if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_VERBOSE 
-                && cst_Util.isValidString(details))
-            {
-                String msg = cst_Util.prepareLogMsg(details,context);
-                log.Debug(msg);
-                cst_Util.prependLogUI("[VERBOSE]: " + msg, erase);
-            }
-        }
-
-        public static void logInfo(String details, String context, bool erase = false)
-        {
-            if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_INFO && 
-                cst_Util.isValidString(details))
-            {
-                String msg = cst_Util.prepareLogMsg(details, context);
-                log.Info(msg);
-                cst_Util.prependLogUI("[INFO]: " + msg, erase);
-            }
-        }
-
-        public static void logException(Exception ex, String context, bool erase = false)
-        {
-            if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_ERROR && 
-                ex != null)
-            {
-                String msg = cst_Util.prepareLogMsg(ex.Message, context);
-                log.Error(context,ex);
-                cst_Util.prependLogUI("[EXCEPTION]: " + msg, erase);
-            }
-
-        }
-
-        public static void logMessage(String details, String context, bool erase = false)
-        {
-            if (cst_Util.isValidString(details))
-            {
-                String msg = cst_Util.prepareLogMsg(details, context);
-                log.Info(msg);
-                cst_Util.prependLogUI(msg, erase);
-            }
-        }
-
-        public static void setLoggingUI(Control wndLogger, Control wndStatus = null)
-        {
-            ctlLogger = wndLogger;
-            ctlStatus = wndStatus;
-        }
-
         #endregion
 
     } // class

@@ -6,7 +6,7 @@ namespace CheccoSafetyTools
 {
     abstract class cst_WHOISXML_API
 	{
-        private static String API_KEY = OutlookSafetyChex.Properties.Settings.Default.WhoisXml_ApiKey;
+		private static String API_KEY = ""; // OutlookSafetyChex.Properties.Settings.Default.WhoisXml_ApiKey;
 
         private readonly static String WHOIS_URL = "https://www.whoisxmlapi.com/whoisserver/WhoisService?outputFormat=JSON&apiKey=" + API_KEY +"&";
 		private readonly static String GEOIP_URL = "https://ip-geolocation.whoisxmlapi.com/api/v1?outputFormat=JSON&apiKey=" + API_KEY + "&";
@@ -47,7 +47,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Util.logException(ex, "cst_WHOISXML_API::lookupHost(" + tHost+")");
+				cst_Log.logException(ex, "cst_WHOISXML_API::lookupHost(" + tHost+")");
 			}
 			return arrOWNER;
 		}
@@ -126,7 +126,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Util.logException(ex, "cst_WHOISXML_API::parseWhoisJSON");
+				cst_Log.logException(ex, "cst_WHOISXML_API::parseWhoisJSON");
 
             }
 			return rc;
@@ -149,7 +149,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Util.logException(ex, "cst_WHOISXML_API::checkWHOIS(" + tHost + ")");
+                cst_Log.logException(ex, "cst_WHOISXML_API::checkWHOIS(" + tHost + ")");
             }
             return rc;
 		}
@@ -200,7 +200,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Util.logException(ex, "cst_WHOISXML_API::parseGeoipJSON()");
+                cst_Log.logException(ex, "cst_WHOISXML_API::parseGeoipJSON()");
             }
             return rc;
 		}
@@ -222,7 +222,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Util.logException(ex, "cst_WHOISXML_API::geoLocateIP(" + tIPAddr + ")");
+                cst_Log.logException(ex, "cst_WHOISXML_API::geoLocateIP(" + tIPAddr + ")");
             }
             return rc;
 		}
@@ -254,7 +254,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Util.logException(ex, "cst_WHOISXML_API::whoisOwner(" + fqdn + ")");
+                cst_Log.logException(ex, "cst_WHOISXML_API::whoisOwner(" + fqdn + ")");
             }
             return rc;
 		}

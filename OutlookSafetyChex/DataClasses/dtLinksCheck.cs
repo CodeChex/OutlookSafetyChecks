@@ -32,12 +32,12 @@ namespace OutlookSafetyChex
                     try
                     {
                         // start checks
-                        Uri tUri = new Uri(tLink);
-                        if (tUri.Scheme == Uri.UriSchemeMailto)
+                        cst_URL tURL = cst_URL.parseURL(tLink);
+                        if (tURL.mUri.Scheme == Uri.UriSchemeMailto)
                         {
-                            listEmails.Add(new MailAddress(tUri.UserInfo + "@" + tUri.Host, tName));
+                            listEmails.Add(new MailAddress(tURL.mUri.UserInfo + "@" + tURL.mUri.Host, tName));
                         }
-                        listHosts.Add(tUri.DnsSafeHost);
+                        listHosts.Add(tURL.mUri.DnsSafeHost);
                     }
                     catch // (Exception ex)
                     {

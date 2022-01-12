@@ -30,7 +30,7 @@ namespace OutlookSafetyChex
                         String tHtml = myItem.HTMLBody;
                         if (Properties.Settings.Default.test_Body)
                         {
-                            cst_Util.logVerbose("Text Check", "HTML Parsing");
+                            cst_Log.logVerbose("Text Check", "HTML Parsing");
                             // Read links from DOM
                             HtmlDocument doc = new HtmlDocument();
                             doc.LoadHtml(tHtml);
@@ -40,12 +40,12 @@ namespace OutlookSafetyChex
                                 foreach (HtmlNode tNode in tNodeList)
                                 {
                                     String tTag = tNode.Name.ToLower();
-                                    cst_Util.logVerbose(tTag, "HTML Parsing");
+                                    cst_Log.logVerbose(tTag, "HTML Parsing");
                                     tNotes = "";
                                     // check plaintext
                                     try
                                     {
-                                        String tStr = tNode.InnerText;
+                                        String tStr = tNode.GetDirectInnerText();
                                         tNotes += Globals.AddInSafetyCheck.suspiciousText(tStr);
                                     }
                                     catch { }
@@ -236,7 +236,7 @@ namespace OutlookSafetyChex
                         byte[] buffer = myItem.RTFBody;
                         if (Properties.Settings.Default.test_Body)
                         {
-                            cst_Util.logVerbose("Text Check", "RTF Parsing");
+                            cst_Log.logVerbose("Text Check", "RTF Parsing");
                             string s = System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
                             tNotes += Globals.AddInSafetyCheck.suspiciousText(s);
                             RTFDomDocument rtfDoc = new RTFDomDocument();
@@ -247,7 +247,7 @@ namespace OutlookSafetyChex
                                 String tTag = tNode.Key as String;
                                 String tStr = tNode.Value as String;
                                 tNotes = "";
-                                cst_Util.logVerbose(tTag, "RTF Parsing");
+                                cst_Log.logVerbose(tTag, "RTF Parsing");
                                 // check raw text
                                 try
                                 {
@@ -268,7 +268,7 @@ namespace OutlookSafetyChex
                     case Outlook.OlBodyFormat.olFormatPlain:
                         tNotes = "";
                         String tText = myItem.Body;
-                        cst_Util.logVerbose("Plain Text", "Parsing");
+                        cst_Log.logVerbose("Plain Text", "Parsing");
                         if (Properties.Settings.Default.test_Body)
                         {
                              tNotes += Globals.AddInSafetyCheck.suspiciousText(tText);
@@ -284,7 +284,7 @@ namespace OutlookSafetyChex
                     default:
                         tNotes = "";
                         String tData = myItem.Body;
-                        cst_Util.logVerbose("Raw Data", "Parsing");
+                        cst_Log.logVerbose("Raw Data", "Parsing");
                         if (Properties.Settings.Default.test_Body)
                         {
                             tNotes += "Cannot Parse Contents\r\n";

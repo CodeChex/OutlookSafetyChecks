@@ -23,7 +23,15 @@ namespace OutlookSafetyChex
             dtRouteList arrRoutes = parent.findTableClass<dtRouteList>() as dtRouteList;
             if (arrRoutes != null )
             {
-                if (arrRoutes.Rows.Count == 0) arrRoutes.populate(false);
+                if (arrRoutes.Rows.Count == 0) 
+                { 
+                    arrRoutes.populate(false); 
+                }
+                if (arrRoutes.Rows.Count == 0)
+                {
+                    String tReason = "Route List is EMPTY";
+                    parent.log(Properties.Resources.Title_Routing, "4", "ROUTE LIST", tReason);
+                }
                 foreach ( DataRow tRow in arrRoutes.Rows)
                 {
 					int i = 0;
@@ -39,7 +47,6 @@ namespace OutlookSafetyChex
 					String tID = tRow.ItemArray[i++] as String; ;
 					String tFOR = tRow.ItemArray[i++] as String; ;
 					String tTIMESTAMP = tRow.ItemArray[i++] as String;
-                    cst_Util.logVerbose(tHop + ": " + tFROM, "Route");
                     if (cst_Util.isValidString(tBY_HOST))
                     {
                         if (cst_Util.isValidIPAddress(tBY_HOST))

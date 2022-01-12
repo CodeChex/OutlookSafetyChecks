@@ -78,7 +78,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::getSelectedMailItem()");
+                cst_Log.logException(ex, "AddInSafetyCheck::getSelectedMailItem()");
             }
             return myMail;
         }
@@ -96,7 +96,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::getOpenMailItem()");
+                cst_Log.logException(ex, "AddInSafetyCheck::getOpenMailItem()");
             }
             return myMail;
         }
@@ -121,7 +121,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::loadDialog()");
+                cst_Log.logException(ex, "AddInSafetyCheck::loadDialog()");
             }
         }
 
@@ -137,7 +137,7 @@ namespace OutlookSafetyChex
 			}
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::isCurrentMailItem()");
+                cst_Log.logException(ex, "AddInSafetyCheck::isCurrentMailItem()");
             }
             return rc;
         }
@@ -157,7 +157,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::selectMailItem()");
+                cst_Log.logException(ex, "AddInSafetyCheck::selectMailItem()");
             }
             return rc;
         }
@@ -170,7 +170,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::findTableName(" + tableName + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::findTableName(" + tableName + ")");
             }
             return null;
         }
@@ -183,7 +183,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-               cst_Util.logException(ex, "AddInSafetyCheck::findTableName(" + typeof(T).Name + ")");
+               cst_Log.logException(ex, "AddInSafetyCheck::findTableName(" + typeof(T).Name + ")");
             }
             return null;
         }
@@ -198,7 +198,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::populateTableName(" + tableName + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::populateTableName(" + tableName + ")");
             }
             return rc;
         }
@@ -213,7 +213,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::populateTable(" + typeof(T).Name + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::populateTable(" + typeof(T).Name + ")");
             }
             return rc;
         }
@@ -230,7 +230,7 @@ namespace OutlookSafetyChex
 			}
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::resetLog()");
+                cst_Log.logException(ex, "AddInSafetyCheck::resetLog()");
             }
         }
 
@@ -242,7 +242,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::ParseEnvelope()");
+                cst_Log.logException(ex, "AddInSafetyCheck::ParseEnvelope()");
             }
         }
 
@@ -254,7 +254,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::ParseHeaders()");
+                cst_Log.logException(ex, "AddInSafetyCheck::ParseHeaders()");
             }
         }
  
@@ -267,7 +267,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::AnalyzeContacts()");
+                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeContacts()");
             }
         }
 
@@ -279,7 +279,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::AnalyzeBody()");
+                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeBody()");
             }
         }
         public void AnalyzeLinks(bool refresh = false)
@@ -291,7 +291,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::AnalyzeLinks()");
+                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeLinks()");
             }
         }
 
@@ -305,7 +305,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::AnalyzeRoutes()");
+                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeRoutes()");
             }
         }
 
@@ -317,7 +317,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::AnalyzeAttachments()");
+                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeAttachments()");
             }
         }
 
@@ -355,7 +355,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalBlacklist()");
+                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalBlacklist()");
             }
         }
 
@@ -391,7 +391,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalWhitelist()");
+                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalWhitelist()");
             }
         }
 
@@ -423,7 +423,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheTLDs()");
+                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheTLDs()");
                 }
             }
             return cacheTLDs;
@@ -462,7 +462,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalDNSBLs()");
+                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalDNSBLs()");
             }
         }
 
@@ -495,7 +495,7 @@ namespace OutlookSafetyChex
                     }
                     catch (Exception ex)
                     {
-                        cst_Util.logException(ex, "AddInSafetyCheck::getCacheMIMETYPEs()");
+                        cst_Log.logException(ex, "AddInSafetyCheck::getCacheMIMETYPEs()");
                     }
                 }
                 cacheMIMETYPEs = tCache.Distinct().ToList();
@@ -508,7 +508,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheMIMETYPEs()");
+                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheMIMETYPEs()");
                 }
             }
             return cacheMIMETYPEs;
@@ -546,7 +546,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalMIMETYPEs()");
+                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalMIMETYPEs()");
             }
         }
 
@@ -574,7 +574,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Util.logException(ex, "AddInSafetyCheck::getCacheCODEPAGEs()");
+                    cst_Log.logException(ex, "AddInSafetyCheck::getCacheCODEPAGEs()");
                 }
                 cacheCODEPAGEs = tCache.Distinct().ToList();
                 // store cache
@@ -586,7 +586,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheCODEPAGEs()");
+                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheCODEPAGEs()");
                 }
             }
             return cacheCODEPAGEs;
@@ -622,7 +622,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalCODEPAGEs()");
+                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalCODEPAGEs()");
             }
         }
 
@@ -652,7 +652,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheCULTUREs()");
+                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheCULTUREs()");
                 }
             }
             return cacheCULTUREs;
@@ -663,7 +663,7 @@ namespace OutlookSafetyChex
             List<String> rc = null;
             try
             {
-                rc = Properties.Settings.Default.common_ENCODINGs.Cast<String>().ToList();
+                rc = Properties.Settings.Default.common_CULTURESs.Cast<String>().ToList();
             }
             catch { }
             return rc;
@@ -678,7 +678,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static void saveLocalENCODINGs(List<String> newList)
+        public static void saveLocalCULTUREs(List<String> newList)
         {
             try
             {
@@ -688,7 +688,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalCULTUREs()");
+                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalCULTUREs()");
             }
         }
 
@@ -701,34 +701,6 @@ namespace OutlookSafetyChex
             return null;
         }
 
-        List<String> getWordList(String tStr)
-        {
-            List<String> rc = new List<String>();
-            String rgxWordPattern = @"\W(\w+)\W"; // @"\b(\w+)\b";
-            Regex rgxWord = new Regex(rgxWordPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            try
-            {
-                // looking for strings that display leetspeak
-                if (cst_Util.isValidString(tStr))
-                {
-                    // foreach word in the string:
-                    MatchCollection mWords = rgxWord.Matches(tStr);
-                    foreach (Match match in mWords)
-                    {
-                        String word = match.Value.Trim();
-                        if (cst_Util.isValidString(word) && word.Length > 1)
-                        {
-                            rc.Add(word);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Util.logException(ex, "AddInSafetyCheck::getWordList(" + tStr + ")");
-            }
-            return rc;
-        }
         #endregion
 
         #region sanity checks
@@ -739,13 +711,12 @@ namespace OutlookSafetyChex
             {
                 if (cst_Util.isValidString(fqdn) && fqdn.ToLower().Contains("xn--"))
                 {
-                    String tReason = "\"" + fqdn + "\" uses PUNYcode";
-                    rc += "[PUNYcode misdirection]: " + tReason + "\r\n";
+                    rc += "PUNYcode misdirection\r\n";
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkPUNYcode(" + fqdn + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::checkPUNYcode(" + fqdn + ")");
             }
             return rc;
         }
@@ -758,13 +729,12 @@ namespace OutlookSafetyChex
                 String aStr = cst_Util.RemoveDiacritics(fqdn);
                 if (aStr != fqdn)
                 {
-                    String tReason = "\"" + aStr + "\" masquerading as \"" + fqdn + "\"";
-                    rc += "[Diacritic misdirection]: " + tReason + "\r\n";
+                    rc += "Diacritic misdirection\r\n";
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkDiacritics(" + fqdn + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::checkDiacritics(" + fqdn + ")");
             }
             return rc;
         }
@@ -779,14 +749,13 @@ namespace OutlookSafetyChex
                     String aStr = cst_Util.idnMapping.GetAscii(tStr);
                     if (aStr != tStr)
                     {
-                        String tReason = "\"" + aStr + "\" masquerading as \"" + tStr + "\"";
-                        rc += "[IDN misdirection]: " + tReason + "\r\n";
+                        rc += "IDN misdirection\r\n";
                     }
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkIDNchars(" + tStr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::checkIDNchars(" + tStr + ")");
             }
             return rc;
         }
@@ -804,7 +773,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::chkBufferOverflow(" + maxLen + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::chkBufferOverflow(" + maxLen + ")");
             }
             return rc;
         }
@@ -814,21 +783,15 @@ namespace OutlookSafetyChex
             String rc = "";
             try
             {
-                List<String> arrWords = getWordList(tStr);
-                // foreach word in the string:
-                foreach (String word in arrWords)
+                String aStr = cst_Util.toAscii(tStr);
+                if (aStr != tStr)
                 {
-                    String aStr = cst_Util.toAscii(word);
-                    if (aStr != word)
-                    {
-                        String tReason = "\"" + word + "\"";
-                        rc += "[Non-ASCII Text Detected]: " + tReason + "\r\n";
-                    }
+                    rc += "Non-ASCII Text Detected\r\n";
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkASCII(" + tStr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::checkASCII(" + tStr + ")");
             }
             return rc;
         }
@@ -853,7 +816,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkSubstitution(" + tStr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::checkSubstitution(" + tStr + ")");
             }
             return rc;
         }
@@ -861,29 +824,21 @@ namespace OutlookSafetyChex
         public String checkLeetSpeak(String tStr)
         {
             String rc = "";
-            String rgxLeetPattern = @"([a-z,A-Z]+\d+[a-z,A-Z]+)";
-            Regex rgxLeet = new Regex(rgxLeetPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            // Determine Leet substitutions (O=0, I=1, Z=2, E=3, H=4, S=5, ...)
-            try
+             try
             {
-                List<String> arrWords = getWordList(tStr);
+                List<String> arrWords = cst_Util.getWordList(tStr);
                 // looking for strings that display leetspeak
                 foreach (String word in arrWords)
                 {
-                    if (cst_Util.isValidString(word) && word.Length > 1)
+                    if (cst_Util.containsLeet(word))
                     {
-                        // check if a number is surrounded by alpha characters
-                        Match mLeet = rgxLeet.Match(word);
-                        if (mLeet.Groups.Count > 1)
-                        {
-                            rc += "[Possible L33TSPEAK]: " + word + "\r\n";
-                        }
+                        rc += "[Possible Garbage/L33Tspeak]: " + word + "\r\n";
                     }
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkLeetSpeak(" + tStr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::checkLeetSpeak(" + tStr + ")");
             }
             return rc;
         }
@@ -933,7 +888,7 @@ namespace OutlookSafetyChex
                             }
                             catch (Exception ex)
                             {
-                                cst_Util.logException(ex, "AddInSafetyCheck::MimeGuesser(\"" + tAttachment.FileName + "\")");
+                                cst_Log.logException(ex, "AddInSafetyCheck::MimeGuesser(\"" + tAttachment.FileName + "\")");
                             }
                             if (!tFileSig.Equals(tMimeType, StringComparison.CurrentCultureIgnoreCase))
                             {
@@ -947,7 +902,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousAttachment(" + tAttachment.FileName + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousAttachment(" + tAttachment.FileName + ")");
             }
             return tNotes;
 		}
@@ -987,7 +942,7 @@ namespace OutlookSafetyChex
                                             || tHost.EndsWith("." + t, StringComparison.CurrentCultureIgnoreCase);
                             if (found)
                             {
-                                // cst_Util.logInfo("[Local WHITELIST]: " + t, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
+                                // cst_Log.logInfo("[Local WHITELIST]: " + t, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
                                 whitelists.Add(t);
                             }
                         }
@@ -1010,7 +965,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
             }
             return rc;
         }
@@ -1098,7 +1053,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Util.logException(ex, "AddInSafetyCheck::suspiciousEmail(" + tMailAddress.Address + ")");
+                    cst_Log.logException(ex, "AddInSafetyCheck::suspiciousEmail(" + tMailAddress.Address + ")");
                 }
             }
             return rc;
@@ -1112,7 +1067,7 @@ namespace OutlookSafetyChex
                 rc += checkDiacritics(fqdn);
                 rc += checkIDNchars(fqdn);
                 rc += checkPUNYcode(fqdn);
-                rc += checkLeetSpeak(fqdn);
+                //rc += checkLeetSpeak(fqdn);
                 if (Properties.Settings.Default.opt_Lookup_HIBP)
                 {
                     String myDomain = cst_Util.pullDomain(fqdn);
@@ -1134,7 +1089,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousHost(" + fqdn + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousHost(" + fqdn + ")");
             }
             return rc;
 		}
@@ -1166,7 +1121,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousIP(" + ipAddr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousIP(" + ipAddr + ")");
             }
             return rc;
         }
@@ -1183,10 +1138,11 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousLabel(" + tStr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousLabel(" + tStr + ")");
             }
             return rc;
         }
+
         public String suspiciousText(String tStr)
         {
             String rc = "";
@@ -1199,7 +1155,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousText(" + tStr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousText(" + tStr + ")");
             }
             return rc;
         }
@@ -1223,7 +1179,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousValue(" + tStr + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousValue(" + tStr + ")");
             }
             return rc;
         }
@@ -1233,77 +1189,89 @@ namespace OutlookSafetyChex
             String tNotes = "";
             try
             {
-                Uri tLinkUri = null;
                 if (cst_Util.isValidString(tDisplayName))
                 {
                     tDisplayName = tDisplayName.Trim();
-                    String tReason = suspiciousLabel(tDisplayName);
-                    if (cst_Util.isValidString(tReason))
+                    if (!tDisplayName.Equals(tLink))
                     {
-                        tNotes += tReason + "\r\n";
+                        if (cst_Util.isValidURL(tDisplayName))
+                            tNotes += "[URL Misdiorection]: text URL <> real URL\r\n";
+                        else
+                            tNotes += suspiciousLabel(tDisplayName);
                     }
                 }
-                if (cst_Util.isValidString(tLink))
+                cst_URL tURL = cst_URL.parseURL(tLink);
+                if (tURL != null)
                 {
-                    tLink = tLink.Trim();
                     String tReason = Globals.AddInSafetyCheck.chkBufferOverflow(tLink, 1024);
                     if (cst_Util.isValidString(tReason))
                     {
                         tNotes += tReason + "\r\n";
                     }
-                    tLinkUri = new Uri(tLink);
-                    // check supported link protocols
-                    if (tLinkUri.Scheme == Uri.UriSchemeMailto)
+                    try
                     {
-                        // if an email, check for consistency
-                        if (cst_Util.isValidString(tDisplayName) && tDisplayName.Contains("@"))
+                        // check supported link protocols
+                        if (tURL.mUri.Scheme == Uri.UriSchemeMailto)
                         {
-                            if (!tDisplayName.Equals(tLinkUri.UserInfo + "@" + tLinkUri.Host, StringComparison.CurrentCultureIgnoreCase))
+                            // if an email, check for consistency
+                            if (cst_Util.isValidString(tDisplayName) && tDisplayName.Contains("@"))
                             {
-                                tNotes += "[EMAIL MISDIRECTION]: Displayed Link does not match Actual Link\r\n";
+                                if (!tDisplayName.Equals(tURL.mUri.UserInfo + "@" + tURL.mUri.Host, StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    tNotes += "[EMAIL MISDIRECTION]: Displayed Link does not match Actual Link\r\n";
+                                }
                             }
                         }
-                    }
-                    else if (tLinkUri.Scheme == Uri.UriSchemeHttp || tLinkUri.Scheme == Uri.UriSchemeHttps)
-                    {
-                        if (cst_Util.isValidString(tDisplayName) && tDisplayName.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))
+                        else if (tURL.mUri.Scheme == Uri.UriSchemeHttp || tURL.mUri.Scheme == Uri.UriSchemeHttps)
                         {
-                            if (!tDisplayName.Equals(tLinkUri.OriginalString, StringComparison.CurrentCultureIgnoreCase))
+                            if (cst_Util.isValidString(tDisplayName) && tDisplayName.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))
                             {
-                                tNotes += "[WEB MISDIRECTION]: Displayed Link does not match Actual Link\r\n";
+                                if (!tDisplayName.Equals(tURL.mUri.OriginalString, StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    tNotes += "[WEB MISDIRECTION]: Displayed Link does not match Actual Link\r\n";
+                                }
                             }
                         }
+                        else if (tURL.mUri.IsFile || tURL.mUri.IsUnc)
+                        {
+                            tNotes += "[FILE ACCESS]: Link accesses a file\r\n";
+                        }
+                        else
+                        {
+                            tNotes += "[NON-COMMON PROTOCOL]: Link uses protocol \"" + tURL.mUri.Scheme + "\"\r\n";
+                        }
+                        // checks against all link protocols
+                        if (cst_Util.isValidIPAddress(tURL.mUri.Host))
+                        {
+                            tNotes += "[EXPLICIT IP]: Link specifies a hardcoded IP Address\r\n";
+                            tNotes += suspiciousIP(tURL.mUri.Host);
+                        }
+                        else
+                        {
+                            tNotes += suspiciousHost(tURL.mUri.Host);
+                        }
+                        if (tURL.mUri.IsLoopback)
+                        {
+                            tNotes += "[LOCAL ACCESS]: Link accesses your local computer\r\n";
+                        }
+                        if (!tURL.mUri.IsDefaultPort)
+                        {
+                            tNotes += "[NON-COMMON PORT]: Link uses protocol:port \"" + tURL.mUri.Scheme + ":" + tURL.mUri.Port + "\"\r\n";
+                        }
+                        if (!allowQueryString && cst_Util.isValidString(tURL.mUri.Query))
+                        {
+                            tNotes += "[POTENTIAL BEACON]: Unexpected Link Parameters\r\n";
+                        }
                     }
-                    else if (tLinkUri.IsFile || tLinkUri.IsUnc)
+                    catch 
                     {
-                        tNotes += "[FILE ACCESS]: Link accesses a file\r\n";
-                    }
-                    else
-                    {
-                        tNotes += "[NON-COMMON PROTOCOL]: Link uses protocol \"" + tLinkUri.Scheme + "\"\r\n";
-                    }
-                    // checks against all link protocols
-                    if (cst_Util.isValidIPAddress(tLinkUri.Host))
-                    {
-                        tNotes += "[EXPLICIT IP]: Link specifies a hardcoded IP Address\r\n";
-                    }
-                    if (tLinkUri.IsLoopback)
-                    {
-                        tNotes += "[LOCAL ACCESS]: Link accesses your local computer\r\n";
-                    }
-                    if (!tLinkUri.IsDefaultPort)
-                    {
-                        tNotes += "[NON-COMMON PORT]: Link uses protocol:port \"" + tLinkUri.Scheme + ":" + tLinkUri.Port + "\"\r\n";
-                    }
-                    if (!allowQueryString && cst_Util.isValidString(tLinkUri.Query))
-                    {
-                        tNotes += "[POTENTIAL BEACON]: Unexpected Link Parameters\r\n";
+                        tNotes += "[INVALID FORMAT]\r\n";
                     }
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousLink(" + tLink + ")");
+                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousLink(" + tLink + ")");
             }
             return tNotes;
         }

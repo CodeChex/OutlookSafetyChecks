@@ -1,21 +1,7 @@
-﻿TODO LIST: 2022-01-08
+﻿TODO LIST: 2022-01-12
 
 ===========================
 Contents 
 ===========================
-- L33Tspeak 
-- + rudimentary
 
-- HTML/RTF Images 
-- - source links (check host/domain, and extension)
-- - query string (beaconing)
-- - size, zero-wd/ht (beaconing)
-
-- HTML/RTF Embedded Objects (check host/domain, and extension)
-- - HTML: <a href=>, <object src=>, <iframe src=>, <embed src=>
-- - RTF: \\a, ???
-
-- HTML/RTF Font/Typeface (hidden text)
-- - zero-wd/ht
-- - same color as background
 ===========================

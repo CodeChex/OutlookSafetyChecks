@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OutlookSafetyChex.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="WhoisXml_ApiKey" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">at_Mm5SiLNB5t7g5C10lFuKlElIGFfFi</Value>
-    </Setting>
     <Setting Name="opt_Use_CACHE" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -63,18 +60,6 @@
     <Setting Name="local_Whitelist" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-  &lt;string&gt;.org&lt;/string&gt;
-  &lt;string&gt;.net&lt;/string&gt;
-  &lt;string&gt;.com&lt;/string&gt;
-  &lt;string&gt;.edu&lt;/string&gt;
-  &lt;string&gt;.gov&lt;/string&gt;
-  &lt;string&gt;.mil&lt;/string&gt;
-  &lt;string&gt;.us&lt;/string&gt;
-  &lt;string&gt;.co.uk&lt;/string&gt;
-  &lt;string&gt;.ca&lt;/string&gt;
-  &lt;string&gt;.nyc&lt;/string&gt;
-  &lt;string&gt;.co&lt;/string&gt;
-  &lt;string&gt;bit.ly&lt;/string&gt;
   &lt;string&gt;goog.le&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
@@ -140,6 +125,7 @@
   &lt;string&gt;text/plain&lt;/string&gt;
   &lt;string&gt;application/rtf&lt;/string&gt;
   &lt;string&gt;multipart/alternative&lt;/string&gt;
+  &lt;string&gt;multipart/related&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="common_CODEPAGEs" Type="System.Collections.Specialized.StringCollection" Scope="Application">
@@ -152,18 +138,17 @@
   &lt;string&gt;us-ascii&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="common_ENCODINGs" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+    <Setting Name="common_CULTURESs" Type="System.Collections.Specialized.StringCollection" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-  &lt;string&gt;7bit&lt;/string&gt;
-  &lt;string&gt;8bit&lt;/string&gt;
-  &lt;string&gt;quoted-printable&lt;/string&gt;
+  &lt;string&gt;en-US&lt;/string&gt;
+  &lt;string&gt;en&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="test_Headers" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="opt_Lookup_Encodings" Type="System.Boolean" Scope="User">
+    <Setting Name="opt_Lookup_Cultures" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="opt_Lookup_Codepages" Type="System.Boolean" Scope="User">
@@ -178,11 +163,20 @@
     </Setting>
     <Setting Name="local_CODEPAGEs" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" /&gt;</Value>
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;utf-8&lt;/string&gt;
+  &lt;string&gt;utf-16&lt;/string&gt;
+  &lt;string&gt;windows-1250&lt;/string&gt;
+  &lt;string&gt;windows-1252&lt;/string&gt;
+  &lt;string&gt;us-ascii&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="local_CULTUREs" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" /&gt;</Value>
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;en-US&lt;/string&gt;
+  &lt;string&gt;en&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="common_DNSBL" Type="System.Collections.Specialized.StringCollection" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;

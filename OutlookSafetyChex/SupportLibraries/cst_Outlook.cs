@@ -34,7 +34,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Util.logException(ex, "cst_Outlook::FindContacts("+tQuery+")");
+				cst_Log.logException(ex, "cst_Outlook::FindContacts("+tQuery+")");
 			}
 			return arrRC;
 		}

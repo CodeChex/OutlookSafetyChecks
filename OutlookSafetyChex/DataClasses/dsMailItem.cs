@@ -66,7 +66,7 @@ namespace OutlookSafetyChex
         {
 			if (logTable != null)
 			{
-				logTable.Rows.Add(new[] { tType, tSeverity, tCategory, tDetails });
+				logTable.Rows.Add(new[] { tType, /* tSeverity, */ tCategory, tDetails });
 			}
 		}
 

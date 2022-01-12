@@ -22,7 +22,7 @@ namespace OutlookSafetyChex
             rowData = new[] { "Identifier:", myItem.EntryID };
             this.Rows.Add(rowData);
             // New Row: SUBJECT
-            cst_Util.logVerbose("SUBJECT", "Envelope");
+            cst_Log.logVerbose("SUBJECT", "Envelope");
             tValue = myItem.Subject;
             tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
@@ -30,11 +30,11 @@ namespace OutlookSafetyChex
             rowData = new[] { "Subject:", myItem.Subject, tNotes };
             this.Rows.Add(rowData);
             // New Row: DATE
-            cst_Util.logVerbose("Date:", "Envelope");
+            cst_Log.logVerbose("Date:", "Envelope");
             rowData = new[] { "Received:", myItem.ReceivedTime.ToString() };
             this.Rows.Add(rowData);
             // New Row: FROM
-            cst_Util.logVerbose("From:", "Envelope");
+            cst_Log.logVerbose("From:", "Envelope");
             tValue = myItem.SenderName;
             tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
@@ -45,7 +45,7 @@ namespace OutlookSafetyChex
             rowData = new[] { "Sender:", tSender, tNotes };
             this.Rows.Add(rowData);
             // New Row: TO
-            cst_Util.logVerbose("To:", "Envelope");
+            cst_Log.logVerbose("To:", "Envelope");
             String tRec = "[" + myItem.Recipients.Count.ToString() + "]";
             rowData = new[] { "# Recipients:", tRec };
             this.Rows.Add(rowData);
@@ -66,11 +66,11 @@ namespace OutlookSafetyChex
                 this.Rows.Add(rowData);
             }
             // New Row: SIZE
-            cst_Util.logVerbose("Size:", "Envelope");
+            cst_Log.logVerbose("Size:", "Envelope");
             rowData = new[] { "Size (Bytes):", myItem.Size.ToString() };
             this.Rows.Add(rowData);
             // New Row: ATTACHMENTS
-            cst_Util.logVerbose("Attachments:", "Envelope");
+            cst_Log.logVerbose("Attachments:", "Envelope");
             String tFiles = "[" + myItem.Attachments.Count.ToString() + "]";
             rowData = new[] { "# Attachments:", tFiles };
             this.Rows.Add(rowData);

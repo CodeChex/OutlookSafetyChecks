@@ -30,8 +30,9 @@ namespace OutlookSafetyChex
 			String senderDomain = null;
 			String senderUser = null;
 			senderNotes += Globals.AddInSafetyCheck.suspiciousLabel(senderName);
-            try
-            {
+			cst_Log.logVerbose("From: " + senderEmail, "Sender");
+			try
+			{
 				if (cst_Util.isValidString(senderEmail))
 				{
 					MailAddress senderAddress = new MailAddress(senderEmail, senderName);
@@ -54,7 +55,7 @@ namespace OutlookSafetyChex
 			catch (Exception ex)
             {
 				senderNotes += "[* Invalid \"From:\" Email Address Specified]";
-                cst_Util.logException(ex, "Parsing From: " + senderEmail);
+                cst_Log.logException(ex, "Parsing From: " + senderEmail);
             }
             // add row
             String[] rowData = new[] { "From", senderName, senderEmail, senderOwner, senderNotes };
@@ -73,6 +74,7 @@ namespace OutlookSafetyChex
 				String replyToEmail = cst_Util.sanitizeEmail(tReplyAddr.Address,true);
 				String replyToOwner = "[not checked]";
 				String replyToNotes = "";
+				cst_Log.logVerbose("Reply-To: [" + replyToEmail + "]", "Sender");
 				replyToNotes += Globals.AddInSafetyCheck.suspiciousLabel(replyToName);
 				// grab domain owner for email domain 
 				try
@@ -118,7 +120,7 @@ namespace OutlookSafetyChex
                 {
 					replyToNotes += "[* Invalid \"" + tTag + ":\" Email Address Specified]";
 					//parent.log(logTitle, "1", "INVALID DATA", "Invalid [" + tTag + ":] Email Address Specified");
-                    cst_Util.logException(ex, "Parsing " + tTag + ": " + replyToEmail);
+                    cst_Log.logException(ex, "Parsing " + tTag + ": " + replyToEmail);
                 }
                 rowData = new[] { tTag, replyToName, replyToEmail, replyToOwner, replyToNotes };
 				this.Rows.Add(rowData);
@@ -139,6 +141,7 @@ namespace OutlookSafetyChex
 					if ( tKey.Equals("Return-Path",StringComparison.OrdinalIgnoreCase) )
 					{
 						String tVal = cst_Util.sanitizeEmail(tRow.ItemArray[1] as String, true);
+						cst_Log.logVerbose("Return-Path: [" + tVal + "]", "Sender");
 						if (cst_Util.isValidString(tVal)) arrReply.Add(tVal); 
 					}
 				}
@@ -189,7 +192,7 @@ namespace OutlookSafetyChex
                 {
                     replyToNotes += "[* Invalid \"Return-Path:\" Email Address Specified]";
                     // parent.log(logTitle, "1", "INVALID DATA", "Invalid [Return-Path:] Email Address Specified");
-                    cst_Util.logException(ex, "Parsing Return-Path: " + iReturnPath);
+                    cst_Log.logException(ex, "Parsing Return-Path: " + iReturnPath);
                 }
                 rowData = new[] { "Return-Path", "", iReturnPath, replyToOwner, replyToNotes };
                 this.Rows.Add(rowData);

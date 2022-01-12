@@ -23,15 +23,6 @@ namespace OutlookSafetyChex.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("at_Mm5SiLNB5t7g5C10lFuKlElIGFfFi")]
-        public string WhoisXml_ApiKey {
-            get {
-                return ((string)(this["WhoisXml_ApiKey"]));
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -233,22 +224,9 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
-  <string>.org</string>
-  <string>.net</string>
-  <string>.com</string>
-  <string>.edu</string>
-  <string>.gov</string>
-  <string>.mil</string>
-  <string>.us</string>
-  <string>.co.uk</string>
-  <string>.ca</string>
-  <string>.nyc</string>
-  <string>.co</string>
-  <string>bit.ly</string>
-  <string>goog.le</string>
-</ArrayOfString>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>goog.le</string>\r\n</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection local_Whitelist {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["local_Whitelist"]));
@@ -378,6 +356,7 @@ namespace OutlookSafetyChex.Properties {
   <string>text/plain</string>
   <string>application/rtf</string>
   <string>multipart/alternative</string>
+  <string>multipart/related</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection common_MIMETYPEs {
             get {
@@ -403,15 +382,12 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
-  <string>7bit</string>
-  <string>8bit</string>
-  <string>quoted-printable</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection common_ENCODINGs {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>en-US</string>\r\n  <string>en</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection common_CULTURESs {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["common_ENCODINGs"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["common_CULTURESs"]));
             }
         }
         
@@ -430,12 +406,12 @@ namespace OutlookSafetyChex.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool opt_Lookup_Encodings {
+        public bool opt_Lookup_Cultures {
             get {
-                return ((bool)(this["opt_Lookup_Encodings"]));
+                return ((bool)(this["opt_Lookup_Cultures"]));
             }
             set {
-                this["opt_Lookup_Encodings"] = value;
+                this["opt_Lookup_Cultures"] = value;
             }
         }
         
@@ -478,8 +454,14 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
-            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>utf-8</string>
+  <string>utf-16</string>
+  <string>windows-1250</string>
+  <string>windows-1252</string>
+  <string>us-ascii</string>
+</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection local_CODEPAGEs {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["local_CODEPAGEs"]));
@@ -492,7 +474,8 @@ namespace OutlookSafetyChex.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
-            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>en-US</string>\r\n  <string>en</string>\r\n</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection local_CULTUREs {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["local_CULTUREs"]));

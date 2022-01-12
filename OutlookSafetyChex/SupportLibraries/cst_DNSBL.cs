@@ -42,7 +42,7 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_DNSBL::checkDNSBL(" + ipaddr + ")");
+                cst_Log.logException(ex, "cst_DNSBL::checkDNSBL(" + ipaddr + ")");
             }
             return rc;
 		}

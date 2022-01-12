@@ -49,10 +49,18 @@ namespace OutlookSafetyChex
             if (ribbonID == "Microsoft.Outlook.Explorer")
             {
                 ribbonXML = GetResourceText("OutlookSafetyChex.CustomUI_ContextMenu.xml");
+#if DEBUG
+                ribbonXML = ribbonXML.Replace("button id=\"SafetyCheckMenu\" label=\"",
+                    "button id =\"SafetyCheckMenu\" label=\"(DEBUG) ");
+#endif
             }
             else if (ribbonID == "Microsoft.Outlook.Mail.Read")
             {
                 ribbonXML = GetResourceText("OutlookSafetyChex.CustomUI_AddInRibbon.xml");
+#if DEBUG
+                ribbonXML = ribbonXML.Replace("button id=\"SafetyCheckButton\" label=\"",
+                    "button id =\"SafetyCheckButton\" label=\"(DEBUG) ");
+#endif
             }
             else
             {

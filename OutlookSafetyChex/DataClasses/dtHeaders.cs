@@ -40,7 +40,7 @@ namespace OutlookSafetyChex
                     // save any pending
                     if (cst_Util.isValidString(tName))
                     {
-                        cst_Util.logVerbose(tName, "Header");
+                        cst_Log.logVerbose(tName, "Header");
                         String tNotes = checkHeader(parent, tName, tValue);
                     }
                     // start new one
@@ -56,7 +56,7 @@ namespace OutlookSafetyChex
             // save any pending
             if (cst_Util.isValidString(tName))
             {
-                cst_Util.logVerbose(tName, "Header");
+                cst_Log.logVerbose(tName, "Header");
                 String tNotes = checkHeader(parent, tName, tValue);
             }/*
             if (this.Rows.Count == 0)
@@ -81,10 +81,32 @@ namespace OutlookSafetyChex
                     {
                         case "x-originating-ip":
                             String tIPAddr = cst_Util.parseIPaddress(tValue);
-                            rc += Globals.AddInSafetyCheck.suspiciousIP(tIPAddr);
-                            if (Properties.Settings.Default.opt_Lookup_WHOIS)
+                            if (cst_Util.isValidString(tIPAddr))
                             {
-                                rc += cst_WHOIS.whoisOwner(tIPAddr, Properties.Settings.Default.opt_Use_CACHE);
+                                rc += Globals.AddInSafetyCheck.suspiciousIP(tIPAddr);
+                                if (Properties.Settings.Default.opt_Lookup_WHOIS)
+                                {
+                                    rc += cst_WHOIS.whoisOwner(tIPAddr, Properties.Settings.Default.opt_Use_CACHE);
+                                }
+                            }
+                            break;
+                        case "list-unsubscribe":
+                            cst_URL tLink = cst_URL.parseURL(tValue,false);
+                            if (tLink != null)
+                            {
+                                rc += Globals.AddInSafetyCheck.suspiciousLink(tLink.mURL);
+                                try
+                                {
+                                     if (Properties.Settings.Default.opt_Lookup_WHOIS)
+                                    {
+                                        String tDomain = cst_Util.pullDomain(tLink.mUri.Host);
+                                        rc += cst_WHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
+                                    }
+                                }
+                                catch
+                                {
+                                    rc += "[INVALID LINK FORMAT]\r\n";
+                                }
                             }
                             break;
                         case "content-language":
@@ -127,13 +149,13 @@ namespace OutlookSafetyChex
         {
             // Conent-Language: us-EN
             String rc = "";
-            List<String> commonCultures = AddInSafetyCheck.getCommonCULTUREs();
+            List<String> checkCultures = AddInSafetyCheck.getLocalCULTUREs();
             try
             {
                 if (cst_Util.isValidString(tValue))
                 {
                     // check character encoding (case insensitive)
-                    if (!commonCultures.Contains(tValue.Trim(), StringComparer.OrdinalIgnoreCase))
+                    if (!checkCultures.Contains(tValue.Trim(), StringComparer.OrdinalIgnoreCase))
                     {
                         rc += "Uncommon Language-Culture (" + tValue + ")\r\n";
                     }
@@ -148,8 +170,8 @@ namespace OutlookSafetyChex
             // Content-Type: text/html; charset="..."
             // Content-Type: multipart/alternative; boundary="..."
             String rc = "";
-            List<String> commonFormats = AddInSafetyCheck.getCommonMIMETYPEs();
-            List<String> commonCharSets = AddInSafetyCheck.getCommonCODEPAGEs();
+            List<String> checkFormats = AddInSafetyCheck.getLocalMIMETYPEs();
+            List<String> checkCharSets = AddInSafetyCheck.getLocalCODEPAGEs();
             String tFormat = null;
             String tCharSet = null;
             String rgxPattern = @"charset\=""(\S+)""";
@@ -172,17 +194,17 @@ namespace OutlookSafetyChex
                 // validate MIME format (case insensitive)
                 if (cst_Util.isValidString(tFormat))
                 {
-                    if ( !commonFormats.Contains(tFormat.Trim(), StringComparer.OrdinalIgnoreCase) )
+                    if ( !checkFormats.Contains(tFormat.Trim(), StringComparer.OrdinalIgnoreCase) )
                     {
-                        rc += "Uncommon MIME format (" + tFormat + ")\r\n";
+                        rc += "Uncommon MIMEtype (" + tFormat + ")\r\n";
                     }
                 }
                 // validate charset (case insensitive)
                 if (cst_Util.isValidString(tCharSet))
                 {
-                    if (!commonCharSets.Contains(tCharSet.Trim(), StringComparer.OrdinalIgnoreCase))
+                    if (!checkCharSets.Contains(tCharSet.Trim(), StringComparer.OrdinalIgnoreCase))
                     {
-                        rc += "Uncommon Character Set (" + tCharSet + ")\r\n";
+                        rc += "Uncommon Codepage (" + tCharSet + ")\r\n";
                     }
                 }
             }
