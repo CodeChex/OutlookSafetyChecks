@@ -42,13 +42,19 @@ namespace OutlookSafetyChex
                     cst_Util.logVerbose(tHop + ": " + tFROM, "Route");
                     if (cst_Util.isValidString(tBY_HOST))
                     {
-                        dctSVRs.Add(tBY_HOST.ToLower().Trim());
+                        if (cst_Util.isValidIPAddress(tBY_HOST))
+                            dctIPs.Add(tBY_HOST.ToLower().Trim());
+                        else
+                            dctSVRs.Add(tBY_HOST.ToLower().Trim());
                     }
                     if (cst_Util.isValidString(tFROM_HOST))
                     {
-                        dctSVRs.Add(tFROM_HOST.ToLower().Trim());
+                        if (cst_Util.isValidIPAddress(tFROM_HOST))
+                            dctIPs.Add(tFROM_HOST.ToLower().Trim());
+                        else
+                            dctSVRs.Add(tFROM_HOST.ToLower().Trim());
                     }
-                    if (cst_Util.isValidString(tFROM_IP))
+                    if (cst_Util.isValidIPAddress(tFROM_IP))
                     {
                         dctIPs.Add(tFROM_IP.ToLower().Trim());
                     }

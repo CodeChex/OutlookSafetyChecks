@@ -14,25 +14,33 @@ namespace OutlookSafetyChex.Forms
 
     public partial class templateOptionList : Form
     {
-        readonly String[] arrSuggested; // baseline suggestions
-        readonly String[] arrAvailable; // all possible options
-        readonly String[] origSelected; // original selections
+        readonly List<String> arrSuggested; // baseline suggestions
+        readonly List<String> arrAvailable; // all possible options
+        readonly List<String> origSelected; // original selections
 
         public templateOptionList(String title, 
-                                    String[] tAvailable, 
-                                    String[] tSelected, 
-                                    String[] tDefaults = null)
+                                    List<String> tAvailable,
+                                    List<String> tSelected,
+                                    List<String> tDefaults = null)
         {
             InitializeComponent();
             this.Text = title;
             this.arrAvailable = tAvailable;
             this.origSelected = tSelected;
             this.arrSuggested = tDefaults;
+            btnSuggested.Visible = cst_Util.isValidCollection(tDefaults);
             this.listBoxAvailable.Items.Clear();
-            this.listBoxAvailable.Items.AddRange(tAvailable);
+            if (cst_Util.isValidCollection(tAvailable))
+            {
+                tAvailable.Sort();
+                this.listBoxAvailable.Items.AddRange(tAvailable.ToArray());
+            }
             this.listBoxSelected.Items.Clear();
-            this.listBoxSelected.Items.AddRange(tSelected);
-            btnSuggested.Visible = cst_Util.isValidArray(this.arrSuggested);
+            if (cst_Util.isValidCollection(tSelected))
+            {
+                tSelected.Sort();
+                this.listBoxSelected.Items.AddRange(tSelected.ToArray());
+            }
         }
 
         private void addAll_Click(object sender, EventArgs e)
@@ -78,15 +86,18 @@ namespace OutlookSafetyChex.Forms
         private void btnRevert_Click(object sender, EventArgs e)
         {
             this.listBoxAvailable.Items.Clear();
-            this.listBoxAvailable.Items.AddRange(this.arrAvailable);
+            if ( cst_Util.isValidCollection(this.arrAvailable) )
+                this.listBoxAvailable.Items.AddRange(this.arrAvailable.ToArray());
             this.listBoxSelected.Items.Clear();
-            this.listBoxSelected.Items.AddRange(this.origSelected);
+            if (cst_Util.isValidCollection(this.origSelected))
+                this.listBoxSelected.Items.AddRange(this.origSelected.ToArray());
         }
 
         private void btnSuggested_Click(object sender, EventArgs e)
         {
             this.listBoxSelected.Items.Clear();
-            this.listBoxSelected.Items.AddRange(this.arrSuggested);
+            if (cst_Util.isValidCollection(this.arrSuggested))
+                this.listBoxSelected.Items.AddRange(this.arrSuggested.ToArray());
         }
     }
 }

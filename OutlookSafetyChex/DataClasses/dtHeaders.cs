@@ -44,7 +44,7 @@ namespace OutlookSafetyChex
                     }
                     // start new one
                     tName = m.Groups[1].Value.Trim();
-                    tValue = m.Groups[2].Value.Trim();
+                    tValue = m.Groups[2].Value;
                 }
                 // found just data
                 else  
@@ -75,16 +75,37 @@ namespace OutlookSafetyChex
                 if (cst_Util.isValidString(tName) && cst_Util.isValidString(tValue))
                 {
                     rc = Globals.AddInSafetyCheck.suspiciousValue(tValue, 1024);
-                    switch ( tName.ToLower() )
+                    String tStr = tName.ToLower();
+                    switch ( tStr )
                     {
-                        case "subject":
-                            rc += checkSubject(tValue);
+                        case "x-originating-ip":
+                            String tIPAddr = cst_Util.parseIPaddress(tValue);
+                            rc += Globals.AddInSafetyCheck.suspiciousIP(tIPAddr);
+                            if (Properties.Settings.Default.opt_Lookup_WHOIS)
+                            {
+                                rc += cst_WHOIS.whoisOwner(tIPAddr, Properties.Settings.Default.opt_Use_CACHE);
+                            }
                             break;
-                        case "content-transfer-encoding":
-                            rc += checkCharEncoding(tValue);
+                        case "content-language":
+                            rc += checkLanguageCulture(tValue);
                             break;
                         case "content-type":
                             rc += checkContentType(tValue);
+                            break;
+                        /* 
+                        already covered by envelope processing
+                        case "to":
+                        case "from":
+                        case "subject":
+                            rc += Globals.AddInSafetyCheck.suspiciousLabel(tValue);
+                            break;
+                        */
+                        default:
+                            if ( (tStr.Contains("spam") || tStr.Contains("virus") ) && 
+                                Properties.Settings.Default.opt_ShowSpamHeaders)
+                            {
+                                parent.log(Properties.Resources.Title_Headers, "99", tName, tValue);
+                            }
                             break;
                     }
                 }
@@ -96,41 +117,29 @@ namespace OutlookSafetyChex
             // log it
             if (cst_Util.isValidString(rc))
             {
-                parent.log(Properties.Resources.Title_Headers, "4", "HEADER:" + tName, rc);
+                parent.log(Properties.Resources.Title_Headers, "4", tName, rc);
             }
             return rc;
         }
 
-        public String checkSubject(String tValue)
+        public String checkLanguageCulture(String tValue)
         {
+            // Conent-Language: us-EN
             String rc = "";
-            rc += Globals.AddInSafetyCheck.suspiciousText(tValue);
-            // simple, but subject starting with whitespace are forwned upon
-            if (tValue.StartsWith(" "))
-            {
-                rc += "Subject Line has Leading Whitespace\r\n";
-            }
-            return rc;
-        }
-
-        public String checkCharEncoding(String tValue)
-        {
-            // Content-Transfer-Encoding: 8bit
-            String rc = "";
-            List<String> commonEncoding = AddInSafetyCheck.getCommonENCODINGs();
+            List<String> commonCultures = AddInSafetyCheck.getCommonCULTUREs();
             try
             {
                 if (cst_Util.isValidString(tValue))
                 {
                     // check character encoding
-                    if (!commonEncoding.Contains(tValue.Trim().ToLower()))
+                    if (!commonCultures.Contains(tValue.Trim().ToLower()))
                     {
-                        rc += "Uncommon Encoding (" + tValue + ")\r\n";
+                        rc += "Uncommon Language-Culture (" + tValue + ")\r\n";
                     }
                 }
             }
             catch { }
-           return rc;
+            return rc;
         }
 
         public String checkContentType(String tValue)

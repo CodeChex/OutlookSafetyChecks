@@ -49,8 +49,8 @@ namespace OutlookSafetyChex
                 // Main TAB
                 initializeGridView(this.logGridView, myVSTO.findTableClass<dtWarnings>());
                 // Info TAB
-                this.infoTab.Text = Properties.Resources.Title_Envelope;
-                initializeGridView(this.infoGridView, myVSTO.findTableClass<dtEnvelope>());
+                this.envelopeTab.Text = Properties.Resources.Title_Envelope;
+                initializeGridView(this.envelopeGridView, myVSTO.findTableClass<dtEnvelope>());
                 // Header TAB
                 this.headerTab.Text = Properties.Resources.Title_Headers;
                 initializeGridView(this.headerGridView, myVSTO.findTableClass<dtHeaders>());
@@ -123,18 +123,18 @@ namespace OutlookSafetyChex
             myControl.Enabled = false;
             try
             {
-                if (Properties.Settings.Default.opt_ShowLog)
-                {
-                    this.myTabControl.SelectedTab = this.loggingTab;
-                }
+                bool refresh = Properties.Settings.Default.opt_Force_REFRESH;
                 Stopwatch watch = new Stopwatch();
                 watch.Start(); 
                 cst_Util.logMessage("BEGIN ...", "" + DateTime.Now + "",true);
                 if (myControl == this.btnRunTests)
                 {
                     this.Cursor = Cursors.WaitCursor;
-                    bool refresh = Properties.Settings.Default.opt_Force_REFRESH;
-                    Globals.AddInSafetyCheck.resetLog(true);
+                    if (Properties.Settings.Default.opt_ShowLog)
+                    {
+                        this.myTabControl.SelectedTab = this.loggingTab;
+                    }
+                     Globals.AddInSafetyCheck.resetLog(refresh);
                     // always parse envelope
                     {
                         cst_Util.logInfo("[" + Properties.Resources.Title_Envelope + "] ...",
@@ -216,6 +216,7 @@ namespace OutlookSafetyChex
             updateCheckBox(this.cbTabBody, Properties.Settings.Default.test_Body);
             updateCheckBox(this.cbTabLinks, Properties.Settings.Default.test_Links);
             updateCheckBox(this.cbTabAttachments, Properties.Settings.Default.test_Attachments);
+            updateCheckBox(this.cbTabHeaders, Properties.Settings.Default.test_Headers);
             // options
             updateCheckBox(this.cbForceDataRefresh, Properties.Settings.Default.opt_Force_REFRESH);
             updateCheckBox(this.cbLookupWHOIS, Properties.Settings.Default.opt_Lookup_WHOIS);
@@ -223,12 +224,16 @@ namespace OutlookSafetyChex
             updateCheckBox(this.cbLookupHIBP, Properties.Settings.Default.opt_Lookup_HIBP);
             updateCheckBox(this.cbUseCACHE, Properties.Settings.Default.opt_Use_CACHE);
             updateCheckBox(this.cbVerifyContacts, Properties.Settings.Default.opt_Lookup_CONTACTS);
-            updateCheckBox(this.cbTLD_Blacklist, Properties.Settings.Default.opt_Local_BLACKLIST);
-            updateCheckBox(this.cbTLD_Whitelist, Properties.Settings.Default.opt_Local_WHITELIST);
+            updateCheckBox(this.cbHost_Blacklist, Properties.Settings.Default.opt_Local_BLACKLIST);
+            updateCheckBox(this.cbHost_Whitelist, Properties.Settings.Default.opt_Local_WHITELIST);
             updateCheckBox(this.cbFlagUnknownContacts, Properties.Settings.Default.opt_Flag_UNKNOWN_CONTACTS);
             updateCheckBox(this.cbInspectAttachents, Properties.Settings.Default.opt_DeepInspect_ATTACHMENTS);
             updateCheckBox(this.cbInspectLinks, Properties.Settings.Default.opt_DeepInspect_LINKS);
             updateCheckBox(this.cbShowLog, Properties.Settings.Default.opt_ShowLog);
+            updateCheckBox(this.cb_MIMEtypes, Properties.Settings.Default.opt_Lookup_MIMEtypes);
+            updateCheckBox(this.cb_Codepages, Properties.Settings.Default.opt_Lookup_Codepages);
+            updateCheckBox(this.cb_Cultures, Properties.Settings.Default.opt_Lookup_Encodings);
+            updateCheckBox(this.cbHiliteSpam, Properties.Settings.Default.opt_ShowSpamHeaders);
             // special case
             this.cbFlagUnknownContacts.Enabled = Properties.Settings.Default.opt_Lookup_CONTACTS;
             // update logging level (radio checkbox)
@@ -286,11 +291,11 @@ namespace OutlookSafetyChex
                 Properties.Settings.Default.opt_Lookup_CONTACTS = isChecked;
                 this.cbFlagUnknownContacts.Enabled = isChecked;
             }
-            else if (myControl == this.cbTLD_Blacklist)
+            else if (myControl == this.cbHost_Blacklist)
             {
                 Properties.Settings.Default.opt_Local_BLACKLIST = isChecked;
             }
-            else if (myControl == this.cbTLD_Whitelist)
+            else if (myControl == this.cbHost_Whitelist)
             {
                 Properties.Settings.Default.opt_Local_WHITELIST = isChecked;
             }
@@ -330,22 +335,44 @@ namespace OutlookSafetyChex
             {
                 Properties.Settings.Default.opt_ShowLog = isChecked;
             }
+            else if (myControl == this.cbTabHeaders)
+            {
+                Properties.Settings.Default.test_Headers = isChecked;
+            }
+            else if (myControl == this.cb_Cultures)
+            {
+                Properties.Settings.Default.opt_Lookup_Encodings = isChecked;
+            }
+            else if (myControl == this.cb_Codepages)
+            {
+                Properties.Settings.Default.opt_Lookup_Codepages = isChecked;
+            }
+            else if (myControl == this.cb_MIMEtypes)
+            {
+                Properties.Settings.Default.opt_Lookup_MIMEtypes = isChecked;
+            }
+            else if (myControl == this.cbHiliteSpam)
+            {
+                Properties.Settings.Default.opt_ShowSpamHeaders = isChecked;
+            }
             else
             {
                 MessageBox.Show("Unknown CheckBox: [" + myControl.Text + "]");
             }
         }
 
-        private void editSpamList_Dialog(object sender, EventArgs ev)
+        private void editDNSBL_Dialog(object sender, EventArgs ev)
         {
             this.Visible = false;
             try
             {
                 templateOptionList dlg = new templateOptionList("Edit DNSBL Sources",
-                                cst_DNSBL.defaultSpamLists, cst_DNSBL.spamLists, null );
+                                AddInSafetyCheck.getCommonDNSBLsites(), 
+                                AddInSafetyCheck.getLocalDNSBL(), 
+                                null );
                 if ( dlg.ShowDialog() == DialogResult.OK )
                 {
-                    AddInSafetyCheck.saveDNSBLsites(dlg.listBoxSelected.Items.Cast<String>().ToArray());
+                    AddInSafetyCheck.saveDNSBLsites(dlg.listBoxSelected.Items.Cast<String>().ToList());
                 }
             }
             catch (Exception ex)
@@ -361,38 +388,17 @@ namespace OutlookSafetyChex
             try
             {
                 templateOptionList dlg = new templateOptionList("Edit Local Whitelist", 
-                                    AddInSafetyCheck.getTLDcache().ToArray(), 
+                                    AddInSafetyCheck.getCacheTLDs(), 
                                     AddInSafetyCheck.getLocalWhitelist(),
                                     AddInSafetyCheck.getBaseWhitelist());
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    AddInSafetyCheck.saveLocalWhitelist(dlg.listBoxSelected.Items.Cast<String>().ToArray());
+                    AddInSafetyCheck.saveLocalWhitelist(dlg.listBoxSelected.Items.Cast<String>().ToList());
                 }
             }
             catch (Exception ex)
             {
                 cst_Util.logException(ex, "editLocalWhitelist");
-            }
-            this.Visible = true;
-        }
-
-        private void editBlacklist_Dialog(object sender, EventArgs e)
-        {
-            this.Visible = false;
-            try
-            {
-                templateOptionList dlg = new templateOptionList("Edit Local Blacklist",
-                                    AddInSafetyCheck.getTLDcache().ToArray(),
-                                    AddInSafetyCheck.getLocalBlacklist(),
-                                    AddInSafetyCheck.getBaseBlacklist());
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    AddInSafetyCheck.saveLocalBlacklist(dlg.listBoxSelected.Items.Cast<String>().ToArray());
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Util.logException(ex, "editLocalBlacklist");
             }
             this.Visible = true;
         }
@@ -430,5 +436,89 @@ namespace OutlookSafetyChex
             System.Diagnostics.Process.Start(tUrl);
         }
 
+        private void editBlacklist_Dialog(object sender, EventArgs e)
+        {
+            this.Visible = false;
+            try
+            {
+                templateOptionList dlg = new templateOptionList("Edit Local Blacklist",
+                                    AddInSafetyCheck.getCacheTLDs(),
+                                    AddInSafetyCheck.getLocalBlacklist(),
+                                    AddInSafetyCheck.getBaseBlacklist());
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    AddInSafetyCheck.saveLocalBlacklist(dlg.listBoxSelected.Items.Cast<String>().ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "editLocalBlacklist");
+            }
+            this.Visible = true;
+        }
+
+        private void editMIMEtypes_Dialog(object sender, EventArgs e)
+        {
+            this.Visible = false;
+            try
+            {
+                templateOptionList dlg = new templateOptionList("Edit Allowed MIMETYPEs",
+                                    AddInSafetyCheck.getCacheMIMETYPEs(),
+                                    AddInSafetyCheck.getLocalMIMETYPEs(),
+                                    AddInSafetyCheck.getCommonMIMETYPEs());
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    AddInSafetyCheck.saveLocalMIMETYPEs(dlg.listBoxSelected.Items.Cast<String>().ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "Edit Allowed MIMETYPEs");
+            }
+            this.Visible = true;
+        }
+
+        private void editCodepages_Dialog(object sender, EventArgs e)
+        {
+            this.Visible = false;
+            try
+            {
+                templateOptionList dlg = new templateOptionList("Edit Allowed CODEPAGEs",
+                                    AddInSafetyCheck.getCacheCODEPAGEs(),
+                                    AddInSafetyCheck.getLocalCODEPAGEs(),
+                                    AddInSafetyCheck.getCommonCODEPAGEs());
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    AddInSafetyCheck.saveLocalCODEPAGEs(dlg.listBoxSelected.Items.Cast<String>().ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "Edit Allowed CODEPAGEs");
+            }
+            this.Visible = true;
+
+        }
+
+        private void editCULTUREs_Dialog(object sender, EventArgs e)
+        {
+            this.Visible = false;
+            try
+            {
+                templateOptionList dlg = new templateOptionList("Edit Allowed CULTUREs",
+                                    AddInSafetyCheck.getCacheCULTUREs(),
+                                    AddInSafetyCheck.getLocalCULTUREs(),
+                                    AddInSafetyCheck.getCommonCULTUREs());
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    AddInSafetyCheck.saveLocalENCODINGs(dlg.listBoxSelected.Items.Cast<String>().ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "Edit Allowed CULTUREs");
+            }
+            this.Visible = true;
+        }
     } // class
 } // namespace

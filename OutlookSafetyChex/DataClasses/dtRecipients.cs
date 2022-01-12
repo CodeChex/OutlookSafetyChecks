@@ -24,64 +24,74 @@ namespace OutlookSafetyChex
 			foreach (Outlook.Recipient tRecipient in myItem.Recipients)
 			{
 				iRec++;
-				String tName = cst_Util.sanitizeEmail(tRecipient.Name);
-				String tEmail = cst_Util.sanitizeEmail(tRecipient.Address);
+				String tName = cst_Util.sanitizeEmail(tRecipient.Name,false);
+				String tEmail = cst_Util.sanitizeEmail(tRecipient.Address,true);
 				String tTag = cst_Outlook.getRecipientTag(tRecipient);
 				String tType = cst_Outlook.getRecipientType(tRecipient);
 				String tOwner = "[not checked]";
 				String tResults = "";
-				try
-				{
-                    MailAddress tMailAddress = new MailAddress(tEmail, tName);
-                    // grab domain owner for email domain            
-                    String tHost = tMailAddress.Host;
-					String tDomain = cst_Util.pullDomain(tHost);
-					// check email  
-					tResults = checkEmail(tMailAddress,logTitle);
-                    // compare each Recipient against Sender data extracted
-                    try
+                tResults += Globals.AddInSafetyCheck.suspiciousLabel(tName);
+                try
+                {
+                    if (cst_Util.isValidString(tEmail))
                     {
-                        dtTemplate myTable = parent.findTableClass<dtSender>() as dtTemplate;
-                        if (myTable != null)
+                        MailAddress tMailAddress = new MailAddress(tEmail, tName);
+                        // grab domain owner for email domain            
+                        String tHost = tMailAddress.Host;
+                        String tDomain = cst_Util.pullDomain(tHost);
+                        // check email  
+                        tResults += checkEmail(tMailAddress, logTitle);
+                        // compare each Recipient against Sender data extracted
+                        try
                         {
-                            foreach (DataRow zRow in myTable.Rows)
+                            dtTemplate myTable = parent.findTableClass<dtSender>() as dtTemplate;
+                            if (myTable != null)
                             {
-                                String chkFld = zRow.Field<String>("Field");
-                                // compare [Recipient.Name] against each [Sender.name]
-                                String chkName = cst_Util.sanitizeEmail(zRow.Field<String>("Name"));
-                                bool dupName = chkName.Equals(tName, StringComparison.OrdinalIgnoreCase);
-                                // compare [Recipient.Email] against each [Sender.email]
-                                String chkAddress = cst_Util.sanitizeEmail(zRow.Field<String>("Address"));
-                                bool dupAddr = chkAddress.Equals(tEmail, StringComparison.OrdinalIgnoreCase);
-                                // log it?
-                                if ( dupName || dupAddr)
+                                foreach (DataRow zRow in myTable.Rows)
                                 {
-                                    String noteDetails = "[* To: = " + chkFld + "]";
-                                    parent.log(logTitle, "1", "ANOMALY", noteDetails);
-                                    tResults += noteDetails + "\r\n";
+                                    String chkFld = zRow.Field<String>("Field");
+                                    // compare [Recipient.Name] against each [Sender.name]
+                                    String chkName = cst_Util.sanitizeEmail(zRow.Field<String>("Name"), false);
+                                    bool dupName = chkName.Equals(tName, StringComparison.OrdinalIgnoreCase);
+                                    // compare [Recipient.Email] against each [Sender.email]
+                                    String chkAddress = cst_Util.sanitizeEmail(zRow.Field<String>("Address"), true);
+                                    bool dupAddr = chkAddress.Equals(tEmail, StringComparison.OrdinalIgnoreCase);
+                                    // log it?
+                                    if (dupName || dupAddr)
+                                    {
+                                        String noteDetails = "[* To: = " + chkFld + "]";
+                                        //parent.log(logTitle, "1", "ANOMALY", noteDetails);
+                                        tResults += noteDetails + "\r\n";
+                                    }
                                 }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            cst_Util.logException(ex, "dtRecipients::build cannot find Sender table");
+                        }
+                        // get additional info
+                        if (Properties.Settings.Default.opt_Lookup_WHOIS)
+                        {
+                            tOwner = cst_WHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
+                        }
                     }
-                    catch (Exception ex)
+                    else if (cst_Util.isValidString(tName))
                     {
-                        cst_Util.logException(ex, "dtRecipients::build cannot find Sender table");
+                        tResults += "[* \"" + tTag + ":\" Name with NO Email Address Specified]";
                     }
-                    // get additional info
-                    if (Properties.Settings.Default.opt_Lookup_WHOIS)
-					{
-						tOwner = cst_WHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
-					}
-				}
+                }
                 catch (Exception ex)
                 {
-                    tResults += "[* Invalid [" + tTag + "] Email Address Specified]";
-					parent.log(logTitle, "1", "INVALID DATA", "Invalid ["+tTag+ "] Email Address Specified: " + ex.Message);
-				}
-				// add row
-				String[] rowData = new[] { tTag, tName, tEmail, tOwner, tResults };
+                    tResults += "Error [" + tTag + "]: " + ex.Message;
+                }
+                // add row
+                String[] rowData = new[] { tTag, tName, tEmail, tOwner, tResults };
 				this.Rows.Add(rowData);
-			}
+                // log it
+                if (cst_Util.isValidString(tResults))
+                    parent.log(logTitle, "1", "ANOMALY", tResults);
+            }
             if (this.Rows.Count == 0)
             {
                 parent.log(logTitle, "1", "ANOMALY", "No Recipients Specified");

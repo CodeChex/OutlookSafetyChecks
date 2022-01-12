@@ -39,7 +39,11 @@ namespace OutlookSafetyChex
                     {
                         foreach (HtmlNode tNode in tNodeList)
                         {
-                            String tDisplay = tNode.GetDirectInnerText();
+                            String tDisplay = tNode.InnerText;
+                            if (!cst_Util.isValidString(tDisplay))
+                            {
+                                tDisplay = tNode.InnerHtml;
+                            }
                             String tLink = "";
                             try
                             {
@@ -93,23 +97,37 @@ namespace OutlookSafetyChex
                 String tProtocol = "[unknown]";
                 String tMimeType = "[not checked]";
                 cst_Util.logVerbose(tDisplay, "Link");
-                String tNotes = Globals.AddInSafetyCheck.suspiciousLink(tLink, tDisplay);
-                try
+                String tNotes = "";
+                if (!cst_Util.isValidString(tDisplay))
                 {
-                    Uri tUri = new Uri(tLink);
-                    tProtocol = tUri.Scheme;
-                    if (tProtocol == Uri.UriSchemeMailto)
-                    {
-                        tMimeType = "[Email-Address]";
-                    }
-                    else if (Properties.Settings.Default.opt_DeepInspect_LINKS)
-                    {
-                        tMimeType = cst_Util.wgetContentType(tLink);
-                    }
+                    tDisplay = "[empty]";
+                    tNotes += "Link has NO Text\r\n";
                 }
-                catch (Exception ex)
+                if (!cst_Util.isValidString(tLink))
                 {
-                    cst_Util.logException(ex, "dtLinkList::buildData(" + tLink + ")");
+                    tLink = "[empty]";
+                    tNotes += "Link has NO Location\r\n";
+                }
+                else
+                {
+                    tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tDisplay);
+                    try
+                    {
+                        Uri tUri = new Uri(tLink);
+                        tProtocol = tUri.Scheme;
+                        if (tProtocol == Uri.UriSchemeMailto)
+                        {
+                            tMimeType = "[Email-Address]";
+                        }
+                        else if (Properties.Settings.Default.opt_DeepInspect_LINKS)
+                        {
+                            tMimeType = cst_Util.wgetContentType(tLink);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        cst_Util.logException(ex, "dtLinkList::buildData(" + tLink + ")");
+                    }
                 }
                 String[] rowData = new[] { tDisplay, tLink, tMimeType, tNotes };
                 this.Rows.Add(rowData);

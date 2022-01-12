@@ -23,9 +23,10 @@ namespace OutlookSafetyChex
             this.Columns.Add("ID", Type.GetType("System.String"));
             this.Columns.Add("For", Type.GetType("System.String"));
 			this.Columns.Add("Timestamp", Type.GetType("System.String"));
-		}
+            this.Columns.Add("Notes", Type.GetType("System.String"));
+        }
 
-		public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
+        public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
             List<String> arrRECVD = new List<string>();
             dtHeaders tHeaders = parent.findTableClass<dtHeaders>() as dtHeaders;
@@ -226,14 +227,24 @@ namespace OutlookSafetyChex
                     if (!cst_Util.isValidString(tFROM_IP))
                         tFROM_IP = "[N/A]";
                 }
-                // display
+                // simple checks
+                String tNotes = "";
+                if (cst_Util.isValidIPAddress(tFROM_HOST) && cst_Util.isValidIPAddress(tFROM_IP) && tFROM_HOST != tFROM_IP)
+                {
+                    tNotes += "FROM route specifies mismatched IP addresses\r\n";
+                }
+                // log it
+                if (cst_Util.isValidString(tNotes))
+                {
+                    parent.log(Properties.Resources.Title_Routing, "4", "ROUTING", tNotes);
+                }
+                // populate it
                 String[] rowData = new[] { nHop.ToString(), s,
 						tFROM, tFROM_HOST, tFROM_IP,
 						tBY, tBY_HOST, tBY_APP,
-						tWITH,
-						tID,
-						tFOR,
-						tTIMESTAMP
+						tWITH, tID, tFOR,
+						tTIMESTAMP,
+                        tNotes
 				};
 				this.Rows.Add(rowData);
 			}

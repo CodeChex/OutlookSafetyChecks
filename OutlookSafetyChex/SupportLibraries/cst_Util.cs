@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using NetTools;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -65,6 +67,15 @@ namespace CheccoSafetyTools
             return rc;
         }
 
+        public static String RemoveDiacritics(String text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
+
+            text = text.Normalize(NormalizationForm.FormD);
+            var chars = text.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
+            return new String(chars).Normalize(NormalizationForm.FormC);
+        }
 
         public static String B64encode(String tStr)
         {
@@ -139,14 +150,67 @@ namespace CheccoSafetyTools
             return rc;
 		}
 
-        public static bool isIPaddress(String tStr)
+        public static String parseIPaddress(String tStr)
         {
-            bool rc = false;
+            String rc = "";
             try
             {
                 if (isValidString(tStr))
                 {
-                    String rgxStr = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
+                    String rgxStr = @"(\d+\.\d+\.\d+\.\d+)";
+                    Regex rgx = new Regex(rgxStr);
+                    Match m = rgx.Match(tStr.Trim());
+                    if (m.Groups.Count > 1)
+                    {
+                        rc = m.Groups[1].Value.Trim();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "cst_Util::parseIPaddress(" + tStr + ")");
+            }
+            return rc;
+        }
+
+        public static IPAddress toIPaddress(String tStr)
+        {
+            IPAddress rc = null;
+            try
+            {
+                IPAddressRange rcIP = IPAddressRange.Parse(tStr);
+                rc = rcIP.Begin;
+            }
+            catch { }
+            return rc;
+        }
+
+        public static List<IPAddress> listIPaddress(String tStr, ushort maxLen=0)
+        {
+            List<IPAddress> rc = new List<IPAddress>();
+            try
+            {
+                IPAddressRange rcIP = IPAddressRange.Parse(tStr);
+                foreach ( IPAddress ip in rcIP)
+                {
+                    rc.Add(ip);
+                    if (rc.Count == maxLen) break;
+                }
+            }
+            catch { }
+            return rc;
+        }
+
+        public static bool isValidIPAddress(String tStr)
+        {
+            IPAddress ip = toIPaddress(tStr);
+            bool rc = (ip != null);
+            /*
+            try
+            {
+                if (isValidString(tStr))
+                {
+                    String rgxStr = @"(\d+\.\d+\.\d+\.\d+)";
                     Regex rgx = new Regex(rgxStr);
                     Match m = rgx.Match(tStr.Trim());
                     rc = (m.Groups.Count > 1);
@@ -154,24 +218,29 @@ namespace CheccoSafetyTools
             }
 			catch (Exception ex)
             {
-                cst_Util.logException(ex, "cst_Util::isIPaddress(" + tStr + ")");
+                cst_Util.logException(ex, "cst_Util::isValidIPAddress(" + tStr + ")");
 			}
+            */
             return rc;
         }
-
-        public static String sanitizeEmail(String inAddr)
+  
+        public static String sanitizeEmail(String inAddr, bool strict)
         {
-            String rc = inAddr;
-            if ( rc.Contains("@") )
+            String rc = strict ? "" : inAddr;
+            try
             {
                 // sanitizing address
                 String rgxStr = @"[<']?\s*([a-zA-Z0-9_=\-\.]+@[a-zA-Z0-9_\-\.]+\.[a-zA-Z0-9]+)\s*['>]?";
                 Regex rgx = new Regex(rgxStr);
-                Match m = rgx.Match(rc.Trim());
+                Match m = rgx.Match(inAddr.Trim());
                 if (m.Groups.Count > 1)
                 {
                     rc = m.Groups[1].Value.Trim();
                 }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "cst_Util::sanitizeEmail(" + inAddr + ")");
             }
             return rc;
         }

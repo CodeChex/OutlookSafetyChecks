@@ -45,7 +45,7 @@ namespace OutlookSafetyChex
                                     // check plaintext
                                     try
                                     {
-                                        String tStr = tNode.GetDirectInnerText();
+                                        String tStr = tNode.InnerText;
                                         tNotes += Globals.AddInSafetyCheck.suspiciousText(tStr);
                                     }
                                     catch { }
@@ -158,7 +158,18 @@ namespace OutlookSafetyChex
                                             catch { }
                                             break;
                                         case "div":
-                                            // TODO: check class style for "display:none"
+                                            try
+                                            {
+                                                String szWD = tNode.Attributes["width"].Value;
+                                                Int32 tWD = cst_Util.isValidString(szWD) ? Int32.Parse(szWD) : -1;
+                                                String szHT = tNode.Attributes["height"].Value;
+                                                Int32 tHT = cst_Util.isValidString(szHT) ? Int32.Parse(szHT) : -1;
+                                                if (tWD == 0 || tHT == 0)
+                                                {
+                                                    tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
+                                                }
+                                            }
+                                            catch { }
                                             break;
                                     }
                                     // check CSS for similar hiding/beaconing techniques

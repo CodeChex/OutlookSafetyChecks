@@ -38,8 +38,11 @@ namespace OutlookSafetyChex
             this.splitMainTopHalf = new System.Windows.Forms.SplitContainer();
             this.splitMainTestsOptions = new System.Windows.Forms.SplitContainer();
             this.groupTests = new System.Windows.Forms.GroupBox();
-            this.groupLogLevel = new System.Windows.Forms.GroupBox();
+            this.cbHiliteSpam = new System.Windows.Forms.CheckBox();
             this.cbShowLog = new System.Windows.Forms.CheckBox();
+            this.cbTabHeaders = new System.Windows.Forms.CheckBox();
+            this.btnSaveOptions = new System.Windows.Forms.Button();
+            this.groupLogLevel = new System.Windows.Forms.GroupBox();
             this.rbLogVerbose = new System.Windows.Forms.RadioButton();
             this.rbLogInfo = new System.Windows.Forms.RadioButton();
             this.rbLogError = new System.Windows.Forms.RadioButton();
@@ -54,29 +57,34 @@ namespace OutlookSafetyChex
             this.cbForceDataRefresh = new System.Windows.Forms.CheckBox();
             this.cbUseCACHE = new System.Windows.Forms.CheckBox();
             this.groupOptions = new System.Windows.Forms.GroupBox();
+            this.btnEdit_CULTUREs = new System.Windows.Forms.Button();
+            this.cb_Cultures = new System.Windows.Forms.CheckBox();
+            this.btnEdit_CODEPAGEs = new System.Windows.Forms.Button();
+            this.cb_Codepages = new System.Windows.Forms.CheckBox();
+            this.btnEdit_MIMETYPEs = new System.Windows.Forms.Button();
+            this.cb_MIMEtypes = new System.Windows.Forms.CheckBox();
+            this.cbFlagUnknownContacts = new System.Windows.Forms.CheckBox();
             this.labelVersion = new System.Windows.Forms.LinkLabel();
-            this.btnSaveOptions = new System.Windows.Forms.Button();
             this.cbInspectLinks = new System.Windows.Forms.CheckBox();
             this.btnEdit_Blacklist = new System.Windows.Forms.Button();
             this.btnEdit_Whitelist = new System.Windows.Forms.Button();
-            this.btnEdit_SpamList = new System.Windows.Forms.Button();
-            this.cbInspectAttachents = new System.Windows.Forms.CheckBox();
-            this.cbFlagUnknownContacts = new System.Windows.Forms.CheckBox();
-            this.cbTLD_Blacklist = new System.Windows.Forms.CheckBox();
-            this.cbTLD_Whitelist = new System.Windows.Forms.CheckBox();
             this.cbVerifyContacts = new System.Windows.Forms.CheckBox();
+            this.btnEdit_DNSBL = new System.Windows.Forms.Button();
+            this.cbInspectAttachents = new System.Windows.Forms.CheckBox();
+            this.cbHost_Blacklist = new System.Windows.Forms.CheckBox();
+            this.cbHost_Whitelist = new System.Windows.Forms.CheckBox();
             this.cbLookupHIBP = new System.Windows.Forms.CheckBox();
             this.cbLookupWHOIS = new System.Windows.Forms.CheckBox();
             this.cbLookupDNSBL = new System.Windows.Forms.CheckBox();
             this.textBoxProgress = new System.Windows.Forms.TextBox();
             this.logGridView = new System.Windows.Forms.DataGridView();
-            this.infoTab = new System.Windows.Forms.TabPage();
-            this.infoGridView = new System.Windows.Forms.DataGridView();
+            this.envelopeTab = new System.Windows.Forms.TabPage();
+            this.envelopeGridView = new System.Windows.Forms.DataGridView();
             this.headerTab = new System.Windows.Forms.TabPage();
             this.splitHeaders = new System.Windows.Forms.SplitContainer();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.groupBoxParsedHeaders = new System.Windows.Forms.GroupBox();
             this.headerGridView = new System.Windows.Forms.DataGridView();
-            this.groupBoxHeaders = new System.Windows.Forms.GroupBox();
+            this.groupBoxRawHeaders = new System.Windows.Forms.GroupBox();
             this.rawHeaderTextBox = new System.Windows.Forms.TextBox();
             this.contactTab = new System.Windows.Forms.TabPage();
             this.splitContacts = new System.Windows.Forms.SplitContainer();
@@ -102,6 +110,7 @@ namespace OutlookSafetyChex
             this.attachmentsGridView = new System.Windows.Forms.DataGridView();
             this.loggingTab = new System.Windows.Forms.TabPage();
             this.textDebug = new System.Windows.Forms.TextBox();
+            this.headerCheckGridView = new System.Windows.Forms.DataGridView();
             this.myTabControl.SuspendLayout();
             this.optionsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -120,16 +129,16 @@ namespace OutlookSafetyChex
             this.groupLogLevel.SuspendLayout();
             this.groupOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logGridView)).BeginInit();
-            this.infoTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.infoGridView)).BeginInit();
+            this.envelopeTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.envelopeGridView)).BeginInit();
             this.headerTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitHeaders)).BeginInit();
             this.splitHeaders.Panel1.SuspendLayout();
             this.splitHeaders.Panel2.SuspendLayout();
             this.splitHeaders.SuspendLayout();
-            this.groupBox5.SuspendLayout();
+            this.groupBoxParsedHeaders.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.headerGridView)).BeginInit();
-            this.groupBoxHeaders.SuspendLayout();
+            this.groupBoxRawHeaders.SuspendLayout();
             this.contactTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContacts)).BeginInit();
             this.splitContacts.Panel1.SuspendLayout();
@@ -162,12 +171,13 @@ namespace OutlookSafetyChex
             this.attachmentsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.attachmentsGridView)).BeginInit();
             this.loggingTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.headerCheckGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // myTabControl
             // 
             this.myTabControl.Controls.Add(this.optionsTab);
-            this.myTabControl.Controls.Add(this.infoTab);
+            this.myTabControl.Controls.Add(this.envelopeTab);
             this.myTabControl.Controls.Add(this.headerTab);
             this.myTabControl.Controls.Add(this.contactTab);
             this.myTabControl.Controls.Add(this.routeTab);
@@ -208,7 +218,7 @@ namespace OutlookSafetyChex
             // 
             this.splitMain.Panel2.Controls.Add(this.logGridView);
             this.splitMain.Size = new System.Drawing.Size(874, 486);
-            this.splitMain.SplitterDistance = 200;
+            this.splitMain.SplitterDistance = 230;
             this.splitMain.TabIndex = 29;
             // 
             // splitMainTopHalf
@@ -225,8 +235,8 @@ namespace OutlookSafetyChex
             // splitMainTopHalf.Panel2
             // 
             this.splitMainTopHalf.Panel2.Controls.Add(this.textBoxProgress);
-            this.splitMainTopHalf.Size = new System.Drawing.Size(874, 200);
-            this.splitMainTopHalf.SplitterDistance = 167;
+            this.splitMainTopHalf.Size = new System.Drawing.Size(874, 230);
+            this.splitMainTopHalf.SplitterDistance = 191;
             this.splitMainTopHalf.TabIndex = 0;
             // 
             // splitMainTestsOptions
@@ -242,12 +252,16 @@ namespace OutlookSafetyChex
             // splitMainTestsOptions.Panel2
             // 
             this.splitMainTestsOptions.Panel2.Controls.Add(this.groupOptions);
-            this.splitMainTestsOptions.Size = new System.Drawing.Size(874, 167);
+            this.splitMainTestsOptions.Size = new System.Drawing.Size(874, 191);
             this.splitMainTestsOptions.SplitterDistance = 405;
             this.splitMainTestsOptions.TabIndex = 0;
             // 
             // groupTests
             // 
+            this.groupTests.Controls.Add(this.cbHiliteSpam);
+            this.groupTests.Controls.Add(this.cbShowLog);
+            this.groupTests.Controls.Add(this.cbTabHeaders);
+            this.groupTests.Controls.Add(this.btnSaveOptions);
             this.groupTests.Controls.Add(this.groupLogLevel);
             this.groupTests.Controls.Add(this.cbTabBody);
             this.groupTests.Controls.Add(this.btnRunTests);
@@ -262,35 +276,70 @@ namespace OutlookSafetyChex
             this.groupTests.Location = new System.Drawing.Point(0, 0);
             this.groupTests.MinimumSize = new System.Drawing.Size(400, 150);
             this.groupTests.Name = "groupTests";
-            this.groupTests.Size = new System.Drawing.Size(405, 167);
+            this.groupTests.Size = new System.Drawing.Size(405, 191);
             this.groupTests.TabIndex = 26;
             this.groupTests.TabStop = false;
             this.groupTests.Text = "Analysis / Tests";
             // 
-            // groupLogLevel
+            // cbHiliteSpam
             // 
-            this.groupLogLevel.Controls.Add(this.cbShowLog);
-            this.groupLogLevel.Controls.Add(this.rbLogVerbose);
-            this.groupLogLevel.Controls.Add(this.rbLogInfo);
-            this.groupLogLevel.Controls.Add(this.rbLogError);
-            this.groupLogLevel.Controls.Add(this.rbLogNone);
-            this.groupLogLevel.Location = new System.Drawing.Point(291, 13);
-            this.groupLogLevel.Name = "groupLogLevel";
-            this.groupLogLevel.Size = new System.Drawing.Size(108, 137);
-            this.groupLogLevel.TabIndex = 26;
-            this.groupLogLevel.TabStop = false;
-            this.groupLogLevel.Text = "Logging Options";
+            this.cbHiliteSpam.AutoSize = true;
+            this.cbHiliteSpam.Location = new System.Drawing.Point(186, 48);
+            this.cbHiliteSpam.Name = "cbHiliteSpam";
+            this.cbHiliteSpam.Size = new System.Drawing.Size(109, 17);
+            this.cbHiliteSpam.TabIndex = 28;
+            this.cbHiliteSpam.Text = "Show Spam Data";
+            this.cbHiliteSpam.UseVisualStyleBackColor = true;
+            this.cbHiliteSpam.Click += new System.EventHandler(this.onChange_CheckBox);
             // 
             // cbShowLog
             // 
             this.cbShowLog.AutoSize = true;
-            this.cbShowLog.Location = new System.Drawing.Point(15, 114);
+            this.cbShowLog.Location = new System.Drawing.Point(186, 71);
             this.cbShowLog.Name = "cbShowLog";
             this.cbShowLog.Size = new System.Drawing.Size(74, 17);
             this.cbShowLog.TabIndex = 4;
             this.cbShowLog.Text = "Show Log";
             this.cbShowLog.UseVisualStyleBackColor = true;
             this.cbShowLog.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // cbTabHeaders
+            // 
+            this.cbTabHeaders.AutoSize = true;
+            this.cbTabHeaders.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cbTabHeaders.Location = new System.Drawing.Point(14, 24);
+            this.cbTabHeaders.Name = "cbTabHeaders";
+            this.cbTabHeaders.Size = new System.Drawing.Size(66, 17);
+            this.cbTabHeaders.TabIndex = 27;
+            this.cbTabHeaders.Text = "Headers";
+            this.cbTabHeaders.UseVisualStyleBackColor = true;
+            this.cbTabHeaders.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // btnSaveOptions
+            // 
+            this.btnSaveOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSaveOptions.Image = global::OutlookSafetyChex.Properties.Resources.Save_16x_32;
+            this.btnSaveOptions.Location = new System.Drawing.Point(163, 127);
+            this.btnSaveOptions.Name = "btnSaveOptions";
+            this.btnSaveOptions.Size = new System.Drawing.Size(116, 46);
+            this.btnSaveOptions.TabIndex = 25;
+            this.btnSaveOptions.Text = "Save Options";
+            this.btnSaveOptions.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnSaveOptions.UseVisualStyleBackColor = true;
+            this.btnSaveOptions.Click += new System.EventHandler(this.btnSaveOptions_Click);
+            // 
+            // groupLogLevel
+            // 
+            this.groupLogLevel.Controls.Add(this.rbLogVerbose);
+            this.groupLogLevel.Controls.Add(this.rbLogInfo);
+            this.groupLogLevel.Controls.Add(this.rbLogError);
+            this.groupLogLevel.Controls.Add(this.rbLogNone);
+            this.groupLogLevel.Location = new System.Drawing.Point(301, 13);
+            this.groupLogLevel.Name = "groupLogLevel";
+            this.groupLogLevel.Size = new System.Drawing.Size(98, 99);
+            this.groupLogLevel.TabIndex = 26;
+            this.groupLogLevel.TabStop = false;
+            this.groupLogLevel.Text = "Logging Options";
             // 
             // rbLogVerbose
             // 
@@ -344,7 +393,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabBody.AutoSize = true;
             this.cbTabBody.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabBody.Location = new System.Drawing.Point(94, 25);
+            this.cbTabBody.Location = new System.Drawing.Point(88, 71);
             this.cbTabBody.Name = "cbTabBody";
             this.cbTabBody.Size = new System.Drawing.Size(50, 17);
             this.cbTabBody.TabIndex = 25;
@@ -358,9 +407,9 @@ namespace OutlookSafetyChex
             this.btnRunTests.FlatAppearance.BorderSize = 3;
             this.btnRunTests.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRunTests.Image = global::OutlookSafetyChex.Properties.Resources.Run_16x;
-            this.btnRunTests.Location = new System.Drawing.Point(14, 126);
+            this.btnRunTests.Location = new System.Drawing.Point(14, 127);
             this.btnRunTests.Name = "btnRunTests";
-            this.btnRunTests.Size = new System.Drawing.Size(108, 24);
+            this.btnRunTests.Size = new System.Drawing.Size(108, 46);
             this.btnRunTests.TabIndex = 10;
             this.btnRunTests.Text = global::OutlookSafetyChex.Properties.Resources.Action_Run;
             this.btnRunTests.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -371,7 +420,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabAttachments.AutoSize = true;
             this.cbTabAttachments.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabAttachments.Location = new System.Drawing.Point(94, 71);
+            this.cbTabAttachments.Location = new System.Drawing.Point(88, 48);
             this.cbTabAttachments.Name = "cbTabAttachments";
             this.cbTabAttachments.Size = new System.Drawing.Size(85, 17);
             this.cbTabAttachments.TabIndex = 24;
@@ -383,7 +432,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabLinks.AutoSize = true;
             this.cbTabLinks.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabLinks.Location = new System.Drawing.Point(94, 48);
+            this.cbTabLinks.Location = new System.Drawing.Point(88, 24);
             this.cbTabLinks.Name = "cbTabLinks";
             this.cbTabLinks.Size = new System.Drawing.Size(51, 17);
             this.cbTabLinks.TabIndex = 23;
@@ -395,7 +444,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabRoutes.AutoSize = true;
             this.cbTabRoutes.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabRoutes.Location = new System.Drawing.Point(14, 48);
+            this.cbTabRoutes.Location = new System.Drawing.Point(14, 70);
             this.cbTabRoutes.Name = "cbTabRoutes";
             this.cbTabRoutes.Size = new System.Drawing.Size(63, 17);
             this.cbTabRoutes.TabIndex = 22;
@@ -406,7 +455,7 @@ namespace OutlookSafetyChex
             // btnClearCache
             // 
             this.btnClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearCache.Location = new System.Drawing.Point(204, 66);
+            this.btnClearCache.Location = new System.Drawing.Point(316, 137);
             this.btnClearCache.Name = "btnClearCache";
             this.btnClearCache.Size = new System.Drawing.Size(78, 23);
             this.btnClearCache.TabIndex = 11;
@@ -418,7 +467,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabContacts.AutoSize = true;
             this.cbTabContacts.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabContacts.Location = new System.Drawing.Point(14, 25);
+            this.cbTabContacts.Location = new System.Drawing.Point(14, 48);
             this.cbTabContacts.Name = "cbTabContacts";
             this.cbTabContacts.Size = new System.Drawing.Size(68, 17);
             this.cbTabContacts.TabIndex = 20;
@@ -430,7 +479,7 @@ namespace OutlookSafetyChex
             // 
             this.cbForceDataRefresh.AutoSize = true;
             this.cbForceDataRefresh.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbForceDataRefresh.Location = new System.Drawing.Point(186, 25);
+            this.cbForceDataRefresh.Location = new System.Drawing.Point(186, 24);
             this.cbForceDataRefresh.Name = "cbForceDataRefresh";
             this.cbForceDataRefresh.Size = new System.Drawing.Size(93, 17);
             this.cbForceDataRefresh.TabIndex = 13;
@@ -442,27 +491,32 @@ namespace OutlookSafetyChex
             // 
             this.cbUseCACHE.AutoSize = true;
             this.cbUseCACHE.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbUseCACHE.Location = new System.Drawing.Point(186, 48);
+            this.cbUseCACHE.Location = new System.Drawing.Point(301, 118);
             this.cbUseCACHE.Name = "cbUseCACHE";
-            this.cbUseCACHE.Size = new System.Drawing.Size(79, 17);
+            this.cbUseCACHE.Size = new System.Drawing.Size(95, 17);
             this.cbUseCACHE.TabIndex = 16;
-            this.cbUseCACHE.Text = "Use Cache";
+            this.cbUseCACHE.Text = "Cache Results";
             this.cbUseCACHE.UseVisualStyleBackColor = true;
             this.cbUseCACHE.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
             // groupOptions
             // 
+            this.groupOptions.Controls.Add(this.btnEdit_CULTUREs);
+            this.groupOptions.Controls.Add(this.cb_Cultures);
+            this.groupOptions.Controls.Add(this.btnEdit_CODEPAGEs);
+            this.groupOptions.Controls.Add(this.cb_Codepages);
+            this.groupOptions.Controls.Add(this.btnEdit_MIMETYPEs);
+            this.groupOptions.Controls.Add(this.cb_MIMEtypes);
+            this.groupOptions.Controls.Add(this.cbFlagUnknownContacts);
             this.groupOptions.Controls.Add(this.labelVersion);
-            this.groupOptions.Controls.Add(this.btnSaveOptions);
             this.groupOptions.Controls.Add(this.cbInspectLinks);
             this.groupOptions.Controls.Add(this.btnEdit_Blacklist);
             this.groupOptions.Controls.Add(this.btnEdit_Whitelist);
-            this.groupOptions.Controls.Add(this.btnEdit_SpamList);
-            this.groupOptions.Controls.Add(this.cbInspectAttachents);
-            this.groupOptions.Controls.Add(this.cbFlagUnknownContacts);
-            this.groupOptions.Controls.Add(this.cbTLD_Blacklist);
-            this.groupOptions.Controls.Add(this.cbTLD_Whitelist);
             this.groupOptions.Controls.Add(this.cbVerifyContacts);
+            this.groupOptions.Controls.Add(this.btnEdit_DNSBL);
+            this.groupOptions.Controls.Add(this.cbInspectAttachents);
+            this.groupOptions.Controls.Add(this.cbHost_Blacklist);
+            this.groupOptions.Controls.Add(this.cbHost_Whitelist);
             this.groupOptions.Controls.Add(this.cbLookupHIBP);
             this.groupOptions.Controls.Add(this.cbLookupWHOIS);
             this.groupOptions.Controls.Add(this.cbLookupDNSBL);
@@ -470,37 +524,109 @@ namespace OutlookSafetyChex
             this.groupOptions.Location = new System.Drawing.Point(0, 0);
             this.groupOptions.MinimumSize = new System.Drawing.Size(460, 150);
             this.groupOptions.Name = "groupOptions";
-            this.groupOptions.Size = new System.Drawing.Size(465, 167);
+            this.groupOptions.Size = new System.Drawing.Size(465, 191);
             this.groupOptions.TabIndex = 25;
             this.groupOptions.TabStop = false;
-            this.groupOptions.Text = "Options";
+            this.groupOptions.Text = "Deep Inspection Options";
+            // 
+            // btnEdit_CULTUREs
+            // 
+            this.btnEdit_CULTUREs.Image = global::OutlookSafetyChex.Properties.Resources.ASX_Edit_blue_16x;
+            this.btnEdit_CULTUREs.Location = new System.Drawing.Point(177, 130);
+            this.btnEdit_CULTUREs.Name = "btnEdit_CULTUREs";
+            this.btnEdit_CULTUREs.Size = new System.Drawing.Size(56, 23);
+            this.btnEdit_CULTUREs.TabIndex = 34;
+            this.btnEdit_CULTUREs.Text = "Edit";
+            this.btnEdit_CULTUREs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnEdit_CULTUREs.UseVisualStyleBackColor = true;
+            this.btnEdit_CULTUREs.Click += new System.EventHandler(this.editCULTUREs_Dialog);
+            // 
+            // cb_Cultures
+            // 
+            this.cb_Cultures.AutoSize = true;
+            this.cb_Cultures.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cb_Cultures.Location = new System.Drawing.Point(13, 134);
+            this.cb_Cultures.Name = "cb_Cultures";
+            this.cb_Cultures.Size = new System.Drawing.Size(156, 17);
+            this.cb_Cultures.TabIndex = 33;
+            this.cb_Cultures.TabStop = false;
+            this.cb_Cultures.Text = "Language-Country Whitelist";
+            this.cb_Cultures.UseVisualStyleBackColor = true;
+            this.cb_Cultures.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // btnEdit_CODEPAGEs
+            // 
+            this.btnEdit_CODEPAGEs.Image = global::OutlookSafetyChex.Properties.Resources.ASX_Edit_blue_16x;
+            this.btnEdit_CODEPAGEs.Location = new System.Drawing.Point(177, 107);
+            this.btnEdit_CODEPAGEs.Name = "btnEdit_CODEPAGEs";
+            this.btnEdit_CODEPAGEs.Size = new System.Drawing.Size(56, 23);
+            this.btnEdit_CODEPAGEs.TabIndex = 32;
+            this.btnEdit_CODEPAGEs.Text = "Edit";
+            this.btnEdit_CODEPAGEs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnEdit_CODEPAGEs.UseVisualStyleBackColor = true;
+            this.btnEdit_CODEPAGEs.Click += new System.EventHandler(this.editCodepages_Dialog);
+            // 
+            // cb_Codepages
+            // 
+            this.cb_Codepages.AutoSize = true;
+            this.cb_Codepages.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cb_Codepages.Location = new System.Drawing.Point(13, 111);
+            this.cb_Codepages.Name = "cb_Codepages";
+            this.cb_Codepages.Size = new System.Drawing.Size(119, 17);
+            this.cb_Codepages.TabIndex = 31;
+            this.cb_Codepages.Text = "CodePage Whitelist";
+            this.cb_Codepages.UseVisualStyleBackColor = true;
+            this.cb_Codepages.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // btnEdit_MIMETYPEs
+            // 
+            this.btnEdit_MIMETYPEs.Image = global::OutlookSafetyChex.Properties.Resources.ASX_Edit_blue_16x;
+            this.btnEdit_MIMETYPEs.Location = new System.Drawing.Point(177, 84);
+            this.btnEdit_MIMETYPEs.Name = "btnEdit_MIMETYPEs";
+            this.btnEdit_MIMETYPEs.Size = new System.Drawing.Size(56, 23);
+            this.btnEdit_MIMETYPEs.TabIndex = 30;
+            this.btnEdit_MIMETYPEs.Text = "Edit";
+            this.btnEdit_MIMETYPEs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnEdit_MIMETYPEs.UseVisualStyleBackColor = true;
+            this.btnEdit_MIMETYPEs.Click += new System.EventHandler(this.editMIMEtypes_Dialog);
+            // 
+            // cb_MIMEtypes
+            // 
+            this.cb_MIMEtypes.AutoSize = true;
+            this.cb_MIMEtypes.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cb_MIMEtypes.Location = new System.Drawing.Point(13, 88);
+            this.cb_MIMEtypes.Name = "cb_MIMEtypes";
+            this.cb_MIMEtypes.Size = new System.Drawing.Size(124, 17);
+            this.cb_MIMEtypes.TabIndex = 29;
+            this.cb_MIMEtypes.Text = "MIME Type Whitelist";
+            this.cb_MIMEtypes.UseVisualStyleBackColor = true;
+            this.cb_MIMEtypes.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // cbFlagUnknownContacts
+            // 
+            this.cbFlagUnknownContacts.AutoSize = true;
+            this.cbFlagUnknownContacts.ForeColor = System.Drawing.Color.Black;
+            this.cbFlagUnknownContacts.Location = new System.Drawing.Point(137, 157);
+            this.cbFlagUnknownContacts.Name = "cbFlagUnknownContacts";
+            this.cbFlagUnknownContacts.Size = new System.Drawing.Size(89, 17);
+            this.cbFlagUnknownContacts.TabIndex = 22;
+            this.cbFlagUnknownContacts.Text = global::OutlookSafetyChex.Properties.Resources.Option_FlagUknownContacts;
+            this.cbFlagUnknownContacts.UseVisualStyleBackColor = true;
+            this.cbFlagUnknownContacts.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
             // labelVersion
             // 
             this.labelVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelVersion.BackColor = System.Drawing.Color.White;
             this.labelVersion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.labelVersion.Location = new System.Drawing.Point(258, 120);
+            this.labelVersion.Location = new System.Drawing.Point(252, 111);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(200, 42);
+            this.labelVersion.Size = new System.Drawing.Size(206, 75);
             this.labelVersion.TabIndex = 28;
             this.labelVersion.TabStop = true;
             this.labelVersion.Text = "Outlook Safety Chex";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.labelVersion.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelVersion_LinkClicked);
-            // 
-            // btnSaveOptions
-            // 
-            this.btnSaveOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaveOptions.Image = global::OutlookSafetyChex.Properties.Resources.Save_16x_32;
-            this.btnSaveOptions.Location = new System.Drawing.Point(13, 127);
-            this.btnSaveOptions.Name = "btnSaveOptions";
-            this.btnSaveOptions.Size = new System.Drawing.Size(118, 24);
-            this.btnSaveOptions.TabIndex = 25;
-            this.btnSaveOptions.Text = "Save Options";
-            this.btnSaveOptions.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSaveOptions.UseVisualStyleBackColor = true;
-            this.btnSaveOptions.Click += new System.EventHandler(this.btnSaveOptions_Click);
             // 
             // cbInspectLinks
             // 
@@ -517,7 +643,7 @@ namespace OutlookSafetyChex
             // btnEdit_Blacklist
             // 
             this.btnEdit_Blacklist.Image = global::OutlookSafetyChex.Properties.Resources.ASX_Edit_blue_16x;
-            this.btnEdit_Blacklist.Location = new System.Drawing.Point(369, 59);
+            this.btnEdit_Blacklist.Location = new System.Drawing.Point(177, 15);
             this.btnEdit_Blacklist.Name = "btnEdit_Blacklist";
             this.btnEdit_Blacklist.Size = new System.Drawing.Size(56, 23);
             this.btnEdit_Blacklist.TabIndex = 26;
@@ -529,7 +655,7 @@ namespace OutlookSafetyChex
             // btnEdit_Whitelist
             // 
             this.btnEdit_Whitelist.Image = global::OutlookSafetyChex.Properties.Resources.ASX_Edit_blue_16x;
-            this.btnEdit_Whitelist.Location = new System.Drawing.Point(369, 82);
+            this.btnEdit_Whitelist.Location = new System.Drawing.Point(177, 38);
             this.btnEdit_Whitelist.Name = "btnEdit_Whitelist";
             this.btnEdit_Whitelist.Size = new System.Drawing.Size(56, 23);
             this.btnEdit_Whitelist.TabIndex = 25;
@@ -538,17 +664,29 @@ namespace OutlookSafetyChex
             this.btnEdit_Whitelist.UseVisualStyleBackColor = true;
             this.btnEdit_Whitelist.Click += new System.EventHandler(this.editWhitelist_Dialog);
             // 
-            // btnEdit_SpamList
+            // cbVerifyContacts
             // 
-            this.btnEdit_SpamList.Image = global::OutlookSafetyChex.Properties.Resources.ASX_Edit_blue_16x;
-            this.btnEdit_SpamList.Location = new System.Drawing.Point(170, 38);
-            this.btnEdit_SpamList.Name = "btnEdit_SpamList";
-            this.btnEdit_SpamList.Size = new System.Drawing.Size(56, 23);
-            this.btnEdit_SpamList.TabIndex = 24;
-            this.btnEdit_SpamList.Text = "Edit";
-            this.btnEdit_SpamList.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnEdit_SpamList.UseVisualStyleBackColor = true;
-            this.btnEdit_SpamList.Click += new System.EventHandler(this.editSpamList_Dialog);
+            this.cbVerifyContacts.AutoSize = true;
+            this.cbVerifyContacts.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cbVerifyContacts.Location = new System.Drawing.Point(13, 157);
+            this.cbVerifyContacts.Name = "cbVerifyContacts";
+            this.cbVerifyContacts.Size = new System.Drawing.Size(118, 17);
+            this.cbVerifyContacts.TabIndex = 18;
+            this.cbVerifyContacts.Text = global::OutlookSafetyChex.Properties.Resources.Option_VerifyContacts;
+            this.cbVerifyContacts.UseVisualStyleBackColor = true;
+            this.cbVerifyContacts.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // btnEdit_DNSBL
+            // 
+            this.btnEdit_DNSBL.Image = global::OutlookSafetyChex.Properties.Resources.ASX_Edit_blue_16x;
+            this.btnEdit_DNSBL.Location = new System.Drawing.Point(177, 61);
+            this.btnEdit_DNSBL.Name = "btnEdit_DNSBL";
+            this.btnEdit_DNSBL.Size = new System.Drawing.Size(56, 23);
+            this.btnEdit_DNSBL.TabIndex = 24;
+            this.btnEdit_DNSBL.Text = "Edit";
+            this.btnEdit_DNSBL.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnEdit_DNSBL.UseVisualStyleBackColor = true;
+            this.btnEdit_DNSBL.Click += new System.EventHandler(this.editDNSBL_Dialog);
             // 
             // cbInspectAttachents
             // 
@@ -558,67 +696,43 @@ namespace OutlookSafetyChex
             this.cbInspectAttachents.Name = "cbInspectAttachents";
             this.cbInspectAttachents.Size = new System.Drawing.Size(134, 17);
             this.cbInspectAttachents.TabIndex = 23;
-            this.cbInspectAttachents.Text = global::OutlookSafetyChex.Properties.Resources.Option_InspectAttachments;
+            this.cbInspectAttachents.Text = "Inspect Attachments **";
             this.cbInspectAttachents.UseVisualStyleBackColor = true;
             this.cbInspectAttachents.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
-            // cbFlagUnknownContacts
+            // cbHost_Blacklist
             // 
-            this.cbFlagUnknownContacts.AutoSize = true;
-            this.cbFlagUnknownContacts.ForeColor = System.Drawing.Color.Black;
-            this.cbFlagUnknownContacts.Location = new System.Drawing.Point(137, 88);
-            this.cbFlagUnknownContacts.Name = "cbFlagUnknownContacts";
-            this.cbFlagUnknownContacts.Size = new System.Drawing.Size(89, 17);
-            this.cbFlagUnknownContacts.TabIndex = 22;
-            this.cbFlagUnknownContacts.Text = global::OutlookSafetyChex.Properties.Resources.Option_FlagUknownContacts;
-            this.cbFlagUnknownContacts.UseVisualStyleBackColor = true;
-            this.cbFlagUnknownContacts.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            this.cbHost_Blacklist.AutoSize = true;
+            this.cbHost_Blacklist.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cbHost_Blacklist.Location = new System.Drawing.Point(13, 19);
+            this.cbHost_Blacklist.Name = "cbHost_Blacklist";
+            this.cbHost_Blacklist.Size = new System.Drawing.Size(131, 17);
+            this.cbHost_Blacklist.TabIndex = 21;
+            this.cbHost_Blacklist.Text = "Host/Domain Blacklist";
+            this.cbHost_Blacklist.UseVisualStyleBackColor = true;
+            this.cbHost_Blacklist.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
-            // cbTLD_Blacklist
+            // cbHost_Whitelist
             // 
-            this.cbTLD_Blacklist.AutoSize = true;
-            this.cbTLD_Blacklist.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTLD_Blacklist.Location = new System.Drawing.Point(262, 63);
-            this.cbTLD_Blacklist.Name = "cbTLD_Blacklist";
-            this.cbTLD_Blacklist.Size = new System.Drawing.Size(94, 17);
-            this.cbTLD_Blacklist.TabIndex = 21;
-            this.cbTLD_Blacklist.Text = global::OutlookSafetyChex.Properties.Resources.Option_TLDBlacklist;
-            this.cbTLD_Blacklist.UseVisualStyleBackColor = true;
-            this.cbTLD_Blacklist.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
-            // 
-            // cbTLD_Whitelist
-            // 
-            this.cbTLD_Whitelist.AutoSize = true;
-            this.cbTLD_Whitelist.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTLD_Whitelist.Location = new System.Drawing.Point(262, 86);
-            this.cbTLD_Whitelist.Name = "cbTLD_Whitelist";
-            this.cbTLD_Whitelist.Size = new System.Drawing.Size(95, 17);
-            this.cbTLD_Whitelist.TabIndex = 20;
-            this.cbTLD_Whitelist.Text = global::OutlookSafetyChex.Properties.Resources.Option_TLDWhitelist;
-            this.cbTLD_Whitelist.UseVisualStyleBackColor = true;
-            this.cbTLD_Whitelist.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
-            // 
-            // cbVerifyContacts
-            // 
-            this.cbVerifyContacts.AutoSize = true;
-            this.cbVerifyContacts.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbVerifyContacts.Location = new System.Drawing.Point(13, 88);
-            this.cbVerifyContacts.Name = "cbVerifyContacts";
-            this.cbVerifyContacts.Size = new System.Drawing.Size(118, 17);
-            this.cbVerifyContacts.TabIndex = 18;
-            this.cbVerifyContacts.Text = global::OutlookSafetyChex.Properties.Resources.Option_VerifyContacts;
-            this.cbVerifyContacts.UseVisualStyleBackColor = true;
-            this.cbVerifyContacts.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            this.cbHost_Whitelist.AutoSize = true;
+            this.cbHost_Whitelist.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cbHost_Whitelist.Location = new System.Drawing.Point(13, 42);
+            this.cbHost_Whitelist.Name = "cbHost_Whitelist";
+            this.cbHost_Whitelist.Size = new System.Drawing.Size(132, 17);
+            this.cbHost_Whitelist.TabIndex = 20;
+            this.cbHost_Whitelist.Text = "Host/Domain Whitelist";
+            this.cbHost_Whitelist.UseVisualStyleBackColor = true;
+            this.cbHost_Whitelist.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
             // cbLookupHIBP
             // 
             this.cbLookupHIBP.AutoSize = true;
             this.cbLookupHIBP.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbLookupHIBP.Location = new System.Drawing.Point(13, 65);
+            this.cbLookupHIBP.Location = new System.Drawing.Point(262, 86);
             this.cbLookupHIBP.Name = "cbLookupHIBP";
-            this.cbLookupHIBP.Size = new System.Drawing.Size(150, 17);
+            this.cbLookupHIBP.Size = new System.Drawing.Size(139, 17);
             this.cbLookupHIBP.TabIndex = 17;
-            this.cbLookupHIBP.Text = global::OutlookSafetyChex.Properties.Resources.Option_LookupHIBP;
+            this.cbLookupHIBP.Text = "Pwn\'d Lookup (HIBP) **";
             this.cbLookupHIBP.UseVisualStyleBackColor = true;
             this.cbLookupHIBP.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
@@ -626,11 +740,11 @@ namespace OutlookSafetyChex
             // 
             this.cbLookupWHOIS.AutoSize = true;
             this.cbLookupWHOIS.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbLookupWHOIS.Location = new System.Drawing.Point(13, 19);
+            this.cbLookupWHOIS.Location = new System.Drawing.Point(262, 63);
             this.cbLookupWHOIS.Name = "cbLookupWHOIS";
             this.cbLookupWHOIS.Size = new System.Drawing.Size(149, 17);
             this.cbLookupWHOIS.TabIndex = 14;
-            this.cbLookupWHOIS.Text = global::OutlookSafetyChex.Properties.Resources.Option_LookupWHOIS;
+            this.cbLookupWHOIS.Text = "Owner Lookup (WHOIS) *";
             this.cbLookupWHOIS.UseVisualStyleBackColor = true;
             this.cbLookupWHOIS.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
@@ -638,11 +752,11 @@ namespace OutlookSafetyChex
             // 
             this.cbLookupDNSBL.AutoSize = true;
             this.cbLookupDNSBL.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbLookupDNSBL.Location = new System.Drawing.Point(13, 42);
+            this.cbLookupDNSBL.Location = new System.Drawing.Point(13, 65);
             this.cbLookupDNSBL.Name = "cbLookupDNSBL";
-            this.cbLookupDNSBL.Size = new System.Drawing.Size(151, 17);
+            this.cbLookupDNSBL.Size = new System.Drawing.Size(163, 17);
             this.cbLookupDNSBL.TabIndex = 15;
-            this.cbLookupDNSBL.Text = global::OutlookSafetyChex.Properties.Resources.Option_LookupDNSBL;
+            this.cbLookupDNSBL.Text = "External Blacklists (DNSBL) *";
             this.cbLookupDNSBL.UseVisualStyleBackColor = true;
             this.cbLookupDNSBL.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
@@ -662,28 +776,28 @@ namespace OutlookSafetyChex
             this.logGridView.Location = new System.Drawing.Point(0, 0);
             this.logGridView.Name = "logGridView";
             this.logGridView.ReadOnly = true;
-            this.logGridView.Size = new System.Drawing.Size(874, 282);
+            this.logGridView.Size = new System.Drawing.Size(874, 252);
             this.logGridView.TabIndex = 0;
             // 
-            // infoTab
+            // envelopeTab
             // 
-            this.infoTab.Controls.Add(this.infoGridView);
-            this.infoTab.Location = new System.Drawing.Point(4, 22);
-            this.infoTab.Name = "infoTab";
-            this.infoTab.Padding = new System.Windows.Forms.Padding(3);
-            this.infoTab.Size = new System.Drawing.Size(874, 486);
-            this.infoTab.TabIndex = 1;
-            this.infoTab.Text = global::OutlookSafetyChex.Properties.Resources.Title_Envelope;
-            this.infoTab.UseVisualStyleBackColor = true;
+            this.envelopeTab.Controls.Add(this.envelopeGridView);
+            this.envelopeTab.Location = new System.Drawing.Point(4, 22);
+            this.envelopeTab.Name = "envelopeTab";
+            this.envelopeTab.Padding = new System.Windows.Forms.Padding(3);
+            this.envelopeTab.Size = new System.Drawing.Size(874, 486);
+            this.envelopeTab.TabIndex = 1;
+            this.envelopeTab.Text = global::OutlookSafetyChex.Properties.Resources.Title_Envelope;
+            this.envelopeTab.UseVisualStyleBackColor = true;
             // 
-            // infoGridView
+            // envelopeGridView
             // 
-            this.infoGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.infoGridView.Location = new System.Drawing.Point(3, 3);
-            this.infoGridView.Name = "infoGridView";
-            this.infoGridView.ReadOnly = true;
-            this.infoGridView.Size = new System.Drawing.Size(868, 480);
-            this.infoGridView.TabIndex = 0;
+            this.envelopeGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.envelopeGridView.Location = new System.Drawing.Point(3, 3);
+            this.envelopeGridView.Name = "envelopeGridView";
+            this.envelopeGridView.ReadOnly = true;
+            this.envelopeGridView.Size = new System.Drawing.Size(868, 480);
+            this.envelopeGridView.TabIndex = 0;
             // 
             // headerTab
             // 
@@ -705,25 +819,25 @@ namespace OutlookSafetyChex
             // 
             // splitHeaders.Panel1
             // 
-            this.splitHeaders.Panel1.Controls.Add(this.groupBox5);
+            this.splitHeaders.Panel1.Controls.Add(this.groupBoxParsedHeaders);
             // 
             // splitHeaders.Panel2
             // 
-            this.splitHeaders.Panel2.Controls.Add(this.groupBoxHeaders);
+            this.splitHeaders.Panel2.Controls.Add(this.groupBoxRawHeaders);
             this.splitHeaders.Size = new System.Drawing.Size(868, 480);
             this.splitHeaders.SplitterDistance = 286;
             this.splitHeaders.TabIndex = 3;
             // 
-            // groupBox5
+            // groupBoxParsedHeaders
             // 
-            this.groupBox5.Controls.Add(this.headerGridView);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox5.Location = new System.Drawing.Point(0, 0);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(868, 286);
-            this.groupBox5.TabIndex = 1;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "SMTP Headers (Parsed)";
+            this.groupBoxParsedHeaders.Controls.Add(this.headerGridView);
+            this.groupBoxParsedHeaders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxParsedHeaders.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxParsedHeaders.Name = "groupBoxParsedHeaders";
+            this.groupBoxParsedHeaders.Size = new System.Drawing.Size(868, 286);
+            this.groupBoxParsedHeaders.TabIndex = 1;
+            this.groupBoxParsedHeaders.TabStop = false;
+            this.groupBoxParsedHeaders.Text = "SMTP Headers (Parsed)";
             // 
             // headerGridView
             // 
@@ -734,16 +848,16 @@ namespace OutlookSafetyChex
             this.headerGridView.Size = new System.Drawing.Size(862, 267);
             this.headerGridView.TabIndex = 0;
             // 
-            // groupBoxHeaders
+            // groupBoxRawHeaders
             // 
-            this.groupBoxHeaders.Controls.Add(this.rawHeaderTextBox);
-            this.groupBoxHeaders.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxHeaders.Location = new System.Drawing.Point(0, 0);
-            this.groupBoxHeaders.Name = "groupBoxHeaders";
-            this.groupBoxHeaders.Size = new System.Drawing.Size(868, 190);
-            this.groupBoxHeaders.TabIndex = 2;
-            this.groupBoxHeaders.TabStop = false;
-            this.groupBoxHeaders.Text = "SMTP Headers (Raw)";
+            this.groupBoxRawHeaders.Controls.Add(this.rawHeaderTextBox);
+            this.groupBoxRawHeaders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxRawHeaders.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxRawHeaders.Name = "groupBoxRawHeaders";
+            this.groupBoxRawHeaders.Size = new System.Drawing.Size(868, 190);
+            this.groupBoxRawHeaders.TabIndex = 2;
+            this.groupBoxRawHeaders.TabStop = false;
+            this.groupBoxRawHeaders.Text = "SMTP Headers (Raw)";
             // 
             // rawHeaderTextBox
             // 
@@ -1013,7 +1127,7 @@ namespace OutlookSafetyChex
             this.loggingTab.Name = "loggingTab";
             this.loggingTab.Padding = new System.Windows.Forms.Padding(3);
             this.loggingTab.Size = new System.Drawing.Size(874, 486);
-            this.loggingTab.TabIndex = 9;
+            this.loggingTab.TabIndex = 10;
             this.loggingTab.Text = global::OutlookSafetyChex.Properties.Resources.Title_Logging;
             this.loggingTab.UseVisualStyleBackColor = true;
             // 
@@ -1027,6 +1141,13 @@ namespace OutlookSafetyChex
             this.textDebug.Size = new System.Drawing.Size(868, 480);
             this.textDebug.TabIndex = 0;
             this.textDebug.WordWrap = false;
+            // 
+            // headerCheckGridView
+            // 
+            this.headerCheckGridView.Location = new System.Drawing.Point(0, 0);
+            this.headerCheckGridView.Name = "headerCheckGridView";
+            this.headerCheckGridView.Size = new System.Drawing.Size(240, 150);
+            this.headerCheckGridView.TabIndex = 0;
             // 
             // dlgSafetyCheck
             // 
@@ -1061,17 +1182,17 @@ namespace OutlookSafetyChex
             this.groupOptions.ResumeLayout(false);
             this.groupOptions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logGridView)).EndInit();
-            this.infoTab.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.infoGridView)).EndInit();
+            this.envelopeTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.envelopeGridView)).EndInit();
             this.headerTab.ResumeLayout(false);
             this.splitHeaders.Panel1.ResumeLayout(false);
             this.splitHeaders.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitHeaders)).EndInit();
             this.splitHeaders.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
+            this.groupBoxParsedHeaders.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.headerGridView)).EndInit();
-            this.groupBoxHeaders.ResumeLayout(false);
-            this.groupBoxHeaders.PerformLayout();
+            this.groupBoxRawHeaders.ResumeLayout(false);
+            this.groupBoxRawHeaders.PerformLayout();
             this.contactTab.ResumeLayout(false);
             this.splitContacts.Panel1.ResumeLayout(false);
             this.splitContacts.Panel2.ResumeLayout(false);
@@ -1105,6 +1226,7 @@ namespace OutlookSafetyChex
             ((System.ComponentModel.ISupportInitialize)(this.attachmentsGridView)).EndInit();
             this.loggingTab.ResumeLayout(false);
             this.loggingTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.headerCheckGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1112,7 +1234,7 @@ namespace OutlookSafetyChex
         #endregion
         public TabControl myTabControl;
         //
-        public TabPage infoTab;
+        public TabPage envelopeTab;
         public TabPage headerTab;
         public TabPage contactTab;
         public TabPage routeTab;
@@ -1122,21 +1244,22 @@ namespace OutlookSafetyChex
         public TabPage optionsTab;
         public TabPage loggingTab;
         //
-        public DataGridView infoGridView;
+        public DataGridView envelopeGridView;
         public DataGridView headerGridView;
         public DataGridView senderGridView;
         public DataGridView linkCheckGridView;
 		public DataGridView linkListGridView;
 		public DataGridView routeCheckGridView;
-		public DataGridView routeListGridView;
+        public DataGridView headerCheckGridView;
+        public DataGridView routeListGridView;
         public DataGridView bodyGridView;
         public DataGridView attachmentsGridView;
 		public DataGridView recipientsGridView;
-		public DataGridView logGridView;
+        public DataGridView logGridView;
         //
         private Button btnRunTests;
         private Button btnClearCache;
-        private Button btnEdit_SpamList;
+        private Button btnEdit_DNSBL;
         private Button btnEdit_Whitelist;
         private Button btnEdit_Blacklist;
         //
@@ -1151,8 +1274,8 @@ namespace OutlookSafetyChex
         private CheckBox cbTabContacts;
 		private CheckBox cbLookupHIBP;
 		private CheckBox cbVerifyContacts;
-		private CheckBox cbTLD_Blacklist;
-		private CheckBox cbTLD_Whitelist;
+		private CheckBox cbHost_Blacklist;
+		private CheckBox cbHost_Whitelist;
         private CheckBox cbFlagUnknownContacts;
         private CheckBox cbInspectAttachents;
         private CheckBox cbInspectLinks; 
@@ -1163,8 +1286,8 @@ namespace OutlookSafetyChex
 		private GroupBox groupBox1;
 		private GroupBox groupBoxLinks;
 		private GroupBox groupBox3;
-		private GroupBox groupBoxHeaders;
-		private GroupBox groupBox5;
+		private GroupBox groupBoxRawHeaders;
+		private GroupBox groupBoxParsedHeaders;
 		private GroupBox groupBoxContacts;
 		private GroupBox groupBox7;
         //
@@ -1187,5 +1310,13 @@ namespace OutlookSafetyChex
         private RadioButton rbLogError;
         private CheckBox cbShowLog;
         private LinkLabel labelVersion;
+        private CheckBox cbTabHeaders;
+        private Button btnEdit_CULTUREs;
+        private CheckBox cb_Cultures;
+        private Button btnEdit_CODEPAGEs;
+        private CheckBox cb_Codepages;
+        private Button btnEdit_MIMETYPEs;
+        private CheckBox cb_MIMEtypes;
+        private CheckBox cbHiliteSpam;
     }
 }

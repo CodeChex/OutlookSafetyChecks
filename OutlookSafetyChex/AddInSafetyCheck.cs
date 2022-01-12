@@ -2,13 +2,14 @@
 using CheccoSafetyTools;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Text.RegularExpressions;
-using TrID;
+using System.Xml;
 using MessageBox = System.Windows.Forms.MessageBox;
 // shortcuts
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -22,18 +23,13 @@ namespace OutlookSafetyChex
         Outlook.Explorer myExplorer;
 
         public static readonly AssemblyInfo metaData = new AssemblyInfo();
- 
-        private static StringCollection cacheTLDs = Properties.Settings.Default.TLD_cache;
-
         public readonly static String listDelimiter = Properties.Settings.Default.list_Delimiter;
 
-        private readonly static String[] baseLocalWhitelist = Properties.Settings.Default.base_Whitelist.Split(new[] { listDelimiter }, StringSplitOptions.RemoveEmptyEntries);
-        private readonly static String[] baseLocalBlacklist = Properties.Settings.Default.base_Blacklist.Split(new[] { listDelimiter }, StringSplitOptions.RemoveEmptyEntries);
-
-        private static String[] myLocalWhitelist = Properties.Settings.Default.local_Whitelist.Split(new[] { listDelimiter }, StringSplitOptions.RemoveEmptyEntries);
-        private static String[] myLocalBlacklist = Properties.Settings.Default.local_Blacklist.Split(new[] { listDelimiter }, StringSplitOptions.RemoveEmptyEntries);
-
-        public static TrIDEngine fileInspector = new TrIDEngine();
+        // cached data lists (loaded on demand)
+        private static List<String> cacheTLDs = null;
+        private static List<String> cacheMIMETYPEs = null;
+        private static List<String> cacheCULTUREs = null;
+        private static List<String> cacheCODEPAGEs = null;
 
         // non-static
         public dsMailItem currentDataSet = null;
@@ -328,42 +324,83 @@ namespace OutlookSafetyChex
         #endregion
 
         #region helper utilities
+        // Blacklist
+        public static List<String> getBaseBlacklist()
+        {
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.base_Blacklist.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+        public static List<String> getLocalBlacklist()
+        {
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.local_Blacklist.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+        public static void saveLocalBlacklist(List<String> newList)
+        {
+            try
+            {
+                Properties.Settings.Default.local_Blacklist.Clear();
+                Properties.Settings.Default.local_Blacklist.AddRange(newList.ToArray());
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalBlacklist()");
+            }
+        }
 
-        public static String[] getBaseBlacklist()
+        //Whitelist
+        public static List<String> getBaseWhitelist()
         {
-            return baseLocalBlacklist;
-        }
-        public static String[] getLocalBlacklist()
-        {
-            return myLocalBlacklist;
-        }
-        public static void saveLocalBlacklist(String[] newList)
-        {
-            myLocalBlacklist = newList;
-            Properties.Settings.Default.local_Blacklist = String.Join(listDelimiter, myLocalBlacklist);
-            Properties.Settings.Default.Save();
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.base_Whitelist.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
         }
 
-        public static String[] getBaseWhitelist()
+        public static List<String> getLocalWhitelist()
         {
-            return baseLocalWhitelist;
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.local_Whitelist.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
         }
-        public static String[] getLocalWhitelist()
+        public static void saveLocalWhitelist(List<String> newList)
         {
-            return myLocalWhitelist;
+            try
+            {
+                Properties.Settings.Default.local_Whitelist.Clear();
+                Properties.Settings.Default.local_Whitelist.AddRange(newList.ToArray());
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalWhitelist()");
+            }
         }
 
-        public static void saveLocalWhitelist(String[] newList)
-        {
-            myLocalWhitelist = newList;
-            Properties.Settings.Default.local_Whitelist = String.Join(listDelimiter, myLocalWhitelist);
-            Properties.Settings.Default.Save();
-        }
-        public static List<String> getTLDcache()
+        // TLD
+        public static List<String> getCacheTLDs()
         {
             if (cacheTLDs == null)
             {
-                cacheTLDs = new StringCollection();
+                cacheTLDs = new List<String>();
             }
             // read TLDs from IANA
             if (cacheTLDs.Count == 0)
@@ -378,23 +415,103 @@ namespace OutlookSafetyChex
                     }
                 }
                 // store cache
-                Properties.Settings.Default.Save();
+                try
+                {
+                    Properties.Settings.Default.cache_TLDs.Clear();
+                    Properties.Settings.Default.cache_TLDs.AddRange(cacheTLDs.ToArray());
+                    Properties.Settings.Default.Save();
+                }
+                catch (Exception ex)
+                {
+                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheTLDs()");
+                }
             }
-            return cacheTLDs.Cast<String>().ToList();
-        }
-        public static void saveTLDcache(List<String> newList)
-        {
-           Properties.Settings.Default.TLD_cache.Clear();
-           Properties.Settings.Default.TLD_cache.AddRange(newList.ToArray());
-           Properties.Settings.Default.Save();
+            return cacheTLDs;
         }
 
-        public static void saveDNSBLsites(String[] newList)
+        // DNSBL
+        public static List<String> getCommonDNSBLsites()
         {
-            cst_DNSBL.spamLists = newList;
-            Properties.Settings.Default.DNSBL_sites.Clear();
-            Properties.Settings.Default.DNSBL_sites.AddRange(newList.ToArray());
-            Properties.Settings.Default.Save();
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.common_DNSBL.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+
+        public static List<String> getLocalDNSBL()
+        {
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.DNSBL_sites.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+
+        public static void saveDNSBLsites(List<String> newList)
+        {
+            try
+            {
+                Properties.Settings.Default.DNSBL_sites.Clear();
+                Properties.Settings.Default.DNSBL_sites.AddRange(newList.ToArray());
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalDNSBLs()");
+            }
+        }
+
+        public static List<String> getCacheMIMETYPEs()
+        {
+            if (cacheMIMETYPEs == null)
+            {
+                cacheMIMETYPEs = new List<String>();
+            }
+            // read TLDs from IANA
+            if (cacheMIMETYPEs.Count == 0)
+            {
+                List<String> tCache = new List<String>();
+                Dictionary<String, String> xList = TrID.XmlDefinitions.XmlDict;
+                foreach (String xVal in xList.Values)
+                {
+                    try
+                    {
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.LoadXml(xVal);
+                        XmlNode xT = xmlDoc.SelectSingleNode(".//Mime");
+                        if (xT != null)
+                        {
+                            String res = xT.InnerText;
+                            if (cst_Util.isValidString(res) && res.Contains("/"))
+                            {
+                                tCache.Add(res.Trim().ToLower());
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        cst_Util.logException(ex, "AddInSafetyCheck::getCacheMIMETYPEs()");
+                    }
+                }
+                cacheMIMETYPEs = tCache.Distinct().ToList();
+                // store cache
+                try
+                {
+                    Properties.Settings.Default.cache_MIMETYPEs.Clear();
+                    Properties.Settings.Default.cache_MIMETYPEs.AddRange(cacheMIMETYPEs.ToArray());
+                    Properties.Settings.Default.Save();
+                }
+                catch (Exception ex)
+                {
+                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheMIMETYPEs()");
+                }
+            }
+            return cacheMIMETYPEs;
         }
 
         public static List<String> getCommonMIMETYPEs()
@@ -407,12 +524,72 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-
-        public static void saveCommonMIMETYPEs(List<String> newList)
+        public static List<String> getLocalMIMETYPEs()
         {
-            Properties.Settings.Default.common_MIMETYPEs.Clear();
-            Properties.Settings.Default.common_MIMETYPEs.AddRange(newList.ToArray());
-            Properties.Settings.Default.Save();
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.local_MIMETYPEs.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+
+
+        public static void saveLocalMIMETYPEs(List<String> newList)
+        {
+            try
+            {
+                Properties.Settings.Default.local_MIMETYPEs.Clear();
+                Properties.Settings.Default.local_MIMETYPEs.AddRange(newList.ToArray());
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalMIMETYPEs()");
+            }
+        }
+
+        public static List<String> getCacheCODEPAGEs()
+        {
+            if (cacheCODEPAGEs == null)
+            {
+                cacheCODEPAGEs = new List<String>();
+            }
+            // load CODEPAGE dictionary
+            if (cacheCODEPAGEs.Count == 0)
+            {
+                List<String> tCache = new List<String>();
+                // list of selectable codepages
+                try
+                {
+                    List<String> arrStr = Encoding.GetEncodings().Select(x => x.Name).ToList();
+                    foreach (String tStr in arrStr)
+                    {
+                        if (cst_Util.isValidString(tStr))
+                        {
+                            tCache.Add(tStr.Trim().ToLower());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    cst_Util.logException(ex, "AddInSafetyCheck::getCacheCODEPAGEs()");
+                }
+                cacheCODEPAGEs = tCache.Distinct().ToList();
+                // store cache
+                try
+                {
+                    Properties.Settings.Default.cache_CODEPAGEs.Clear();
+                    Properties.Settings.Default.cache_CODEPAGEs.AddRange(cacheCODEPAGEs.ToArray());
+                    Properties.Settings.Default.Save();
+                }
+                catch (Exception ex)
+                {
+                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheCODEPAGEs()");
+                }
+            }
+            return cacheCODEPAGEs;
         }
 
         public static List<String> getCommonCODEPAGEs()
@@ -425,14 +602,63 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static void saveCommonCODEPAGEs(List<String> newList)
+        public static List<String> getLocalCODEPAGEs()
         {
-            Properties.Settings.Default.common_CODEPAGEs.Clear();
-            Properties.Settings.Default.common_CODEPAGEs.AddRange(newList.ToArray());
-            Properties.Settings.Default.Save();
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.local_CODEPAGEs.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+        public static void saveLocalCODEPAGEs(List<String> newList)
+        {
+            try
+            {
+                Properties.Settings.Default.local_CODEPAGEs.Clear();
+                Properties.Settings.Default.local_CODEPAGEs.AddRange(newList.ToArray());
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalCODEPAGEs()");
+            }
         }
 
-        public static List<String> getCommonENCODINGs()
+        public static List<String> getCacheCULTUREs()
+        {
+            if (cacheCULTUREs == null)
+            {
+                cacheCULTUREs = new List<String>();
+            }
+            // load Cultures 
+            if (cacheCULTUREs.Count == 0)
+            {
+                List<String> tCache = new List<String>();
+                // TODO: list of selectable cultures
+                CultureInfo[] cinfo = CultureInfo.GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures);
+                foreach (CultureInfo cul in cinfo)
+                {
+                    tCache.Add(cul.Name);
+                }
+                cacheCULTUREs = tCache.Distinct().ToList();
+                // store cache
+                try
+                {
+                    Properties.Settings.Default.cache_CULTUREs.Clear();
+                    Properties.Settings.Default.cache_CULTUREs.AddRange(cacheCULTUREs.ToArray());
+                    Properties.Settings.Default.Save();
+                }
+                catch (Exception ex)
+                {
+                    cst_Util.logException(ex, "AddInSafetyCheck::saveCacheCULTUREs()");
+                }
+            }
+            return cacheCULTUREs;
+        }
+
+        public static List<String> getCommonCULTUREs()
         {
             List<String> rc = null;
             try
@@ -442,11 +668,28 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static void saveCommonENCODINGs(List<String> newList)
+        public static List<String> getLocalCULTUREs()
         {
-            Properties.Settings.Default.common_ENCODINGs.Clear();
-            Properties.Settings.Default.common_ENCODINGs.AddRange(newList.ToArray());
-            Properties.Settings.Default.Save();
+            List<String> rc = null;
+            try
+            {
+                rc = Properties.Settings.Default.local_CULTUREs.Cast<String>().ToList();
+            }
+            catch { }
+            return rc;
+        }
+        public static void saveLocalENCODINGs(List<String> newList)
+        {
+            try
+            {
+                Properties.Settings.Default.local_CULTUREs.Clear();
+                Properties.Settings.Default.local_CULTUREs.AddRange(newList.ToArray());
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::saveLocalCULTUREs()");
+            }
         }
 
         #endregion
@@ -494,7 +737,7 @@ namespace OutlookSafetyChex
             String rc = "";
             try
             {
-                if (cst_Util.isValidString(fqdn) && fqdn.Contains("xn--"))
+                if (cst_Util.isValidString(fqdn) && fqdn.ToLower().Contains("xn--"))
                 {
                     String tReason = "\"" + fqdn + "\" uses PUNYcode";
                     rc += "[PUNYcode misdirection]: " + tReason + "\r\n";
@@ -506,21 +749,44 @@ namespace OutlookSafetyChex
             }
             return rc;
         }
-        public String checkIDNchars(String fqdn)
+
+        public String checkDiacritics(String fqdn)
         {
             String rc = "";
             try
             {
-                String aStr = cst_Util.idnMapping.GetAscii(fqdn);
+                String aStr = cst_Util.RemoveDiacritics(fqdn);
                 if (aStr != fqdn)
                 {
                     String tReason = "\"" + aStr + "\" masquerading as \"" + fqdn + "\"";
-                    rc += "[IDN misdirection]: " + tReason + "\r\n";
+                    rc += "[Diacritic misdirection]: " + tReason + "\r\n";
                 }
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkPUNYcode(" + fqdn + ")");
+                cst_Util.logException(ex, "AddInSafetyCheck::checkDiacritics(" + fqdn + ")");
+            }
+            return rc;
+        }
+
+        public String checkIDNchars(String tStr)
+        {
+            String rc = "";
+            try
+            {
+                if (cst_Util.isValidString(tStr))
+                {
+                    String aStr = cst_Util.idnMapping.GetAscii(tStr);
+                    if (aStr != tStr)
+                    {
+                        String tReason = "\"" + aStr + "\" masquerading as \"" + tStr + "\"";
+                        rc += "[IDN misdirection]: " + tReason + "\r\n";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::checkIDNchars(" + tStr + ")");
             }
             return rc;
         }
@@ -562,7 +828,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Util.logException(ex, "AddInSafetyCheck::checkIDN(" + tStr + ")");
+                cst_Util.logException(ex, "AddInSafetyCheck::checkASCII(" + tStr + ")");
             }
             return rc;
         }
@@ -662,7 +928,7 @@ namespace OutlookSafetyChex
                         {
                             try
                             {
-                                String tFileType = TrIDEngine.GetExtensionByFileContent(tTemp).ToLower();
+                                String tFileType = TrID.TrIDEngine.GetExtensionByFileContent(tTemp).ToLower();
                                 tFileSig = HeyRed.Mime.MimeTypesMap.GetMimeType(tFileType);
                             }
                             catch (Exception ex)
@@ -698,7 +964,7 @@ namespace OutlookSafetyChex
                     List<String> whitelists = new List<String>();
                     if (Properties.Settings.Default.opt_Local_BLACKLIST)
                     {
-                        foreach (String t in myLocalBlacklist)
+                        foreach (String t in Properties.Settings.Default.local_Blacklist)
                         {
                             bool found = false;
                             if (t.StartsWith(".")) found = tHost.EndsWith(t, StringComparison.CurrentCultureIgnoreCase);
@@ -713,7 +979,7 @@ namespace OutlookSafetyChex
                     }
                     if (Properties.Settings.Default.opt_Local_WHITELIST)
                     {
-                        foreach (String t in myLocalWhitelist)
+                        foreach (String t in Properties.Settings.Default.local_Whitelist)
                         {
                             bool found = false;
                             if (t.StartsWith(".")) found = tHost.EndsWith(t, StringComparison.CurrentCultureIgnoreCase);
@@ -754,12 +1020,14 @@ namespace OutlookSafetyChex
             String rc = "";
             if (tMailAddress != null)
             {
-                String tName = cst_Util.sanitizeEmail(tMailAddress.DisplayName);
-                String tAddr = cst_Util.sanitizeEmail(tMailAddress.Address);
+                String tName = cst_Util.sanitizeEmail(tMailAddress.DisplayName,false);
+                String tAddr = cst_Util.sanitizeEmail(tMailAddress.Address,true);
                 String tHost = tMailAddress.Host;
                 try
                 {
-                    rc += checkIDNchars(tAddr);
+                    rc += checkDiacritics(tName);
+                    rc += checkIDNchars(tName);
+                    rc += checkLeetSpeak(tName);
                     rc += checkPUNYcode(tAddr);
                     String myDomain = cst_Util.pullDomain(tHost);
                     String tReason = null;
@@ -841,6 +1109,7 @@ namespace OutlookSafetyChex
             String rc = "";
             try
             {
+                rc += checkDiacritics(fqdn);
                 rc += checkIDNchars(fqdn);
                 rc += checkPUNYcode(fqdn);
                 rc += checkLeetSpeak(fqdn);
@@ -902,22 +1171,31 @@ namespace OutlookSafetyChex
             return rc;
         }
 
+        public String suspiciousLabel(String tStr)
+        {
+            String rc = "";
+            try
+            {
+                // check original string
+                rc += suspiciousText(tStr);
+                if (tStr.StartsWith(" ") || tStr.EndsWith(" ") || tStr.Contains("  "))
+                    rc += "Odd Whitespacing in [" + tStr.Replace(' ', '.') + "]\r\n";
+            }
+            catch (Exception ex)
+            {
+                cst_Util.logException(ex, "AddInSafetyCheck::suspiciousLabel(" + tStr + ")");
+            }
+            return rc;
+        }
         public String suspiciousText(String tStr)
         {
             String rc = "";
             try
             {
                 // check original string
-                String tReason = checkASCII(tStr);
-                if (cst_Util.isValidString(tReason))
-                {
-                    rc += tReason + "\r\n";
-                }
-                tReason = checkLeetSpeak(tStr);
-                if (cst_Util.isValidString(tReason))
-                {
-                    rc += tReason + "\r\n";
-                }
+                rc += checkASCII(tStr);
+                rc += checkDiacritics(tStr);
+                rc += checkLeetSpeak(tStr);
             }
             catch (Exception ex)
             {
@@ -959,7 +1237,7 @@ namespace OutlookSafetyChex
                 if (cst_Util.isValidString(tDisplayName))
                 {
                     tDisplayName = tDisplayName.Trim();
-                    String tReason = suspiciousText(tDisplayName);
+                    String tReason = suspiciousLabel(tDisplayName);
                     if (cst_Util.isValidString(tReason))
                     {
                         tNotes += tReason + "\r\n";
@@ -1005,7 +1283,7 @@ namespace OutlookSafetyChex
                         tNotes += "[NON-COMMON PROTOCOL]: Link uses protocol \"" + tLinkUri.Scheme + "\"\r\n";
                     }
                     // checks against all link protocols
-                    if (cst_Util.isIPaddress(tLinkUri.Host))
+                    if (cst_Util.isValidIPAddress(tLinkUri.Host))
                     {
                         tNotes += "[EXPLICIT IP]: Link specifies a hardcoded IP Address\r\n";
                     }
@@ -1019,7 +1297,7 @@ namespace OutlookSafetyChex
                     }
                     if (!allowQueryString && cst_Util.isValidString(tLinkUri.Query))
                     {
-                        tNotes += "[POTENTIAL BEACON]: Link should not have Paramters\r\n";
+                        tNotes += "[POTENTIAL BEACON]: Unexpected Link Parameters\r\n";
                     }
                 }
             }

@@ -22,88 +22,109 @@ namespace OutlookSafetyChex
         {
 			String logTitle = Properties.Resources.Title_Contacts + " / Sender";
 			// Obtain "From:"
-			String senderName = cst_Util.sanitizeEmail(myItem.SenderName);
-			String senderEmail = cst_Util.sanitizeEmail(myItem.SenderEmailAddress);
+			String senderName = cst_Util.sanitizeEmail(myItem.SenderName,false);
+			String senderEmail = cst_Util.sanitizeEmail(myItem.SenderEmailAddress,true);
             String senderOwner = "[not checked]";
 			String senderNotes = "";
 			String senderHost = null;
 			String senderDomain = null;
 			String senderUser = null;
+			senderNotes += Globals.AddInSafetyCheck.suspiciousLabel(senderName);
             try
             {
-                MailAddress senderAddress = new MailAddress(senderEmail,senderName);
-				// grab domain owner for email domain   
-				senderUser = senderAddress.User;
-				senderHost = senderAddress.Host;
-				senderDomain = cst_Util.pullDomain(senderHost);
-				// check email
-				if (Properties.Settings.Default.opt_Lookup_WHOIS)
+				if (cst_Util.isValidString(senderEmail))
 				{
-					senderOwner = cst_WHOIS.whoisOwner(senderDomain, Properties.Settings.Default.opt_Use_CACHE);
+					MailAddress senderAddress = new MailAddress(senderEmail, senderName);
+					// grab domain owner for email domain   
+					senderUser = senderAddress.User;
+					senderHost = senderAddress.Host;
+					senderDomain = cst_Util.pullDomain(senderHost);
+					// check email
+					if (Properties.Settings.Default.opt_Lookup_WHOIS)
+					{
+						senderOwner = cst_WHOIS.whoisOwner(senderDomain, Properties.Settings.Default.opt_Use_CACHE);
+					}
+					senderNotes += checkEmail(senderAddress, logTitle);
 				}
-				senderNotes = checkEmail(senderAddress, logTitle);
+				else if (cst_Util.isValidString(senderName))
+                {
+					senderNotes += "[* \"From:\" Name with NO Email Address Specified]";
+				}
 			}
 			catch (Exception ex)
             {
 				senderNotes += "[* Invalid \"From:\" Email Address Specified]";
-				parent.log(logTitle, "1", "INVALID DATA", "Invalid [From:] Email Address Specified");
                 cst_Util.logException(ex, "Parsing From: " + senderEmail);
             }
             // add row
             String[] rowData = new[] { "From", senderName, senderEmail, senderOwner, senderNotes };
 			this.Rows.Add(rowData);
+			// log it
+			if (cst_Util.isValidString(senderNotes))
+				parent.log(logTitle, "1", "ANOMALY", senderNotes);
 
-            // Obtain "ReplyTo:"
+			// Obtain "ReplyTo:"
 			foreach (Outlook.Recipient tReplyAddr in myItem.ReplyRecipients)
 			{
 				String tTag = "Reply-To:"; // cst_Outlook.getRecipientTag(tReplyAddr);
 				String tType = cst_Outlook.getRecipientType(tReplyAddr);
 				// Obtain Sender (Reply-To:)
-				String replyToName = cst_Util.sanitizeEmail(tReplyAddr.Name);
-				String replyToEmail = cst_Util.sanitizeEmail(tReplyAddr.Address);
+				String replyToName = cst_Util.sanitizeEmail(tReplyAddr.Name,false);
+				String replyToEmail = cst_Util.sanitizeEmail(tReplyAddr.Address,true);
 				String replyToOwner = "[not checked]";
 				String replyToNotes = "";
+				replyToNotes += Globals.AddInSafetyCheck.suspiciousLabel(replyToName);
 				// grab domain owner for email domain 
 				try
 				{
-                    MailAddress replyToAddress = new MailAddress(replyToEmail,replyToName);
-					String replyToHost = replyToAddress.Host;
-					String replyToDomain = cst_Util.pullDomain(replyToHost);
-					// start checks
-					if (Properties.Settings.Default.opt_Lookup_WHOIS)
+					if (cst_Util.isValidString(replyToEmail))
 					{
-						replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
+						MailAddress replyToAddress = new MailAddress(replyToEmail, replyToName);
+						String replyToHost = replyToAddress.Host;
+						String replyToDomain = cst_Util.pullDomain(replyToHost);
+						// start checks
+						if (Properties.Settings.Default.opt_Lookup_WHOIS)
+						{
+							replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
+						}
+						replyToNotes += checkEmail(replyToAddress, logTitle);
+						// advanced checks
+						if (replyToEmail != senderEmail)
+						{
+							replyToNotes += "[* MISMATCHED From/ReplyTo]: ";
+							String noteDetails = "";
+							if (replyToAddress.User != senderUser)
+							{
+								noteDetails += "USER, ";
+							}
+							if (replyToDomain != senderDomain)
+							{
+								noteDetails += "DOMAIN, ";
+							}
+							else if (replyToHost != senderHost)
+							{
+								noteDetails += "SERVER, ";
+							}
+							replyToNotes += noteDetails + "\r\n";
+							//parent.log(logTitle, "1", "MISMATCHED From/" + tTag, noteDetails);
+						}
 					}
-					replyToNotes = checkEmail(replyToAddress,logTitle);
-					// advanced checks
-					if (replyToEmail != senderEmail)
+					else if (cst_Util.isValidString(replyToName))
 					{
-						replyToNotes += "[* MISMATCHED From/ReplyTo]: ";
-						String noteDetails = "";
-						if (replyToAddress.User != senderUser)
-						{
-							noteDetails += "USER, ";
-						}
-						if (replyToDomain != senderDomain)
-						{
-							noteDetails += "DOMAIN, ";
-						}
-						else if (replyToHost != senderHost)
-						{
-							noteDetails += "SERVER, ";
-						}
-						replyToNotes += noteDetails + "\r\n";
-						parent.log(logTitle, "1", "MISMATCHED From/"+tTag, noteDetails);
+						replyToNotes += "[* \"" + tTag + ":\" Name with NO Email Address Specified]";
 					}
 				}
 				catch (Exception ex)
                 {
 					replyToNotes += "[* Invalid \"" + tTag + ":\" Email Address Specified]";
-					parent.log(logTitle, "1", "INVALID DATA", "Invalid [" + tTag + ":] Email Address Specified");
+					//parent.log(logTitle, "1", "INVALID DATA", "Invalid [" + tTag + ":] Email Address Specified");
                     cst_Util.logException(ex, "Parsing " + tTag + ": " + replyToEmail);
                 }
                 rowData = new[] { tTag, replyToName, replyToEmail, replyToOwner, replyToNotes };
 				this.Rows.Add(rowData);
+				// log it
+				if (cst_Util.isValidString(replyToNotes))
+					parent.log(logTitle, "1", "ANOMALY", replyToNotes);
 			}
 
 			// Obtain "Return-Path:"
@@ -115,8 +136,11 @@ namespace OutlookSafetyChex
 				foreach (DataRow tRow in tHeaders.Rows)
 				{
 					String tKey = tRow.ItemArray[0] as String;
-					String tVal = tRow.ItemArray[1] as String;
-					if (tKey == "Return-Path") arrReply.Add(tVal);
+					if ( tKey.Equals("Return-Path",StringComparison.OrdinalIgnoreCase) )
+					{
+						String tVal = cst_Util.sanitizeEmail(tRow.ItemArray[1] as String, true);
+						if (cst_Util.isValidString(tVal)) arrReply.Add(tVal); 
+					}
 				}
 			}
             foreach (String iReturnPath in arrReply)
@@ -127,46 +151,52 @@ namespace OutlookSafetyChex
                 // grab domain owner for email domain            
                 try
                 {
-					String replyToEmail = cst_Util.sanitizeEmail(iReturnPath);
-                    MailAddress replyToAddress = new MailAddress(replyToEmail);
-                    String replyToHost = replyToAddress.Host;
-                    String replyToDomain = cst_Util.pullDomain(replyToHost);
-                    // start checks
-                    if (Properties.Settings.Default.opt_Lookup_WHOIS)
-                    {
-                        replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
-                    }
-                    replyToNotes = checkEmail(replyToAddress, logTitle);
-                    // advanced checks
-                    if (replyToEmail != senderEmail)
-                    {
-                        replyToNotes += "[* MISMATCHED From/Return-Path]: ";
-                        String noteDetails = "";
-                        if (replyToAddress.User != senderUser)
-                        {
-                            noteDetails += "USER, ";
-                        }
-                        if (replyToDomain != senderDomain)
-                        {
-                            noteDetails += "DOMAIN, ";
-                        }
-                        else if (replyToHost != senderHost)
-                        {
-                            noteDetails += "SERVER, ";
-                        }
-                        replyToNotes += noteDetails + "\r\n";
-                        parent.log(logTitle, "1", "MISMATCHED From/Return-Path", noteDetails);
-                    }
-                }
-                catch (Exception ex)
+					String replyToEmail = cst_Util.sanitizeEmail(iReturnPath,true);
+					if (cst_Util.isValidString(replyToEmail))
+					{
+						MailAddress replyToAddress = new MailAddress(replyToEmail);
+						String replyToHost = replyToAddress.Host;
+						String replyToDomain = cst_Util.pullDomain(replyToHost);
+						// start checks
+						if (Properties.Settings.Default.opt_Lookup_WHOIS)
+						{
+							replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
+						}
+						replyToNotes = checkEmail(replyToAddress, logTitle);
+						// advanced checks
+						if (replyToEmail != senderEmail)
+						{
+							replyToNotes += "[* MISMATCHED From/Return-Path]: ";
+							String noteDetails = "";
+							if (replyToAddress.User != senderUser)
+							{
+								noteDetails += "USER, ";
+							}
+							if (replyToDomain != senderDomain)
+							{
+								noteDetails += "DOMAIN, ";
+							}
+							else if (replyToHost != senderHost)
+							{
+								noteDetails += "SERVER, ";
+							}
+							replyToNotes += noteDetails + "\r\n";
+							//parent.log(logTitle, "1", "MISMATCHED From/Return-Path", noteDetails);
+						}
+					}
+				}
+				catch (Exception ex)
                 {
                     replyToNotes += "[* Invalid \"Return-Path:\" Email Address Specified]";
-                    parent.log(logTitle, "1", "INVALID DATA", "Invalid [Return-Path:] Email Address Specified");
+                    // parent.log(logTitle, "1", "INVALID DATA", "Invalid [Return-Path:] Email Address Specified");
                     cst_Util.logException(ex, "Parsing Return-Path: " + iReturnPath);
                 }
                 rowData = new[] { "Return-Path", "", iReturnPath, replyToOwner, replyToNotes };
                 this.Rows.Add(rowData);
-            }
+				// log it
+				if (cst_Util.isValidString(replyToNotes))
+					parent.log(logTitle, "1", "ANOMALY", replyToNotes);
+			}
 			return this.Rows.Count;
         }
     } // class

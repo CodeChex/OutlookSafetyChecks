@@ -214,10 +214,17 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(".cn;.tk;.ru;.cm;.jp;.in")]
-        public string local_Blacklist {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>.cn</string>
+  <string>.tk</string>
+  <string>.ru</string>
+  <string>.cm</string>
+  <string>.in</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection local_Blacklist {
             get {
-                return ((string)(this["local_Blacklist"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["local_Blacklist"]));
             }
             set {
                 this["local_Blacklist"] = value;
@@ -226,10 +233,25 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(".org;.net;.com;.edu;.gov;.mil;.us;.uk;.ca;.nyc;.co;bit.ly;goog.le")]
-        public string local_Whitelist {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>.org</string>
+  <string>.net</string>
+  <string>.com</string>
+  <string>.edu</string>
+  <string>.gov</string>
+  <string>.mil</string>
+  <string>.us</string>
+  <string>.co.uk</string>
+  <string>.ca</string>
+  <string>.nyc</string>
+  <string>.co</string>
+  <string>bit.ly</string>
+  <string>goog.le</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection local_Whitelist {
             get {
-                return ((string)(this["local_Whitelist"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["local_Whitelist"]));
             }
             set {
                 this["local_Whitelist"] = value;
@@ -238,19 +260,41 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(".org;.net;.com;.edu;.gov;.mil;.us;.uk;.ca;.nyc;.co;bit.ly;goog.le")]
-        public string base_Whitelist {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>.org</string>
+  <string>.net</string>
+  <string>.com</string>
+  <string>.edu</string>
+  <string>.gov</string>
+  <string>.mil</string>
+  <string>.us</string>
+  <string>.co.uk</string>
+  <string>.ca</string>
+  <string>.nyc</string>
+  <string>.co</string>
+  <string>bit.ly</string>
+  <string>goog.le</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection base_Whitelist {
             get {
-                return ((string)(this["base_Whitelist"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["base_Whitelist"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(".cn;.tk;.ru;.cm;.jp;.in")]
-        public string base_Blacklist {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>.cn</string>
+  <string>.tk</string>
+  <string>.ru</string>
+  <string>.cm</string>
+  <string>.in</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection base_Blacklist {
             get {
-                return ((string)(this["base_Blacklist"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["base_Blacklist"]));
             }
         }
         
@@ -265,9 +309,11 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection TLD_cache {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection cache_TLDs {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["TLD_cache"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["cache_TLDs"]));
             }
         }
         
@@ -347,6 +393,7 @@ namespace OutlookSafetyChex.Properties {
   <string>utf-16</string>
   <string>windows-1250</string>
   <string>windows-1252</string>
+  <string>us-ascii</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection common_CODEPAGEs {
             get {
@@ -356,12 +403,160 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
-            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
-            "tring>8bit</string>\r\n  <string>quoted-printable</string>\r\n</ArrayOfString>")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>7bit</string>
+  <string>8bit</string>
+  <string>quoted-printable</string>
+</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection common_ENCODINGs {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["common_ENCODINGs"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool test_Headers {
+            get {
+                return ((bool)(this["test_Headers"]));
+            }
+            set {
+                this["test_Headers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool opt_Lookup_Encodings {
+            get {
+                return ((bool)(this["opt_Lookup_Encodings"]));
+            }
+            set {
+                this["opt_Lookup_Encodings"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool opt_Lookup_Codepages {
+            get {
+                return ((bool)(this["opt_Lookup_Codepages"]));
+            }
+            set {
+                this["opt_Lookup_Codepages"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool opt_Lookup_MIMEtypes {
+            get {
+                return ((bool)(this["opt_Lookup_MIMEtypes"]));
+            }
+            set {
+                this["opt_Lookup_MIMEtypes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection local_MIMETYPEs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["local_MIMETYPEs"]));
+            }
+            set {
+                this["local_MIMETYPEs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection local_CODEPAGEs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["local_CODEPAGEs"]));
+            }
+            set {
+                this["local_CODEPAGEs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection local_CULTUREs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["local_CULTUREs"]));
+            }
+            set {
+                this["local_CULTUREs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>multi.surbl.org</string>
+  <string>multi.uribl.com</string>
+  <string>sbl-xbl.spamhaus.org</string>
+  <string>bl.spamcop.net</string>
+  <string>cbl.abuseat.org</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection common_DNSBL {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["common_DNSBL"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection cache_MIMETYPEs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["cache_MIMETYPEs"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection cache_CULTUREs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["cache_CULTUREs"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection cache_CODEPAGEs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["cache_CODEPAGEs"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool opt_ShowSpamHeaders {
+            get {
+                return ((bool)(this["opt_ShowSpamHeaders"]));
+            }
+            set {
+                this["opt_ShowSpamHeaders"] = value;
             }
         }
     }

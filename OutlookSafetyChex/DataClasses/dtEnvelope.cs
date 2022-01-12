@@ -16,17 +16,17 @@ namespace OutlookSafetyChex
         public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
             String[] rowData;
+            String tValue = null;
             String tNotes = "";
              // New Row: ID
             rowData = new[] { "Identifier:", myItem.EntryID };
             this.Rows.Add(rowData);
             // New Row: SUBJECT
             cst_Util.logVerbose("SUBJECT", "Envelope");
-            tNotes = Globals.AddInSafetyCheck.suspiciousText(myItem.Subject);
+            tValue = myItem.Subject;
+            tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
-            {
-                parent.log(Properties.Resources.Title_Envelope, "4", "SUBJECT", tNotes);
-            }
+                parent.log(Properties.Resources.Title_Envelope, "3", "SUBJECT", tNotes);
             rowData = new[] { "Subject:", myItem.Subject, tNotes };
             this.Rows.Add(rowData);
             // New Row: DATE
@@ -35,11 +35,10 @@ namespace OutlookSafetyChex
             this.Rows.Add(rowData);
             // New Row: FROM
             cst_Util.logVerbose("From:", "Envelope");
-            tNotes = Globals.AddInSafetyCheck.suspiciousText(myItem.SenderName);
+            tValue = myItem.SenderName;
+            tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
-            {
-                parent.log(Properties.Resources.Title_Envelope, "4", "FROM", tNotes);
-            }
+                parent.log(Properties.Resources.Title_Envelope, "3", "FROM", tNotes);
             String tSender = myItem.SenderName;
             if (myItem.SenderName != myItem.SenderEmailAddress)
                 tSender += "\r\n\t<" + myItem.SenderEmailAddress + ">";
@@ -59,11 +58,10 @@ namespace OutlookSafetyChex
                 tRec = "\"" + tRecipient.Name + "\"";
                 if (tRecipient.Name != tRecipient.Address)
                     tRec += " <" + tRecipient.Address + ">";
-                tNotes = Globals.AddInSafetyCheck.suspiciousText(tRecipient.Name);
+                tValue = tRecipient.Name;
+                tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
                 if (cst_Util.isValidString(tNotes))
-                {
-                    parent.log(Properties.Resources.Title_Envelope, "4", "TO", tNotes);
-                }
+                    parent.log(Properties.Resources.Title_Envelope, "3", "TO", tNotes);
                 rowData = new[] { tTag + ": [" + iRec + "]", tRec, tNotes };
                 this.Rows.Add(rowData);
             }
@@ -83,11 +81,10 @@ namespace OutlookSafetyChex
                 tFiles = "\"" + tAttachment.DisplayName + "\"";
                 if (tAttachment.DisplayName != tAttachment.FileName)
                     tFiles += " <" + tAttachment.FileName + ">";
-                tNotes = Globals.AddInSafetyCheck.suspiciousText(tAttachment.DisplayName);
+                tValue = tAttachment.DisplayName;
+                tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
                 if (cst_Util.isValidString(tNotes))
-                {
-                    parent.log(Properties.Resources.Title_Envelope, "4", "ATTACHMENT", tNotes);
-                }
+                    parent.log(Properties.Resources.Title_Envelope, "3", "ATTACHMENT", tNotes);
                 rowData = new[] { "Attachment [" + iAtt + "]:", tFiles, tNotes };
                 this.Rows.Add(rowData);
             }
