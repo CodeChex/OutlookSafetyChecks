@@ -19,12 +19,21 @@ namespace OutlookSafetyChex
             // UI
             String title = "Subject: " + myItem.Subject;
             this.textBoxProgress.Text = title;
-            this.Text = Properties.Resources.ShortName + " - " + title;
+            this.Text = ""
+#if DEBUG
+                + "(DEBUG) "
+#endif
+                + Properties.Resources.ShortName + " - " + title;
             this.rawHeaderTextBox.Text = cst_Outlook.getHeaders(myItem);
             // set version info
             this.labelVersion.Text = AddInSafetyCheck.metaData.Title
-                    + "\r\n" 
-                    + "Version: " + AddInSafetyCheck.metaData.Version
+                    + "\r\n"
+#if DEBUG
+                    + "DEBUG"
+#else
+                    + "Release"
+#endif
+                    + " v" + AddInSafetyCheck.metaData.Version
                     + "\r\n" 
                     + AddInSafetyCheck.metaData.Copyright + ", " + AddInSafetyCheck.metaData.Company;
             // Data
@@ -38,7 +47,7 @@ namespace OutlookSafetyChex
             cst_Util.setLoggingUI(null, null);
         }
 
-        #region application customizations
+#region application customizations
 
         void initializePane()
         {
@@ -115,7 +124,7 @@ namespace OutlookSafetyChex
             }
         }
 
-        #endregion
+#endregion
 
         private void btnRunTests_Click(object sender, EventArgs ev)
         {

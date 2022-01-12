@@ -1178,7 +1178,7 @@ namespace OutlookSafetyChex
             {
                 // check original string
                 rc += suspiciousText(tStr);
-                if (tStr.StartsWith(" ") || tStr.EndsWith(" ") || tStr.Contains("  "))
+                if (tStr.StartsWith(" ") || tStr.EndsWith("  ") || tStr.Contains("  "))
                     rc += "Odd Whitespacing in [" + tStr.Replace(' ', '.') + "]\r\n";
             }
             catch (Exception ex)

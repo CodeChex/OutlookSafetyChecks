@@ -1,5 +1,6 @@
 ﻿using CheccoSafetyTools;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -131,8 +132,8 @@ namespace OutlookSafetyChex
             {
                 if (cst_Util.isValidString(tValue))
                 {
-                    // check character encoding
-                    if (!commonCultures.Contains(tValue.Trim().ToLower()))
+                    // check character encoding (case insensitive)
+                    if (!commonCultures.Contains(tValue.Trim(), StringComparer.OrdinalIgnoreCase))
                     {
                         rc += "Uncommon Language-Culture (" + tValue + ")\r\n";
                     }
@@ -168,18 +169,18 @@ namespace OutlookSafetyChex
                         }
                     }
                 }
-                // validate MIME format
+                // validate MIME format (case insensitive)
                 if (cst_Util.isValidString(tFormat))
                 {
-                    if ( !commonFormats.Contains(tFormat.Trim().ToLower()) )
+                    if ( !commonFormats.Contains(tFormat.Trim(), StringComparer.OrdinalIgnoreCase) )
                     {
                         rc += "Uncommon MIME format (" + tFormat + ")\r\n";
                     }
                 }
-                // validate charset
+                // validate charset (case insensitive)
                 if (cst_Util.isValidString(tCharSet))
                 {
-                    if (!commonCharSets.Contains(tCharSet.Trim().ToLower()))
+                    if (!commonCharSets.Contains(tCharSet.Trim(), StringComparer.OrdinalIgnoreCase))
                     {
                         rc += "Uncommon Character Set (" + tCharSet + ")\r\n";
                     }
