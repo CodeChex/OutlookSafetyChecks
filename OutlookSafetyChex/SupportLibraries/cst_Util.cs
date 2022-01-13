@@ -1,4 +1,6 @@
-﻿using NetTools;
+﻿using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
+using NetTools;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ using System.Windows.Forms;
 
 namespace CheccoSafetyTools
 {
+
     public class cst_URL
     {
         public readonly String mURL = null;
@@ -142,10 +145,17 @@ namespace CheccoSafetyTools
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static Control ctlLogger = null;
-        private static Control ctlStatus = null;
+        public static TextBox ctlLogger = null;
+        private static TextBox ctlStatus = null;
 
         #region logging
+        private static void updateLogUI(String s, bool erase = false)
+        {
+            //prependLogUI(s, erase);
+            appendLogUI(s, erase);
+            updateStatusLine(s, erase);
+        }
+
         private static void prependLogUI(String s, bool erase = false)
         {
             // update logging window
@@ -153,10 +163,10 @@ namespace CheccoSafetyTools
             {
                 try
                 {
-                    if (erase) ctlLogger.Text = "";
+                    if (erase) ctlLogger.Clear();
                     if (cst_Util.isValidString(s))
                     {
-                        ctlLogger.Text = s.Trim() + "\r\n" + ctlLogger.Text;
+                         ctlLogger.Text = s + "\r\n" + ctlLogger.Text;
                     }
                     ctlLogger.Refresh();
                 }
@@ -165,6 +175,31 @@ namespace CheccoSafetyTools
                     log.Error("cst_Util::prependLogUI(logWindow)", ex);
                 }
             }
+        }
+
+        private static void appendLogUI(String s, bool erase = false)
+        {
+            // update logging window
+            if (ctlLogger != null)
+            {
+                try
+                {
+                    if (erase) ctlLogger.Clear();
+                    if (cst_Util.isValidString(s))
+                    {
+                        ctlLogger.AppendText("\r\n" + s);
+                    }
+                    ctlLogger.Refresh();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("cst_Util::prependLogUI(logWindow)", ex);
+                }
+            } 
+        }
+
+        private static void updateStatusLine(String s, bool erase = false)
+        { 
             // update status line
             if (ctlStatus != null)
             {
@@ -205,7 +240,7 @@ namespace CheccoSafetyTools
             {
                 String msg = prepareLogMsg(details, context);
                 log.Debug(msg);
-                prependLogUI("[VERBOSE]: " + msg, erase);
+                updateLogUI("[VERBOSE]: " + msg, erase);
             }
         }
 
@@ -216,7 +251,7 @@ namespace CheccoSafetyTools
             {
                 String msg = prepareLogMsg(details, context);
                 log.Info(msg);
-                prependLogUI("[INFO]: " + msg, erase);
+                updateLogUI("[INFO]: " + msg, erase);
             }
         }
 
@@ -227,9 +262,8 @@ namespace CheccoSafetyTools
             {
                 String msg = prepareLogMsg(ex.Message, context);
                 log.Error(context, ex);
-                prependLogUI("[EXCEPTION]: " + msg, erase);
+                updateLogUI("[EXCEPTION]: " + msg, erase);
             }
-
         }
 
         public static void logMessage(String details, String context, bool erase = false)
@@ -238,11 +272,11 @@ namespace CheccoSafetyTools
             {
                 String msg = prepareLogMsg(details, context);
                 log.Info(msg);
-                prependLogUI(msg, erase);
+                updateLogUI(msg, erase);
             }
         }
 
-        public static void setLoggingUI(Control wndLogger, Control wndStatus = null)
+        public static void setLoggingUI(TextBox wndLogger, TextBox wndStatus = null)
         {
             ctlLogger = wndLogger;
             ctlStatus = wndStatus;
@@ -253,7 +287,8 @@ namespace CheccoSafetyTools
     }
 
     public abstract class cst_Util
-    { 
+    {
+        public static HtmlParser htmlParser = new HtmlParser();
         public static IdnMapping idnMapping = new IdnMapping();
  
         private static String rgxWordPattern = @"\b(\w+)\b"; 
@@ -454,8 +489,9 @@ namespace CheccoSafetyTools
             IPAddress rc = null;
             try
             {
-                IPAddressRange rcIP = IPAddressRange.Parse(tStr);
-                if ( rcIP != null ) rc = rcIP.Begin;
+                IPAddressRange rcIP = null;
+                if ( IPAddressRange.TryParse(tStr,out rcIP) )
+                    rc = rcIP.Begin;
             }
             catch { }
             return rc;
@@ -466,8 +502,8 @@ namespace CheccoSafetyTools
             List<IPAddress> rc = new List<IPAddress>();
             try
             {
-                IPAddressRange rcIP = IPAddressRange.Parse(tStr);
-                if (rcIP != null)
+                IPAddressRange rcIP = null;
+                if (IPAddressRange.TryParse(tStr, out rcIP) )
                 {
                     foreach (IPAddress ip in rcIP)
                     {
@@ -526,7 +562,6 @@ namespace CheccoSafetyTools
             }
             return rc;
         }
-        
         #endregion
 
         #region web queries
@@ -687,18 +722,17 @@ namespace CheccoSafetyTools
             return rc;
         }
 
-        public static HtmlAgilityPack.HtmlDocument wgetHTML(String tURL, Dictionary<String, String> arrHeaders = null)
+        public static IHtmlDocument wgetHTML(String tURL, Dictionary<String, String> arrHeaders = null)
         {
-            HtmlAgilityPack.HtmlDocument rc = null;
+            IHtmlDocument rc = null;
             try
             {
-                String results = cst_Util.wgetString(tURL, 
+                String tHtml = cst_Util.wgetString(tURL, 
                                                      new[] { MediaTypeNames.Text.Html },
                                                      arrHeaders);
-                if (cst_Util.isValidString(results))
+                if (cst_Util.isValidString(tHtml))
                 {
-                    rc = new HtmlAgilityPack.HtmlDocument();
-                    rc.LoadHtml(results);
+                    rc = cst_Util.htmlParser.ParseDocument(tHtml);
                 }
             }
             catch (Exception ex)

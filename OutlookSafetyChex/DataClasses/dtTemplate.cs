@@ -11,6 +11,8 @@ namespace OutlookSafetyChex
     // [SerializableAttribute]
     public abstract class dtTemplate : DataTable
     {
+        private static String logArea = "";
+
         public dtTemplate()
         {
             this.TableName = this.GetType().Name;

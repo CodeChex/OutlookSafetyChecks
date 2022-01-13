@@ -157,9 +157,9 @@
 					  Name="DnsClient.dll" Source="$(var.AddinFiles)" />
 			</Component>
 
-			<Component  Id="HtmlAgilityPack.dll_Component">
-				<File Id="HtmlAgilityPack.dll" KeyPath="yes"
-				  Name="HtmlAgilityPack.dll" Source="$(var.AddinFiles)" />
+			<Component  Id="AngleSharp.dll_Component">
+				<File Id="AngleSharp.dll" KeyPath="yes"
+				  Name="AngleSharp.dll" Source="$(var.AddinFiles)" />
 			</Component>
 
 			<Component  Id="IPAddressRange.dll_Component">
@@ -223,9 +223,9 @@
 				Name="DnsClient.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
-			<Component  Id="HtmlAgilityPack.xml_Component">
-				<File Id="HtmlAgilityPack.xml" KeyPath="yes"
-				Name="HtmlAgilityPack.xml" Source="$(var.AddinFiles)" />
+			<Component  Id="AngleSharp.xml_Component">
+				<File Id="AngleSharp.xml" KeyPath="yes"
+				Name="AngleSharp.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
 			<Component  Id="IPAddressRange.xml_Component">

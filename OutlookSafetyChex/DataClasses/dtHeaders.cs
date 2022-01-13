@@ -9,6 +9,7 @@ namespace OutlookSafetyChex
 {
     public class dtHeaders : dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Headers;
         public dtHeaders()
         {
             this.Columns.Add("Field", Type.GetType("System.String"));
@@ -62,7 +63,7 @@ namespace OutlookSafetyChex
             if (this.Rows.Count == 0)
             {
                 String tReason = "Header List is EMPTY";
-                parent.log(Properties.Resources.Title_Headers, "4", "HEADER LIST", tReason);
+                parent.log(logArea, "4", "HEADER LIST", tReason);
             }
             */
             return this.Rows.Count;
@@ -127,7 +128,7 @@ namespace OutlookSafetyChex
                             if ( (tStr.Contains("spam") || tStr.Contains("virus") ) && 
                                 Properties.Settings.Default.opt_ShowSpamHeaders)
                             {
-                                parent.log(Properties.Resources.Title_Headers, "99", tName, tValue);
+                                parent.log(logArea, "99", tName, tValue);
                             }
                             break;
                     }
@@ -140,7 +141,7 @@ namespace OutlookSafetyChex
             // log it
             if (cst_Util.isValidString(rc))
             {
-                parent.log(Properties.Resources.Title_Headers, "4", tName, rc);
+                parent.log(logArea, "4", tName, rc);
             }
             return rc;
         }

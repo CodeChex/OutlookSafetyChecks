@@ -12,6 +12,8 @@ namespace OutlookSafetyChex
 {
     public class dtAttachments : dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Attachments;
+
         public dtAttachments()
         {
             this.Columns.Add("Display Name", Type.GetType("System.String"));
@@ -23,7 +25,6 @@ namespace OutlookSafetyChex
 
         public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
-            String logArea = Properties.Resources.Title_Attachments;
             foreach (Outlook.Attachment tAttachment in myItem.Attachments)
             {
                 cst_Log.logVerbose(tAttachment.DisplayName, "Attachments");

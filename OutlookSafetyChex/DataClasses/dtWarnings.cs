@@ -7,6 +7,7 @@ namespace OutlookSafetyChex
 {
     public class dtWarnings : dtTemplate
 	{
+		static String logArea = Properties.Resources.Title_Main;
 		public dtWarnings()
 		{
 			this.TableName = this.GetType().Name;

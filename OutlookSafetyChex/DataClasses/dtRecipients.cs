@@ -8,6 +8,7 @@ namespace OutlookSafetyChex
 {
     public class dtRecipients : dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Contacts + " (Recipients)";
         public dtRecipients()
         {
 			this.Columns.Add("Field", Type.GetType("System.String"));
@@ -20,7 +21,6 @@ namespace OutlookSafetyChex
 		public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
 			int iRec = 0;
-			String logTitle = Properties.Resources.Title_Contacts + " / Recipient";
             cst_Log.logVerbose("Count: [" + myItem.Recipients.Count + "]", "Recipients");
             foreach (Outlook.Recipient tRecipient in myItem.Recipients)
 			{
@@ -42,7 +42,7 @@ namespace OutlookSafetyChex
                         String tHost = tMailAddress.Host;
                         String tDomain = cst_Util.pullDomain(tHost);
                         // check email  
-                        tResults += checkEmail(tMailAddress, logTitle);
+                        tResults += checkEmail(tMailAddress, logArea);
                         // compare each Recipient against Sender data extracted
                         try
                         {
@@ -92,15 +92,15 @@ namespace OutlookSafetyChex
 				this.Rows.Add(rowData);
                 // log it
                 if (cst_Util.isValidString(tResults))
-                    parent.log(logTitle, "1", "ANOMALY", tResults);
+                    parent.log(logArea, "1", "ANOMALY", tResults);
             }
             if (this.Rows.Count == 0)
             {
-                parent.log(logTitle, "1", "ANOMALY", "No Recipients Specified");
+                parent.log(logArea, "1", "ANOMALY", "No Recipients Specified");
             }
             else if (this.Rows.Count > 10)
             {
-                parent.log(logTitle, "1", "ANOMALY", "Large # of Recipients [" + iRec + "]");
+                parent.log(logArea, "1", "ANOMALY", "Large # of Recipients [" + iRec + "]");
             }
 			return this.Rows.Count;
         }

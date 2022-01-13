@@ -10,6 +10,7 @@ namespace OutlookSafetyChex
 {
     public class dtLinksCheck : dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Links + " (Check)";
         public dtLinksCheck()
         {
             this.Columns.Add("Host", Type.GetType("System.String"));
@@ -27,8 +28,10 @@ namespace OutlookSafetyChex
                 List<MailAddress> listEmails = new List<MailAddress>();
                 foreach (DataRow tRow in listLinks.Rows)
                 {
-                    String tName = tRow.ItemArray[0] as String;
-                    String tLink = tRow.ItemArray[1] as String;
+                    // IMPORTANT: must follow order of field in dtLinkList
+                    String tType = tRow.ItemArray[0] as String;
+                    String tName = tRow.ItemArray[1] as String;
+                    String tLink = tRow.ItemArray[2] as String;
                     try
                     {
                         // start checks
@@ -54,7 +57,7 @@ namespace OutlookSafetyChex
                     if (cst_Util.isValidString(tReason))
                     {
                         tNotes += tReason;
-                        parent.log(Properties.Resources.Title_Links, "4", "HOST", tReason);
+                        parent.log(logArea, "4", "HOST", tReason);
                     }
                     if (Properties.Settings.Default.opt_Lookup_WHOIS)
                     {

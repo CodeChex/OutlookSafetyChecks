@@ -9,6 +9,7 @@ namespace OutlookSafetyChex
 {
     public class dtRouteList : dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Routing + " (List)";
         public dtRouteList()
         {
             this.Columns.Add("Hop", Type.GetType("System.Int16"));
@@ -239,7 +240,7 @@ namespace OutlookSafetyChex
                     // log it
                     if (cst_Util.isValidString(tNotes))
                     {
-                        parent.log(Properties.Resources.Title_Routing, "4", "ROUTING", tNotes);
+                        parent.log(logArea, "4", "ROUTING", tNotes);
                     }
                     // populate it
                     String[] rowData = new[] { nHop.ToString(), s,

@@ -9,7 +9,8 @@ namespace OutlookSafetyChex
 {
     public class dtSender : dtTemplate
     {
-        public dtSender()
+		static String logArea = Properties.Resources.Title_Contacts + " (Senders)";
+		public dtSender()
         {
 			this.Columns.Add("Field", Type.GetType("System.String"));
 			this.Columns.Add("Name", Type.GetType("System.String"));
@@ -20,7 +21,6 @@ namespace OutlookSafetyChex
 
 		public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
-			String logTitle = Properties.Resources.Title_Contacts + " / Sender";
 			// Obtain "From:"
 			String senderName = cst_Util.sanitizeEmail(myItem.SenderName,false);
 			String senderEmail = cst_Util.sanitizeEmail(myItem.SenderEmailAddress,true);
@@ -45,7 +45,7 @@ namespace OutlookSafetyChex
 					{
 						senderOwner = cst_WHOIS.whoisOwner(senderDomain, Properties.Settings.Default.opt_Use_CACHE);
 					}
-					senderNotes += checkEmail(senderAddress, logTitle);
+					senderNotes += checkEmail(senderAddress, logArea);
 				}
 				else if (cst_Util.isValidString(senderName))
                 {
@@ -62,7 +62,7 @@ namespace OutlookSafetyChex
 			this.Rows.Add(rowData);
 			// log it
 			if (cst_Util.isValidString(senderNotes))
-				parent.log(logTitle, "1", "ANOMALY", senderNotes);
+				parent.log(logArea, "1", "ANOMALY", senderNotes);
 
 			// Obtain "ReplyTo:"
 			foreach (Outlook.Recipient tReplyAddr in myItem.ReplyRecipients)
@@ -89,7 +89,7 @@ namespace OutlookSafetyChex
 						{
 							replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
 						}
-						replyToNotes += checkEmail(replyToAddress, logTitle);
+						replyToNotes += checkEmail(replyToAddress, logArea);
 						// advanced checks
 						if (replyToEmail != senderEmail)
 						{
@@ -126,7 +126,7 @@ namespace OutlookSafetyChex
 				this.Rows.Add(rowData);
 				// log it
 				if (cst_Util.isValidString(replyToNotes))
-					parent.log(logTitle, "1", "ANOMALY", replyToNotes);
+					parent.log(logArea, "1", "ANOMALY", replyToNotes);
 			}
 
 			// Obtain "Return-Path:"
@@ -165,7 +165,7 @@ namespace OutlookSafetyChex
 						{
 							replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
 						}
-						replyToNotes = checkEmail(replyToAddress, logTitle);
+						replyToNotes = checkEmail(replyToAddress, logArea);
 						// advanced checks
 						if (replyToEmail != senderEmail)
 						{
@@ -198,7 +198,7 @@ namespace OutlookSafetyChex
                 this.Rows.Add(rowData);
 				// log it
 				if (cst_Util.isValidString(replyToNotes))
-					parent.log(logTitle, "1", "ANOMALY", replyToNotes);
+					parent.log(logArea, "1", "ANOMALY", replyToNotes);
 			}
 			return this.Rows.Count;
         }

@@ -1,6 +1,7 @@
-﻿using CheccoSafetyTools;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using CheccoSafetyTools;
 using DCSoft.RTF;
-using HtmlAgilityPack;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace OutlookSafetyChex
 {
     public class dtBody: dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Body;
         public dtBody()
         {
             this.Columns.Add("Content-Type", Type.GetType("System.String"));
@@ -18,7 +20,6 @@ namespace OutlookSafetyChex
         }
         public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
-            String logArea = Properties.Resources.Title_Body;
             String tNotes = "[not checked]";
             String tReason = "";
             String[] rowData = null;
@@ -32,150 +33,73 @@ namespace OutlookSafetyChex
                         {
                             cst_Log.logVerbose("Text Check", "HTML Parsing");
                             // Read links from DOM
-                            HtmlDocument doc = new HtmlDocument();
-                            doc.LoadHtml(tHtml);
-                            HtmlNodeCollection tNodeList = doc.DocumentNode.SelectNodes(".//*");
+                            IHtmlDocument doc = cst_Util.htmlParser.ParseDocument(tHtml);
+                            List<IElement> tNodeList = traverseDOM(doc.Body.Children);
                             if (tNodeList != null)
                             {
-                                foreach (HtmlNode tNode in tNodeList)
+                                foreach (IElement tNode in tNodeList)
                                 {
-                                    String tTag = tNode.Name.ToLower();
+                                    String tTag = tNode.NodeName;
                                     cst_Log.logVerbose(tTag, "HTML Parsing");
                                     tNotes = "";
                                     // check plaintext
-                                    try
-                                    {
-                                        String tStr = tNode.GetDirectInnerText();
-                                        tNotes += Globals.AddInSafetyCheck.suspiciousText(tStr);
-                                    }
-                                    catch { }
+                                    String tStr = tNode.TextContent;
+                                    tNotes += Globals.AddInSafetyCheck.suspiciousText(tStr);
                                     // check HTML attributes for hiding/beaconing techniques
+                                    String tLink = "";
+                                    int uWD = -1;
+                                    int uHT = -1;
+                                    String tSIZE = "";
                                     switch (tTag)
                                     {
                                         case "img":
-                                            try
+                                        case "div":
+                                        case "iframe":
+                                        case "embed":
+                                        case "area":
+                                            tLink = tNode.GetAttribute("src");
+                                            tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag, false);
+                                            uWD = int.Parse(tNode.GetAttribute("width"));
+                                            uHT = int.Parse(tNode.GetAttribute("height"));
+                                            if (uWD == 0 || uHT == 0)
                                             {
-                                                String tLink = tNode.Attributes["src"].Value;
-                                                tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag, false);
+                                                tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
                                             }
-                                            catch { }
-                                            try
-                                            {
-                                                String szWD = tNode.Attributes["width"].Value;
-                                                Int32 tWD = cst_Util.isValidString(szWD) ? Int32.Parse(szWD) : -1;
-                                                String szHT = tNode.Attributes["height"].Value;
-                                                Int32 tHT = cst_Util.isValidString(szHT) ? Int32.Parse(szHT) : -1;
-                                                if (tWD == 0 || tHT == 0)
-                                                {
-                                                    tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
-                                                }
-                                            }
-                                            catch { }
+                                            break;
+                                        case "a":
+                                            tLink = tNode.GetAttribute("href");
+                                            tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag, false);
                                             break;
                                         case "object":
                                         case "applet":
-                                            try
+                                            tLink = tNode.GetAttribute("codebase");
+                                            tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag);
+                                            uWD = int.Parse(tNode.GetAttribute("width"));
+                                            uHT = int.Parse(tNode.GetAttribute("height"));
+                                            if (uWD == 0 || uHT == 0)
                                             {
-                                                String tLink = tNode.Attributes["codebase"].Value;
-                                                tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag);
+                                                tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
                                             }
-                                            catch { }
-                                            try
-                                            {
-                                                String szWD = tNode.Attributes["width"].Value;
-                                                Int32 tWD = cst_Util.isValidString(szWD) ? Int32.Parse(szWD) : -1;
-                                                String szHT = tNode.Attributes["height"].Value;
-                                                Int32 tHT = cst_Util.isValidString(szHT) ? Int32.Parse(szHT) : -1;
-                                                if (tWD == 0 || tHT == 0)
-                                                {
-                                                    tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
-                                                }
-                                            }
-                                            catch { }
-                                            break;
-                                        case "embed":
-                                        case "area":
-                                            try
-                                            {
-                                                String tLink = tNode.Attributes["src"].Value;
-                                                tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag);
-                                            }
-                                            catch { }
-                                            try
-                                            {
-                                                String szWD = tNode.Attributes["width"].Value;
-                                                Int32 tWD = cst_Util.isValidString(szWD) ? Int32.Parse(szWD) : -1;
-                                                String szHT = tNode.Attributes["height"].Value;
-                                                Int32 tHT = cst_Util.isValidString(szHT) ? Int32.Parse(szHT) : -1;
-                                                if (tWD == 0 || tHT == 0)
-                                                {
-                                                    tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
-                                                }
-                                            }
-                                            catch { }
-                                            break;
-                                        case "iframe":
-                                            try
-                                            {
-                                                String tLink = tNode.Attributes["src"].Value;
-                                                tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag);
-                                            }
-                                            catch { }
-                                            try
-                                            {
-                                                String szWD = tNode.Attributes["width"].Value;
-                                                Int32 tWD = cst_Util.isValidString(szWD) ? Int32.Parse(szWD) : -1;
-                                                String szHT = tNode.Attributes["height"].Value;
-                                                Int32 tHT = cst_Util.isValidString(szHT) ? Int32.Parse(szHT) : -1;
-                                                if (tWD == 0 || tHT == 0)
-                                                {
-                                                    tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
-                                                }
-                                            }
-                                            catch { }
                                             break;
                                         case "font":
-                                            try
+                                            String szColor = tNode.GetAttribute("color");
+                                            if (cst_Util.isValidString(szColor) &&
+                                                (szColor.Equals("white", StringComparison.OrdinalIgnoreCase)
+                                                || szColor.Equals("#FFFFFF", StringComparison.OrdinalIgnoreCase) ) )
                                             {
-                                                String szColor = tNode.Attributes["color"].Value;
-                                                if (cst_Util.isValidString(szColor) &&
-                                                    (szColor.Equals("white", StringComparison.OrdinalIgnoreCase)
-                                                    || szColor.Equals("#FFFFFF", StringComparison.OrdinalIgnoreCase) ) )
-                                                {
-                                                    tNotes += "[HIDDEN/WHITE]: " + tTag + "\r\n";
-                                                }
+                                                tNotes += "[HIDDEN/WHITE]: " + tTag + "\r\n";
                                             }
-                                            catch { }
-                                            try
+                                            tSIZE = tNode.GetAttribute("size");
+                                            if (tSIZE.StartsWith("0") )
                                             {
-                                                String szPT = tNode.Attributes["size"].Value;
-                                                Int32 tPT = cst_Util.isValidString(szPT) ? Int32.Parse(szPT) : -1;
-                                                if (tPT == 0)
-                                                {
-                                                    tNotes += "[HIDDEN/ZERO-SIZE]: " + tTag + "\r\n";
-                                                }
+                                                tNotes += "[HIDDEN/ZERO-SIZE]: " + tTag + "\r\n";
                                             }
-                                            catch { }
-                                            break;
-                                        case "div":
-                                            try
-                                            {
-                                                String szWD = tNode.Attributes["width"].Value;
-                                                Int32 tWD = cst_Util.isValidString(szWD) ? Int32.Parse(szWD) : -1;
-                                                String szHT = tNode.Attributes["height"].Value;
-                                                Int32 tHT = cst_Util.isValidString(szHT) ? Int32.Parse(szHT) : -1;
-                                                if (tWD == 0 || tHT == 0)
-                                                {
-                                                    tNotes += "[HIDDEN using ZERO-SIZE]: " + tTag + "\r\n";
-                                                }
-                                            }
-                                            catch { }
                                             break;
                                     }
                                     // check CSS for similar hiding/beaconing techniques
                                     try
                                     {
-                                        String szStyle = tNode.Attributes["style"].Value;
+                                        String szStyle = tNode.GetAttribute("style");
                                         String[] arrStyles = szStyle.Split(';');
                                         foreach (String tAttr in arrStyles)
                                         {
@@ -199,9 +123,11 @@ namespace OutlookSafetyChex
                                                         break;
                                                     case "width":
                                                     case "height":
-                                                    case "font-size":
                                                         Int32 tV = cst_Util.isValidString(tValue) ? Int32.Parse(tValue) : -1;
                                                         sneaky = (tV == 0);
+                                                        break;
+                                                    case "font-size":
+                                                        sneaky = tValue.StartsWith("0");
                                                         break;
                                                     case "background-image":
                                                     case "background-attachment":
@@ -224,9 +150,9 @@ namespace OutlookSafetyChex
                                     // log results
                                     if ( cst_Util.isValidString(tNotes) )
                                     {
-                                        rowData = new[] { "HTML <" + tTag + ">", "" + tNode.InnerLength + "", tNotes };
+                                        rowData = new[] { "HTML <" + tTag + ">", "" + tNode.Text().Length + "", tNotes };
                                         this.Rows.Add(rowData);
-                                        parent.log("HTML <" + tTag + ">: " + logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                                        parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                                     }
                                 }
                             }
@@ -260,7 +186,7 @@ namespace OutlookSafetyChex
                                 {
                                     rowData = new[] { "RTF {" + tTag + "}", "" + tStr.Length + "", tNotes };
                                     this.Rows.Add(rowData);
-                                    parent.log("RTF {" + tTag + "}: " + logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                                    parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                                 }
                             }
                         }
@@ -278,7 +204,7 @@ namespace OutlookSafetyChex
                         {
                             rowData = new[] { "Plain Text", "" + tText.Length + "", tNotes };
                             this.Rows.Add(rowData);
-                            parent.log("Plain Text: " + logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                            parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                         }
                         break;
                     default:
@@ -294,12 +220,23 @@ namespace OutlookSafetyChex
                         {
                             rowData = new[] { "Raw Data", "" + tData.Length + "", tNotes };
                             this.Rows.Add(rowData);
-                            parent.log("Raw Data: " + logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                            parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                         }
                         break;
                 }
             }
             return this.Rows.Count;
+        }
+
+        private List<IElement> traverseDOM(IHtmlCollection<IElement> tList)
+        {
+            List<IElement> rc = new List<IElement>();
+            foreach (IElement rEL in tList)
+            {
+                rc.Add(rEL);
+                rc.AddRange(traverseDOM(rEL.Children));
+            }
+            return rc;
         }
 
         private List<DictionaryEntry> traverseRTF(RTFDomElementList tList)

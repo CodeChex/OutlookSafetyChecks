@@ -62,12 +62,18 @@ namespace OutlookSafetyChex
             return null;
         }
 
-		public void log(String tType, String tSeverity, String tCategory, String tDetails)
+        public void log(String tType, String tSeverity, String tCategory, String tDetails)
         {
-			if (logTable != null)
-			{
-				logTable.Rows.Add(new[] { tType, /* tSeverity, */ tCategory, tDetails });
-			}
+            if ( cst_Util.isValidString(tType)
+                && cst_Util.isValidString(tCategory)
+                && cst_Util.isValidString(tDetails) )
+            {
+                cst_Log.logMessage(tDetails, tCategory);
+                if (logTable != null)
+                {
+                    logTable.Rows.Add(new[] { tType, /* tSeverity, */ tCategory, tDetails });
+                }
+            }
 		}
 
 		public dsMailItem(Outlook.MailItem myItem)

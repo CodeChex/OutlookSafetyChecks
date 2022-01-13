@@ -1133,8 +1133,13 @@ namespace OutlookSafetyChex
             {
                 // check original string
                 rc += suspiciousText(tStr);
-                if (tStr.StartsWith(" ") || tStr.EndsWith("  ") || tStr.Contains("  "))
+                // check for oddly placed whitespace
+                if (tStr.StartsWith(" ") || tStr.EndsWith("  ")
+                    || tStr.Contains("  ") || tStr.Contains("\t")
+                    || tStr.Contains("\n") || tStr.Contains("\r"))
+                {
                     rc += "Odd Whitespacing in [" + tStr.Replace(' ', '.') + "]\r\n";
+                }
             }
             catch (Exception ex)
             {
@@ -1191,11 +1196,10 @@ namespace OutlookSafetyChex
             {
                 if (cst_Util.isValidString(tDisplayName))
                 {
-                    tDisplayName = tDisplayName.Trim();
-                    if (!tDisplayName.Equals(tLink))
+                    if (!tDisplayName.Trim().Equals(tLink))
                     {
                         if (cst_Util.isValidURL(tDisplayName))
-                            tNotes += "[URL Misdiorection]: text URL <> real URL\r\n";
+                            tNotes += "[URL Misdirection]: text URL <> real URL\r\n";
                         else
                             tNotes += suspiciousLabel(tDisplayName);
                     }

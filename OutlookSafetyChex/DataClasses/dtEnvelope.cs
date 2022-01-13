@@ -6,6 +6,7 @@ namespace OutlookSafetyChex
 {
     public class dtEnvelope : dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Envelope;
         public dtEnvelope()
         {
             this.Columns.Add("Field", Type.GetType("System.String"));
@@ -26,7 +27,7 @@ namespace OutlookSafetyChex
             tValue = myItem.Subject;
             tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
-                parent.log(Properties.Resources.Title_Envelope, "3", "SUBJECT", tNotes);
+                parent.log(logArea, "3", "SUBJECT", tNotes);
             rowData = new[] { "Subject:", myItem.Subject, tNotes };
             this.Rows.Add(rowData);
             // New Row: DATE
@@ -38,7 +39,7 @@ namespace OutlookSafetyChex
             tValue = myItem.SenderName;
             tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
-                parent.log(Properties.Resources.Title_Envelope, "3", "FROM", tNotes);
+                parent.log(logArea, "3", "FROM", tNotes);
             String tSender = myItem.SenderName;
             if (myItem.SenderName != myItem.SenderEmailAddress)
                 tSender += "\r\n\t<" + myItem.SenderEmailAddress + ">";
@@ -61,7 +62,7 @@ namespace OutlookSafetyChex
                 tValue = tRecipient.Name;
                 tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
                 if (cst_Util.isValidString(tNotes))
-                    parent.log(Properties.Resources.Title_Envelope, "3", "TO", tNotes);
+                    parent.log(logArea, "3", "TO", tNotes);
                 rowData = new[] { tTag + ": [" + iRec + "]", tRec, tNotes };
                 this.Rows.Add(rowData);
             }
@@ -84,7 +85,7 @@ namespace OutlookSafetyChex
                 tValue = tAttachment.DisplayName;
                 tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
                 if (cst_Util.isValidString(tNotes))
-                    parent.log(Properties.Resources.Title_Envelope, "3", "ATTACHMENT", tNotes);
+                    parent.log(logArea, "3", "ATTACHMENT", tNotes);
                 rowData = new[] { "Attachment [" + iAtt + "]:", tFiles, tNotes };
                 this.Rows.Add(rowData);
             }

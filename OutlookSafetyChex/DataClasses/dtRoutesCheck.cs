@@ -9,6 +9,7 @@ namespace OutlookSafetyChex
 {
     public class dtRoutesCheck : dtTemplate
     {
+        static String logArea = Properties.Resources.Title_Routing + " (Check)";
         public dtRoutesCheck()
         {
             this.Columns.Add("Host/IP", Type.GetType("System.String"));
