@@ -542,5 +542,17 @@ namespace OutlookSafetyChex.Properties {
                 this["opt_ShowSpamHeaders"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool opt_ThreadedProcessing {
+            get {
+                return ((bool)(this["opt_ThreadedProcessing"]));
+            }
+            set {
+                this["opt_ThreadedProcessing"] = value;
+            }
+        }
     }
 }

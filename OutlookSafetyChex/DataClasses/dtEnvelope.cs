@@ -21,35 +21,35 @@ namespace OutlookSafetyChex
             String tNotes = "";
              // New Row: ID
             rowData = new[] { "Identifier:", myItem.EntryID };
-            this.Rows.Add(rowData);
+            this.addDataRow(rowData);
             // New Row: SUBJECT
-            cst_Log.logVerbose("SUBJECT", "Envelope");
+            if (mLogger != null) mLogger.logVerbose("SUBJECT", "Envelope");
             tValue = myItem.Subject;
-            tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
+            tNotes = instance.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
-                parent.log(logArea, "3", "SUBJECT", tNotes);
+                parent.logFinding(logArea, "3", "SUBJECT", tNotes);
             rowData = new[] { "Subject:", myItem.Subject, tNotes };
-            this.Rows.Add(rowData);
+            this.addDataRow(rowData);
             // New Row: DATE
-            cst_Log.logVerbose("Date:", "Envelope");
+            if (mLogger != null) mLogger.logVerbose("Date:", "Envelope");
             rowData = new[] { "Received:", myItem.ReceivedTime.ToString() };
-            this.Rows.Add(rowData);
+            this.addDataRow(rowData);
             // New Row: FROM
-            cst_Log.logVerbose("From:", "Envelope");
+            if (mLogger != null) mLogger.logVerbose("From:", "Envelope");
             tValue = myItem.SenderName;
-            tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
+            tNotes = instance.suspiciousLabel(tValue);
             if (cst_Util.isValidString(tNotes))
-                parent.log(logArea, "3", "FROM", tNotes);
+                parent.logFinding(logArea, "3", "FROM", tNotes);
             String tSender = myItem.SenderName;
             if (myItem.SenderName != myItem.SenderEmailAddress)
                 tSender += "\r\n\t<" + myItem.SenderEmailAddress + ">";
             rowData = new[] { "Sender:", tSender, tNotes };
-            this.Rows.Add(rowData);
+            this.addDataRow(rowData);
             // New Row: TO
-            cst_Log.logVerbose("To:", "Envelope");
+            if (mLogger != null) mLogger.logVerbose("To:", "Envelope");
             String tRec = "[" + myItem.Recipients.Count.ToString() + "]";
             rowData = new[] { "# Recipients:", tRec };
-            this.Rows.Add(rowData);
+            this.addDataRow(rowData);
             int iRec = 0;
             foreach (Outlook.Recipient tRecipient in myItem.Recipients)
             {
@@ -60,21 +60,21 @@ namespace OutlookSafetyChex
                 if (tRecipient.Name != tRecipient.Address)
                     tRec += " <" + tRecipient.Address + ">";
                 tValue = tRecipient.Name;
-                tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
+                tNotes = instance.suspiciousLabel(tValue);
                 if (cst_Util.isValidString(tNotes))
-                    parent.log(logArea, "3", "TO", tNotes);
+                    parent.logFinding(logArea, "3", "TO", tNotes);
                 rowData = new[] { tTag + ": [" + iRec + "]", tRec, tNotes };
-                this.Rows.Add(rowData);
+                this.addDataRow(rowData);
             }
             // New Row: SIZE
-            cst_Log.logVerbose("Size:", "Envelope");
+            if (mLogger != null) mLogger.logVerbose("Size:", "Envelope");
             rowData = new[] { "Size (Bytes):", myItem.Size.ToString() };
-            this.Rows.Add(rowData);
+            this.addDataRow(rowData);
             // New Row: ATTACHMENTS
-            cst_Log.logVerbose("Attachments:", "Envelope");
+            if (mLogger != null) mLogger.logVerbose("Attachments:", "Envelope");
             String tFiles = "[" + myItem.Attachments.Count.ToString() + "]";
             rowData = new[] { "# Attachments:", tFiles };
-            this.Rows.Add(rowData);
+            this.addDataRow(rowData);
             int iAtt = 0;
             foreach (Outlook.Attachment tAttachment in myItem.Attachments)
             {
@@ -83,11 +83,11 @@ namespace OutlookSafetyChex
                 if (tAttachment.DisplayName != tAttachment.FileName)
                     tFiles += " <" + tAttachment.FileName + ">";
                 tValue = tAttachment.DisplayName;
-                tNotes = Globals.AddInSafetyCheck.suspiciousLabel(tValue);
+                tNotes = instance.suspiciousLabel(tValue);
                 if (cst_Util.isValidString(tNotes))
-                    parent.log(logArea, "3", "ATTACHMENT", tNotes);
+                    parent.logFinding(logArea, "3", "ATTACHMENT", tNotes);
                 rowData = new[] { "Attachment [" + iAtt + "]:", tFiles, tNotes };
-                this.Rows.Add(rowData);
+                this.addDataRow(rowData);
             }
             return this.Rows.Count;
         }

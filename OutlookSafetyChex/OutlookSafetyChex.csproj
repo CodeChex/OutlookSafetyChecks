@@ -283,6 +283,18 @@
   -->
   <ItemGroup>
     <Compile Include="DataClasses\dtBody.cs" />
+    <Compile Include="Forms\dlgAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\dlgAbout.Designer.cs">
+      <DependentUpon>dlgAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\dlgSafetyCheckConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\dlgSafetyCheckConfig.Designer.cs">
+      <DependentUpon>dlgSafetyCheckConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\templateOptionList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -307,7 +319,6 @@
     <Compile Include="SupportLibraries\cst_HIBP.cs" />
     <Compile Include="SupportLibraries\cst_Outlook.cs" />
     <Compile Include="SupportLibraries\cst_Util.cs" />
-    <Compile Include="SupportLibraries\cst_WHOISXML_API.cs" />
     <Compile Include="SupportLibraries\cst_WHOISNET_API.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -318,6 +329,13 @@
     <Compile Include="Forms\dlgSafetyCheck.Designer.cs">
       <DependentUpon>dlgSafetyCheck.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\dlgAbout.resx">
+      <DependentUpon>dlgAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\dlgSafetyCheckConfig.resx">
+      <DependentUpon>dlgSafetyCheckConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\templateOptionList.resx">
       <DependentUpon>templateOptionList.cs</DependentUpon>
     </EmbeddedResource>

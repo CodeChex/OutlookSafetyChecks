@@ -32,6 +32,8 @@ namespace OutlookSafetyChex
             // aggregating Received entries (may have multple lines)
             String tName = null;
             String tValue = null;
+            if (mLogger != null)
+                mLogger.logInfo("Inspecting [" + arrHeader.Count() + "] Header Entries", logArea);
             foreach (String tHeader in arrHeader)
             {
                 Match m = rgx.Match(tHeader);
@@ -41,7 +43,7 @@ namespace OutlookSafetyChex
                     // save any pending
                     if (cst_Util.isValidString(tName))
                     {
-                        cst_Log.logVerbose(tName, "Header");
+                        if (mLogger != null) mLogger.logVerbose(tName, "Header");
                         String tNotes = checkHeader(parent, tName, tValue);
                     }
                     // start new one
@@ -57,7 +59,7 @@ namespace OutlookSafetyChex
             // save any pending
             if (cst_Util.isValidString(tName))
             {
-                cst_Log.logVerbose(tName, "Header");
+                if (mLogger != null) mLogger.logVerbose(tName, "Header");
                 String tNotes = checkHeader(parent, tName, tValue);
             }/*
             if (this.Rows.Count == 0)
@@ -76,18 +78,18 @@ namespace OutlookSafetyChex
             {
                 if (cst_Util.isValidString(tName) && cst_Util.isValidString(tValue))
                 {
-                    rc = Globals.AddInSafetyCheck.suspiciousValue(tValue, 1024);
+                    rc = instance.suspiciousValue(tValue, 1024);
                     String tStr = tName.ToLower();
                     switch ( tStr )
                     {
                         case "x-originating-ip":
-                            String tIPAddr = cst_Util.parseIPaddress(tValue);
+                            String tIPAddr = instance.mWebUtil.parseIPaddress(tValue);
                             if (cst_Util.isValidString(tIPAddr))
                             {
-                                rc += Globals.AddInSafetyCheck.suspiciousIP(tIPAddr);
+                                rc += instance.suspiciousIP(tIPAddr);
                                 if (Properties.Settings.Default.opt_Lookup_WHOIS)
                                 {
-                                    rc += cst_WHOIS.whoisOwner(tIPAddr, Properties.Settings.Default.opt_Use_CACHE);
+                                    rc += instance.mWHOIS.whoisOwner(tIPAddr, Properties.Settings.Default.opt_Use_CACHE);
                                 }
                             }
                             break;
@@ -95,13 +97,13 @@ namespace OutlookSafetyChex
                             cst_URL tLink = cst_URL.parseURL(tValue,false);
                             if (tLink != null)
                             {
-                                rc += Globals.AddInSafetyCheck.suspiciousLink(tLink.mURL);
+                                rc += instance.suspiciousLink(tLink.mURL);
                                 try
                                 {
                                      if (Properties.Settings.Default.opt_Lookup_WHOIS)
                                     {
-                                        String tDomain = cst_Util.pullDomain(tLink.mUri.Host);
-                                        rc += cst_WHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
+                                        String tDomain = instance.mWebUtil.pullDomain(tLink.mUri.Host);
+                                        rc += instance.mWHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
                                     }
                                 }
                                 catch
@@ -121,14 +123,14 @@ namespace OutlookSafetyChex
                         case "to":
                         case "from":
                         case "subject":
-                            rc += Globals.AddInSafetyCheck.suspiciousLabel(tValue);
+                            rc += instance.suspiciousLabel(tValue);
                             break;
                         */
                         default:
                             if ( (tStr.Contains("spam") || tStr.Contains("virus") ) && 
                                 Properties.Settings.Default.opt_ShowSpamHeaders)
                             {
-                                parent.log(logArea, "99", tName, tValue);
+                                parent.logFinding(logArea, "99", tName, tValue);
                             }
                             break;
                     }
@@ -137,11 +139,11 @@ namespace OutlookSafetyChex
             catch { }
             // always add to the list because it will be used for routing checks
             String[] rowData = new[] { tName, tValue, rc };
-            this.Rows.Add(rowData); 
+            this.addDataRow(rowData); 
             // log it
             if (cst_Util.isValidString(rc))
             {
-                parent.log(logArea, "4", tName, rc);
+                parent.logFinding(logArea, "4", tName, rc);
             }
             return rc;
         }
@@ -150,7 +152,7 @@ namespace OutlookSafetyChex
         {
             // Conent-Language: us-EN
             String rc = "";
-            List<String> checkCultures = AddInSafetyCheck.getLocalCULTUREs();
+            List<String> checkCultures = instance.getLocalCULTUREs();
             try
             {
                 if (cst_Util.isValidString(tValue))
@@ -171,8 +173,8 @@ namespace OutlookSafetyChex
             // Content-Type: text/html; charset="..."
             // Content-Type: multipart/alternative; boundary="..."
             String rc = "";
-            List<String> checkFormats = AddInSafetyCheck.getLocalMIMETYPEs();
-            List<String> checkCharSets = AddInSafetyCheck.getLocalCODEPAGEs();
+            List<String> checkFormats = instance.getLocalMIMETYPEs();
+            List<String> checkCharSets = instance.getLocalCODEPAGEs();
             String tFormat = null;
             String tCharSet = null;
             String rgxPattern = @"charset\=""(\S+)""";

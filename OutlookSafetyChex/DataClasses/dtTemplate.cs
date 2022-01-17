@@ -2,6 +2,7 @@
 using System;
 using System.Data;
 using System.Net.Mail;
+using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace OutlookSafetyChex
@@ -11,26 +12,57 @@ namespace OutlookSafetyChex
     // [SerializableAttribute]
     public abstract class dtTemplate : DataTable
     {
-        private static String logArea = "";
+        protected readonly AddInSafetyCheck instance = Globals.AddInSafetyCheck;
+        protected readonly cst_Log mLogger = Globals.AddInSafetyCheck.mLogger;
 
+        public Control mView = Globals.AddInSafetyCheck.dialogWindow;
+        private static readonly String logArea = "dtTemplate";
+ 
         public dtTemplate()
         {
             this.TableName = this.GetType().Name;
         }
 
+        public void addDataRow(object[] rowData)
+        {
+            DataRow rc = null;
+            try
+            {
+                if (rowData != null)
+                {
+                    if ( mView != null && mView.InvokeRequired)
+                    {
+                        mView.Invoke(new Action(delegate ()
+                        {
+                            rc = this.Rows.Add(rowData);
+                        }));
+                    }
+                    else
+                    {
+                        rc = this.Rows.Add(rowData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (mLogger != null) mLogger.logException(ex,logArea + "::addDataRow()");
+            }
+            //return rc;
+        }
+
         public String checkEmail(MailAddress tMailAddr, String logArea = null)
 		{
-            String tName = cst_Util.sanitizeEmail(tMailAddr.DisplayName,false);
-            String tAddr = cst_Util.sanitizeEmail(tMailAddr.Address,true);
+            String tName = instance.mWebUtil.sanitizeEmail(tMailAddr.DisplayName,false);
+            String tAddr = instance.mWebUtil.sanitizeEmail(tMailAddr.Address,true);
             // grab domain owner for email domain            
-			String tNotes = Globals.AddInSafetyCheck.suspiciousLink(Uri.UriSchemeMailto + ":" + tAddr,tName);
-			tNotes += Globals.AddInSafetyCheck.suspiciousEmail(tMailAddr);
-            tNotes += Globals.AddInSafetyCheck.suspiciousLabel(tName);
+			String tNotes = instance.suspiciousLink(Uri.UriSchemeMailto + ":" + tAddr,tName);
+			tNotes += instance.suspiciousEmail(tMailAddr);
+            tNotes += instance.suspiciousLabel(tName);
             // do we need to log it here?
             if (cst_Util.isValidString(tNotes) && cst_Util.isValidString(logArea))
             {
                 dsMailItem parent = this.DataSet as dsMailItem;
-                if (parent != null) parent.log(logArea, "4", "SUSPICIOUS EMAIL", tNotes);
+                if (parent != null) parent.logFinding(logArea, "4", "SUSPICIOUS EMAIL", tNotes);
             }
             return tNotes;
 		}
@@ -39,8 +71,17 @@ namespace OutlookSafetyChex
         {
             if (refresh)
             {
-                this.Rows.Clear();
-                Globals.AddInSafetyCheck.dialogWindow.Refresh();
+                if (mView != null && mView.InvokeRequired)
+                {
+                    mView.Invoke(new Action(delegate ()
+                    {
+                        this.Rows.Clear();
+                    }));
+                }
+                else
+                {
+                    this.Rows.Clear();
+                }
             }
             if (this.Rows.Count == 0)
             {
@@ -53,6 +94,18 @@ namespace OutlookSafetyChex
                         buildData(parent, myItem);
                     }
                 }
+            }
+            // UI
+            if (mView.InvokeRequired)
+            {
+                mView.Invoke(new Action( delegate ()
+                    {
+                        mView.Refresh();
+                    }));
+            }
+            else
+            {
+                mView.Refresh();
             }
             return this.Rows.Count;
         }

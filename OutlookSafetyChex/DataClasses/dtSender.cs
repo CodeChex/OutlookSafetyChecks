@@ -9,7 +9,7 @@ namespace OutlookSafetyChex
 {
     public class dtSender : dtTemplate
     {
-		static String logArea = Properties.Resources.Title_Contacts + " (Senders)";
+		private static readonly String logArea = Properties.Resources.Title_Contacts + " (Senders)";
 		public dtSender()
         {
 			this.Columns.Add("Field", Type.GetType("System.String"));
@@ -22,15 +22,16 @@ namespace OutlookSafetyChex
 		public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
 			// Obtain "From:"
-			String senderName = cst_Util.sanitizeEmail(myItem.SenderName,false);
-			String senderEmail = cst_Util.sanitizeEmail(myItem.SenderEmailAddress,true);
+			String senderName = instance.mWebUtil.sanitizeEmail(myItem.SenderName,false);
+			String senderEmail = instance.mWebUtil.sanitizeEmail(myItem.SenderEmailAddress,true);
             String senderOwner = "[not checked]";
 			String senderNotes = "";
 			String senderHost = null;
 			String senderDomain = null;
 			String senderUser = null;
-			senderNotes += Globals.AddInSafetyCheck.suspiciousLabel(senderName);
-			cst_Log.logVerbose("From: " + senderEmail, "Sender");
+			senderNotes += instance.suspiciousLabel(senderName);
+			if (mLogger != null) 
+				mLogger.logInfo("Inspecting [From: " + senderEmail + "]", logArea);
 			try
 			{
 				if (cst_Util.isValidString(senderEmail))
@@ -39,11 +40,11 @@ namespace OutlookSafetyChex
 					// grab domain owner for email domain   
 					senderUser = senderAddress.User;
 					senderHost = senderAddress.Host;
-					senderDomain = cst_Util.pullDomain(senderHost);
+					senderDomain = instance.mWebUtil.pullDomain(senderHost);
 					// check email
 					if (Properties.Settings.Default.opt_Lookup_WHOIS)
 					{
-						senderOwner = cst_WHOIS.whoisOwner(senderDomain, Properties.Settings.Default.opt_Use_CACHE);
+						senderOwner = instance.mWHOIS.whoisOwner(senderDomain, Properties.Settings.Default.opt_Use_CACHE);
 					}
 					senderNotes += checkEmail(senderAddress, logArea);
 				}
@@ -55,27 +56,29 @@ namespace OutlookSafetyChex
 			catch (Exception ex)
             {
 				senderNotes += "[* Invalid \"From:\" Email Address Specified]";
-                cst_Log.logException(ex, "Parsing From: " + senderEmail);
+                if (mLogger != null) mLogger.logException(ex, "Parsing From: " + senderEmail);
             }
             // add row
             String[] rowData = new[] { "From", senderName, senderEmail, senderOwner, senderNotes };
-			this.Rows.Add(rowData);
+			this.addDataRow(rowData);
 			// log it
 			if (cst_Util.isValidString(senderNotes))
-				parent.log(logArea, "1", "ANOMALY", senderNotes);
+				parent.logFinding(logArea, "1", "ANOMALY", senderNotes);
 
 			// Obtain "ReplyTo:"
+			if (mLogger != null)
+				mLogger.logInfo("Inspecting [" + myItem.ReplyRecipients.Count + "] Reply-To", logArea);
 			foreach (Outlook.Recipient tReplyAddr in myItem.ReplyRecipients)
 			{
 				String tTag = "Reply-To:"; // cst_Outlook.getRecipientTag(tReplyAddr);
 				String tType = cst_Outlook.getRecipientType(tReplyAddr);
 				// Obtain Sender (Reply-To:)
-				String replyToName = cst_Util.sanitizeEmail(tReplyAddr.Name,false);
-				String replyToEmail = cst_Util.sanitizeEmail(tReplyAddr.Address,true);
+				String replyToName = instance.mWebUtil.sanitizeEmail(tReplyAddr.Name,false);
+				String replyToEmail = instance.mWebUtil.sanitizeEmail(tReplyAddr.Address,true);
 				String replyToOwner = "[not checked]";
 				String replyToNotes = "";
-				cst_Log.logVerbose("Reply-To: [" + replyToEmail + "]", "Sender");
-				replyToNotes += Globals.AddInSafetyCheck.suspiciousLabel(replyToName);
+				if (mLogger != null) mLogger.logVerbose("Reply-To: [" + replyToEmail + "]", "Sender");
+				replyToNotes += instance.suspiciousLabel(replyToName);
 				// grab domain owner for email domain 
 				try
 				{
@@ -83,11 +86,11 @@ namespace OutlookSafetyChex
 					{
 						MailAddress replyToAddress = new MailAddress(replyToEmail, replyToName);
 						String replyToHost = replyToAddress.Host;
-						String replyToDomain = cst_Util.pullDomain(replyToHost);
+						String replyToDomain = instance.mWebUtil.pullDomain(replyToHost);
 						// start checks
 						if (Properties.Settings.Default.opt_Lookup_WHOIS)
 						{
-							replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
+							replyToOwner = instance.mWHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
 						}
 						replyToNotes += checkEmail(replyToAddress, logArea);
 						// advanced checks
@@ -120,13 +123,13 @@ namespace OutlookSafetyChex
                 {
 					replyToNotes += "[* Invalid \"" + tTag + ":\" Email Address Specified]";
 					//parent.log(logTitle, "1", "INVALID DATA", "Invalid [" + tTag + ":] Email Address Specified");
-                    cst_Log.logException(ex, "Parsing " + tTag + ": " + replyToEmail);
+                    if (mLogger != null) mLogger.logException(ex, "Parsing " + tTag + ": " + replyToEmail);
                 }
                 rowData = new[] { tTag, replyToName, replyToEmail, replyToOwner, replyToNotes };
-				this.Rows.Add(rowData);
+				this.addDataRow(rowData);
 				// log it
 				if (cst_Util.isValidString(replyToNotes))
-					parent.log(logArea, "1", "ANOMALY", replyToNotes);
+					parent.logFinding(logArea, "1", "ANOMALY", replyToNotes);
 			}
 
 			// Obtain "Return-Path:"
@@ -140,13 +143,15 @@ namespace OutlookSafetyChex
 					String tKey = tRow.ItemArray[0] as String;
 					if ( tKey.Equals("Return-Path",StringComparison.OrdinalIgnoreCase) )
 					{
-						String tVal = cst_Util.sanitizeEmail(tRow.ItemArray[1] as String, true);
-						cst_Log.logVerbose("Return-Path: [" + tVal + "]", "Sender");
+						String tVal = instance.mWebUtil.sanitizeEmail(tRow.ItemArray[1] as String, true);
+						if (mLogger != null) mLogger.logVerbose("Return-Path: [" + tVal + "]", "Sender");
 						if (cst_Util.isValidString(tVal)) arrReply.Add(tVal); 
 					}
 				}
 			}
-            foreach (String iReturnPath in arrReply)
+			if (mLogger != null)
+				mLogger.logInfo("Inspecting [" + arrReply.Count + "] Return-Path", logArea);
+			foreach (String iReturnPath in arrReply)
             {
                 // Obtain Sender (Return-Path:)
                 String replyToOwner = "[not checked]";
@@ -154,16 +159,16 @@ namespace OutlookSafetyChex
                 // grab domain owner for email domain            
                 try
                 {
-					String replyToEmail = cst_Util.sanitizeEmail(iReturnPath,true);
+					String replyToEmail = instance.mWebUtil.sanitizeEmail(iReturnPath,true);
 					if (cst_Util.isValidString(replyToEmail))
 					{
 						MailAddress replyToAddress = new MailAddress(replyToEmail);
 						String replyToHost = replyToAddress.Host;
-						String replyToDomain = cst_Util.pullDomain(replyToHost);
+						String replyToDomain = instance.mWebUtil.pullDomain(replyToHost);
 						// start checks
 						if (Properties.Settings.Default.opt_Lookup_WHOIS)
 						{
-							replyToOwner = cst_WHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
+							replyToOwner = instance.mWHOIS.whoisOwner(replyToDomain, Properties.Settings.Default.opt_Use_CACHE);
 						}
 						replyToNotes = checkEmail(replyToAddress, logArea);
 						// advanced checks
@@ -192,13 +197,13 @@ namespace OutlookSafetyChex
                 {
                     replyToNotes += "[* Invalid \"Return-Path:\" Email Address Specified]";
                     // parent.log(logTitle, "1", "INVALID DATA", "Invalid [Return-Path:] Email Address Specified");
-                    cst_Log.logException(ex, "Parsing Return-Path: " + iReturnPath);
+                    if (mLogger != null) mLogger.logException(ex, "Parsing Return-Path: " + iReturnPath);
                 }
                 rowData = new[] { "Return-Path", "", iReturnPath, replyToOwner, replyToNotes };
-                this.Rows.Add(rowData);
+                this.addDataRow(rowData);
 				// log it
 				if (cst_Util.isValidString(replyToNotes))
-					parent.log(logArea, "1", "ANOMALY", replyToNotes);
+					parent.logFinding(logArea, "1", "ANOMALY", replyToNotes);
 			}
 			return this.Rows.Count;
         }

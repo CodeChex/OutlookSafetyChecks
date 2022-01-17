@@ -270,6 +270,7 @@
             this.Controls.Add(this.panelMid);
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.panelLeft);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "templateOptionList";
             this.Text = "Option List Editor";
             this.panelLeft.ResumeLayout(false);

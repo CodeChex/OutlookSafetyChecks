@@ -8,9 +8,10 @@ namespace OutlookSafetyChex
     public class dtWarnings : dtTemplate
 	{
 		static String logArea = Properties.Resources.Title_Main;
-		public dtWarnings()
+		public dtWarnings() 
 		{
 			this.TableName = this.GetType().Name;
+			this.Columns.Add("#", Type.GetType("System.String"));
 			this.Columns.Add("Area", Type.GetType("System.String"));
 			//this.Columns.Add("Severity", Type.GetType("System.String"));
 			this.Columns.Add("Finding", Type.GetType("System.String"));

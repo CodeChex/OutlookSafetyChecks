@@ -1,30 +1,38 @@
-﻿using System;
+﻿using OutlookSafetyChex;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Whois.NET;
 
 namespace CheccoSafetyTools
 {
-    abstract class cst_WHOIS // NET_API
+	public class cst_WHOIS // NET_API
 	{
 		public static Dictionary<String, String> whoisCache = new Dictionary<String, String>();
-		private static String[] arrFlds = new string[] { 
-			"_OWNER", 
-			"REGISTRANT", 
-			"REGISTRANT ORGANIZATION", 
-			"ORGANISATION", 
-			"REGISTRANT NAME", 
-			"NAME", 
-			"RESELLER", 
-			"REGISTRAR" 
+		private static String[] arrFlds = new string[] {
+			"_OWNER",
+			"REGISTRANT",
+			"REGISTRANT ORGANIZATION",
+			"ORGANISATION",
+			"REGISTRANT NAME",
+			"NAME",
+			"RESELLER",
+			"REGISTRAR"
 		};
 
-		public static void clearCaches()
+		protected readonly cst_Log mLogger = Globals.AddInSafetyCheck.mLogger;
+
+		public cst_WHOIS(cst_Log tLogger)
+        {
+			mLogger = tLogger;
+        }
+
+		public void clearCaches()
 		{
 			whoisCache.Clear();
 		}
 
-		public static String whoisOwner(String fqdn,bool use_CACHE)
+		public String whoisOwner(String fqdn,bool use_CACHE)
 		{
 			String rc = "";
             try
@@ -54,7 +62,7 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_WHOISNET_API::whoisOwner(" + fqdn + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_WHOISNET_API::whoisOwner(" + fqdn + ")");
             }
 			if (!cst_Util.isValidString(rc))
             {
@@ -63,7 +71,7 @@ namespace CheccoSafetyTools
             return rc;
 		}
 
-		private static Dictionary<String,String> queryWHOIS(String tDomain, int nest = 0, String useRegistrar = null)
+		private Dictionary<String,String> queryWHOIS(String tDomain, int nest = 0, String useRegistrar = null)
 		{
 			Dictionary<String,String> rc = null;
 			try
@@ -90,12 +98,12 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Log.logException(ex, "cst_WHOISNET_API::queryWHOIS(" + tDomain + ")");
+				if (mLogger != null) mLogger.logException(ex, "cst_WHOISNET_API::queryWHOIS(" + tDomain + ")");
 			}
 			return rc;
 		}
 
-		private static Dictionary<String,String> parseRawWHOIS(String rawData)
+		private Dictionary<String,String> parseRawWHOIS(String rawData)
 		{
 			 Dictionary<String,String> rc = new  Dictionary<String,String>();
 			// splitting the headers into parseable lines
@@ -131,7 +139,7 @@ namespace CheccoSafetyTools
 				}
 				catch (Exception ex)
 				{
-					cst_Log.logException(ex, "cst_WHOISNET_API::parseRawDataBlock(" + tHeader + ")");
+					if (mLogger != null) mLogger.logException(ex, "cst_WHOISNET_API::parseRawDataBlock(" + tHeader + ")");
 				}
 			}
 			return rc;

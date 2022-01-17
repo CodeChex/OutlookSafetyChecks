@@ -46,13 +46,15 @@ namespace OutlookSafetyChex
             }
             // start parsing
             int nHop = 0;
+            if (mLogger != null)
+                mLogger.logInfo("Inspecting [" + arrRECVD.Count + "] Routing Hops", logArea);
             foreach (String s in arrRECVD)
             {
                 if (cst_Util.isValidString(s))
                 {
                     nHop++;
-                    cst_Log.logVerbose(nHop + ": " + s, "Route");
-                    // cst_Log.logInfo(s,"dtRouteList::buildData [Received Header]");
+                    if (mLogger != null) mLogger.logVerbose(nHop + ": " + s, "Route");
+                    // if (mLogger != null) mLogger.logInfo(s,"dtRouteList::buildData [Received Header]");
                     /* (https://www.pobox.com/helpspot/index.php?pg=kb.page&id=253)
                      The structure of a "Received:" header
                          from 
@@ -233,20 +235,21 @@ namespace OutlookSafetyChex
                     }
                     // simple checks
                     String tNotes = "";
-                    if (cst_Util.isValidIPAddress(tFROM_HOST) && cst_Util.isValidIPAddress(tFROM_IP) && tFROM_HOST != tFROM_IP)
+                    if (instance.mWebUtil.isValidIPAddress(tFROM_HOST) &&
+                        instance.mWebUtil.isValidIPAddress(tFROM_IP) && tFROM_HOST != tFROM_IP)
                     {
                         tNotes += "FROM route specifies mismatched IP addresses\r\n";
                     }
                     // log it
                     if (cst_Util.isValidString(tNotes))
                     {
-                        parent.log(logArea, "4", "ROUTING", tNotes);
+                        parent.logFinding(logArea, "4", "ROUTING", tNotes);
                     }
                     // populate it
                     String[] rowData = new[] { nHop.ToString(), s,
                         tFROM, tFROM_HOST, tFROM_IP, tBY, tBY_HOST, tBY_APP,
                         tWITH, tID, tFOR, tTIMESTAMP, tNotes };
-                    this.Rows.Add(rowData);
+                    this.addDataRow(rowData);
                 }
 			}
             return this.Rows.Count;

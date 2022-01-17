@@ -1,18 +1,22 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace CheccoSafetyTools
 {
-	abstract class cst_HIBP
+    public class cst_HIBP
 	{
-        private static Dictionary<String, String> tHeaders = new Dictionary<String,String>() {
+		protected readonly cst_Log mLogger = null;
+		protected readonly cst_Web mWebUtil = null;
+
+		public cst_HIBP(cst_Log tLogger, cst_Web tWebUtil)
+		{
+			this.mLogger = tLogger;
+			this.mWebUtil = tWebUtil;
+		}
+
+		private static Dictionary<String, String> tHeaders = new Dictionary<String,String>() {
             {  "User-Agent", "Pwnage-Checker-CheccoSafetyTools" },
         };
 		private readonly static String HIBP_URL= "https://haveibeenpwned.com/api/v2";
@@ -26,14 +30,14 @@ namespace CheccoSafetyTools
 			"breaches?domain={domain}",
 		*/
 
-		public static void clearCaches()
+		public void clearCaches()
 		{
 			accountCache.Clear();
 			emailCache.Clear();
 			domainCache.Clear();
 		}
 
-		private static Dictionary<String, String> parseHIBP(JToken json)
+		private Dictionary<String, String> parseHIBP(JToken json)
 		{
 			Dictionary<String, String> rc = new Dictionary<String, String>();
 			try
@@ -66,12 +70,12 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Log.logException(ex, "cst_HIBP::parseHIBP");
+				if (mLogger != null) mLogger.logException(ex, "cst_HIBP::parseHIBP");
 			}
 			return rc;
 		}
 
-		public static Dictionary<String,String> wasEmailPasted(String tEmail, bool use_CACHE)
+		public Dictionary<String,String> wasEmailPasted(String tEmail, bool use_CACHE)
 		{
 			Dictionary<String, String> rc = new Dictionary<String, String>();
 			try
@@ -82,19 +86,19 @@ namespace CheccoSafetyTools
                 if (!use_CACHE || !isCached)
 				{
                     Thread.Sleep(1500); // yep, it's necessary
-					json = cst_Util.wgetJSON(HIBP_URL + "/pasteaccount/" + inStr, tHeaders);
+					json = mWebUtil.wgetJSON(HIBP_URL + "/pasteaccount/" + inStr, tHeaders);
                     if (!isCached) accountCache.Add(inStr, json);
 				}
 				if ( json != null ) rc = parseHIBP(json);
 			}
 			catch (Exception ex)
 			{
-				cst_Log.logException(ex, "cst_HIBP::wasEmailPasted(" + tEmail+")");
+				if (mLogger != null) mLogger.logException(ex, "cst_HIBP::wasEmailPasted(" + tEmail+")");
 			}
 			return rc;
 		}
 
-		public static Dictionary<String, String> wasEmailBreached(String tStr, bool use_CACHE)
+		public Dictionary<String, String> wasEmailBreached(String tStr, bool use_CACHE)
 		{
 			Dictionary<String, String> rc = new Dictionary<String, String>();
 			try
@@ -105,19 +109,19 @@ namespace CheccoSafetyTools
                 if (!use_CACHE || !isCached)
 				{
                     Thread.Sleep(1500); // yep, it's necessary
-                    json = cst_Util.wgetJSON(HIBP_URL + "/breachedaccount/" + inStr, tHeaders);
+                    json = mWebUtil.wgetJSON(HIBP_URL + "/breachedaccount/" + inStr, tHeaders);
                     if (!isCached) emailCache.Add(inStr, json);
 				}
                 if (json != null) rc = parseHIBP(json);
 			}
 			catch (Exception ex)
 			{
-                cst_Log.logException(ex, "cst_HIBP::wasEmailBreached(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_HIBP::wasEmailBreached(" + tStr + ")");
             }
             return rc;
 		}
 
-		public static Dictionary<String, String> wasDomainBreached(String tStr, bool use_CACHE)
+		public Dictionary<String, String> wasDomainBreached(String tStr, bool use_CACHE)
 		{
 			Dictionary<String, String> rc = new Dictionary<String, String>();
 			try
@@ -128,14 +132,14 @@ namespace CheccoSafetyTools
                 if (!use_CACHE || !isCached)
 				{
                     Thread.Sleep(1500); // yep, it's necessary
-                    json = cst_Util.wgetJSON(HIBP_URL + "/breaches?domain=" + inStr, tHeaders);
+                    json = mWebUtil.wgetJSON(HIBP_URL + "/breaches?domain=" + inStr, tHeaders);
                     if (!isCached) domainCache.Add(inStr, json);
 				}
                 if (json != null) rc = parseHIBP(json);
 			}
 			catch (Exception ex)
 			{
-                cst_Log.logException(ex, "cst_HIBP::wasDomainBreached(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_HIBP::wasDomainBreached(" + tStr + ")");
             }
             return rc;
 		}

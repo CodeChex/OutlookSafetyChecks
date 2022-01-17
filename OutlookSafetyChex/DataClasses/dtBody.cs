@@ -31,20 +31,21 @@ namespace OutlookSafetyChex
                         String tHtml = myItem.HTMLBody;
                         if (Properties.Settings.Default.test_Body)
                         {
-                            cst_Log.logVerbose("Text Check", "HTML Parsing");
                             // Read links from DOM
-                            IHtmlDocument doc = cst_Util.htmlParser.ParseDocument(tHtml);
+                            IHtmlDocument doc = instance.mWebUtil.htmlParser.ParseDocument(tHtml);
                             List<IElement> tNodeList = traverseDOM(doc.Body.Children);
                             if (tNodeList != null)
                             {
+                                if (mLogger != null)
+                                    mLogger.logInfo("Inspecting [" + tNodeList.Count + "] HTML Elements", logArea);
                                 foreach (IElement tNode in tNodeList)
                                 {
                                     String tTag = tNode.NodeName;
-                                    cst_Log.logVerbose(tTag, "HTML Parsing");
+                                    if (mLogger != null) mLogger.logVerbose(tTag, "HTML Parsing");
                                     tNotes = "";
                                     // check plaintext
                                     String tStr = tNode.TextContent;
-                                    tNotes += Globals.AddInSafetyCheck.suspiciousText(tStr);
+                                    tNotes += instance.suspiciousText(tStr);
                                     // check HTML attributes for hiding/beaconing techniques
                                     String tLink = "";
                                     int uWD = -1;
@@ -58,7 +59,7 @@ namespace OutlookSafetyChex
                                         case "embed":
                                         case "area":
                                             tLink = tNode.GetAttribute("src");
-                                            tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag, false);
+                                            tNotes += instance.suspiciousLink(tLink, tTag, false);
                                             uWD = int.Parse(tNode.GetAttribute("width"));
                                             uHT = int.Parse(tNode.GetAttribute("height"));
                                             if (uWD == 0 || uHT == 0)
@@ -68,12 +69,12 @@ namespace OutlookSafetyChex
                                             break;
                                         case "a":
                                             tLink = tNode.GetAttribute("href");
-                                            tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag, false);
+                                            tNotes += instance.suspiciousLink(tLink, tTag, false);
                                             break;
                                         case "object":
                                         case "applet":
                                             tLink = tNode.GetAttribute("codebase");
-                                            tNotes += Globals.AddInSafetyCheck.suspiciousLink(tLink, tTag);
+                                            tNotes += instance.suspiciousLink(tLink, tTag);
                                             uWD = int.Parse(tNode.GetAttribute("width"));
                                             uHT = int.Parse(tNode.GetAttribute("height"));
                                             if (uWD == 0 || uHT == 0)
@@ -131,7 +132,7 @@ namespace OutlookSafetyChex
                                                         break;
                                                     case "background-image":
                                                     case "background-attachment":
-                                                        tReason = Globals.AddInSafetyCheck.suspiciousLink(tValue, tName, false);
+                                                        tReason = instance.suspiciousLink(tValue, tName, false);
                                                         if (cst_Util.isValidString(tReason))
                                                         {
                                                             sneaky = true;
@@ -151,8 +152,8 @@ namespace OutlookSafetyChex
                                     if ( cst_Util.isValidString(tNotes) )
                                     {
                                         rowData = new[] { "HTML <" + tTag + ">", "" + tNode.Text().Length + "", tNotes };
-                                        this.Rows.Add(rowData);
-                                        parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                                        this.addDataRow(rowData);
+                                        parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                                     }
                                 }
                             }
@@ -162,22 +163,23 @@ namespace OutlookSafetyChex
                         byte[] buffer = myItem.RTFBody;
                         if (Properties.Settings.Default.test_Body)
                         {
-                            cst_Log.logVerbose("Text Check", "RTF Parsing");
                             string s = System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
-                            tNotes += Globals.AddInSafetyCheck.suspiciousText(s);
+                            tNotes += instance.suspiciousText(s);
                             RTFDomDocument rtfDoc = new RTFDomDocument();
                             rtfDoc.LoadRTFText(s);
                             List<DictionaryEntry> arrElements = traverseRTF(rtfDoc.Elements);
+                            if (mLogger != null)
+                                mLogger.logInfo("Inspecting [" + arrElements.Count + "] RTF Elements", logArea);
                             foreach (DictionaryEntry tNode in arrElements)
                             {
                                 String tTag = tNode.Key as String;
                                 String tStr = tNode.Value as String;
                                 tNotes = "";
-                                cst_Log.logVerbose(tTag, "RTF Parsing");
+                                if (mLogger != null) mLogger.logVerbose(tTag, "RTF Parsing");
                                 // check raw text
                                 try
                                 {
-                                    tNotes += Globals.AddInSafetyCheck.suspiciousText(tStr);
+                                    tNotes += instance.suspiciousText(tStr);
                                 }
                                 catch { }
                                 // TODO: check embedded items that have external sources
@@ -185,8 +187,8 @@ namespace OutlookSafetyChex
                                 if (cst_Util.isValidString(tNotes))
                                 {
                                     rowData = new[] { "RTF {" + tTag + "}", "" + tStr.Length + "", tNotes };
-                                    this.Rows.Add(rowData);
-                                    parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                                    this.addDataRow(rowData);
+                                    parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                                 }
                             }
                         }
@@ -194,23 +196,25 @@ namespace OutlookSafetyChex
                     case Outlook.OlBodyFormat.olFormatPlain:
                         tNotes = "";
                         String tText = myItem.Body;
-                        cst_Log.logVerbose("Plain Text", "Parsing");
+                        if (mLogger != null)
+                            mLogger.logInfo("Inspecting Plain Text", logArea);
                         if (Properties.Settings.Default.test_Body)
                         {
-                             tNotes += Globals.AddInSafetyCheck.suspiciousText(tText);
+                             tNotes += instance.suspiciousText(tText);
                         }
                         // log results
                         if (cst_Util.isValidString(tNotes))
                         {
                             rowData = new[] { "Plain Text", "" + tText.Length + "", tNotes };
-                            this.Rows.Add(rowData);
-                            parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                            this.addDataRow(rowData);
+                            parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                         }
                         break;
                     default:
                         tNotes = "";
                         String tData = myItem.Body;
-                        cst_Log.logVerbose("Raw Data", "Parsing");
+                        if (mLogger != null)
+                            mLogger.logInfo("Inspecting Raw Data", logArea);
                         if (Properties.Settings.Default.test_Body)
                         {
                             tNotes += "Cannot Parse Contents\r\n";
@@ -219,8 +223,8 @@ namespace OutlookSafetyChex
                         if (cst_Util.isValidString(tNotes))
                         {
                             rowData = new[] { "Raw Data", "" + tData.Length + "", tNotes };
-                            this.Rows.Add(rowData);
-                            parent.log(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                            this.addDataRow(rowData);
+                            parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                         }
                         break;
                 }

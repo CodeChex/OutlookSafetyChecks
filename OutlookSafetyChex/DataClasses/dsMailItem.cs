@@ -12,9 +12,15 @@ namespace OutlookSafetyChex
     // [SerializableAttribute]
     public class dsMailItem : DataSet
     {
-        private static  Dictionary<String,dsMailItem> mapDataSets = new  Dictionary<String,dsMailItem>();
+        // static instance map
+        private static Dictionary<String,dsMailItem> mapDataSets = new  Dictionary<String,dsMailItem>();
+
+        // non-static members
+        protected readonly AddInSafetyCheck instance = Globals.AddInSafetyCheck;
+        protected readonly cst_Log mLogger = Globals.AddInSafetyCheck.mLogger;
+ 
         public readonly Outlook.MailItem mailItem;
-		private readonly dtWarnings logTable = new dtWarnings();
+        protected readonly dtWarnings findingsLog = new dtWarnings();
 
         public static void RemoveAll()
         {
@@ -62,16 +68,18 @@ namespace OutlookSafetyChex
             return null;
         }
 
-        public void log(String tType, String tSeverity, String tCategory, String tDetails)
+        public void logFinding(String tType, String tSeverity, String tCategory, String tDetails)
         {
             if ( cst_Util.isValidString(tType)
                 && cst_Util.isValidString(tCategory)
                 && cst_Util.isValidString(tDetails) )
             {
-                cst_Log.logMessage(tDetails, tCategory);
-                if (logTable != null)
+                if (mLogger != null) mLogger.logMessage(tDetails, tCategory);
+                if (findingsLog != null)
                 {
-                    logTable.Rows.Add(new[] { tType, /* tSeverity, */ tCategory, tDetails });
+                    String szCount = findingsLog.Rows.Count.ToString();
+                    String[] row = new[] { szCount, tType, /* tSeverity, */ tCategory, tDetails };
+                    findingsLog.addDataRow(row);
                 }
             }
 		}
@@ -83,7 +91,7 @@ namespace OutlookSafetyChex
                 if ( !mapDataSets.ContainsKey(myItem.EntryID) )
                 {
                     this.mailItem = myItem;
-					this.Tables.Add(logTable);
+					this.Tables.Add(findingsLog);
 					this.Tables.Add(new dtEnvelope());
                     this.Tables.Add(new dtHeaders());
                     this.Tables.Add(new dtSender());

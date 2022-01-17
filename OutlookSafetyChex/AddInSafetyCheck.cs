@@ -1,5 +1,6 @@
 ﻿// non-standard libraries
 using CheccoSafetyTools;
+using OutlookSafetyChex.Forms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using System.Xml;
 using MessageBox = System.Windows.Forms.MessageBox;
 // shortcuts
@@ -32,9 +34,15 @@ namespace OutlookSafetyChex
         private static List<String> cacheCODEPAGEs = null;
 
         // non-static
+        public bool ABORT_PROCESSING = false;
         public dsMailItem currentDataSet = null;
         public dlgSafetyCheck dialogWindow = null;
-
+        // utility classes
+        public cst_Log mLogger = null;
+        public cst_Web mWebUtil = null;
+        public cst_DNSBL mDNSBL = null;
+        public cst_WHOIS mWHOIS = null;
+        public cst_HIBP mHIBP = null;
         #endregion
 
         #region Setup
@@ -42,6 +50,17 @@ namespace OutlookSafetyChex
         {
             // selection handler
             myExplorer = this.Application.ActiveExplorer();
+            // initialization
+            mLogger = new cst_Log();
+            mWebUtil = new cst_Web(mLogger);
+            mDNSBL = new cst_DNSBL(mLogger);
+            mWHOIS = new cst_WHOIS(mLogger);
+            mHIBP = new cst_HIBP(mLogger,mWebUtil);
+ 
+            if (!cst_Util.isValidCollection(mDNSBL.arrDNSBL))
+                mDNSBL.arrDNSBL = getLocalDNSBL();
+            if (!cst_Util.isValidCollection(mDNSBL.arrDNSBL))
+                mDNSBL.arrDNSBL = getCommonDNSBLsites();
         }
 
         private void AddInSafetyCheck_Shutdown(object sender, System.EventArgs args)
@@ -70,7 +89,7 @@ namespace OutlookSafetyChex
             Outlook.MailItem myMail = null;
             try
             {
-                Outlook.Selection t = Globals.AddInSafetyCheck.Application.ActiveExplorer().Selection;
+                Outlook.Selection t = this.Application.ActiveExplorer().Selection;
                 if (t != null && t.Count > 0 && t[1] is Outlook.MailItem)
                 {
                     myMail = t[1] as Outlook.MailItem;
@@ -78,7 +97,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::getSelectedMailItem()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::getSelectedMailItem()");
             }
             return myMail;
         }
@@ -88,7 +107,7 @@ namespace OutlookSafetyChex
             Outlook.MailItem myMail = null;
             try
             {
-                Outlook.Inspector t = Globals.AddInSafetyCheck.Application.ActiveInspector();
+                Outlook.Inspector t = this.Application.ActiveInspector();
                 if (t != null && t is Outlook.MailItem)
                 {
                     myMail = t.CurrentItem as Outlook.MailItem;
@@ -96,7 +115,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::getOpenMailItem()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::getOpenMailItem()");
             }
             return myMail;
         }
@@ -112,7 +131,7 @@ namespace OutlookSafetyChex
                 if (selectMailItem(myItem) )
                 {
                     dialogWindow = new dlgSafetyCheck(myItem);
-                    dialogWindow.ShowDialog();
+                    dialogWindow.ShowDialog(); 
                 }
                 else
                 {
@@ -121,7 +140,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::loadDialog()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::loadDialog()");
             }
         }
 
@@ -137,7 +156,7 @@ namespace OutlookSafetyChex
 			}
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::isCurrentMailItem()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::isCurrentMailItem()");
             }
             return rc;
         }
@@ -157,33 +176,33 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::selectMailItem()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::selectMailItem()");
             }
             return rc;
         }
 
-        public DataTable findTableName(String tableName)
+        public dtTemplate findTableName(String tableName)
         {
             try
             {
-                if (currentDataSet != null) return currentDataSet.findTableName(tableName);
+                if (currentDataSet != null) return currentDataSet.findTableName(tableName) as dtTemplate;
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::findTableName(" + tableName + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::findTableName(" + tableName + ")");
             }
             return null;
         }
 
-        public DataTable findTableClass<T>()
+        public dtTemplate findTableClass<T>()
         {
             try
             {
-                if (currentDataSet != null) return currentDataSet.findTableClass<T>();
+                if (currentDataSet != null) return currentDataSet.findTableClass<T>() as dtTemplate;
             }
             catch (Exception ex)
             {
-               cst_Log.logException(ex, "AddInSafetyCheck::findTableName(" + typeof(T).Name + ")");
+               if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::findTableName(" + typeof(T).Name + ")");
             }
             return null;
         }
@@ -198,7 +217,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::populateTableName(" + tableName + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::populateTableName(" + tableName + ")");
             }
             return rc;
         }
@@ -213,7 +232,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::populateTable(" + typeof(T).Name + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::populateTable(" + typeof(T).Name + ")");
             }
             return rc;
         }
@@ -225,12 +244,20 @@ namespace OutlookSafetyChex
 		{
 			try
 			{
-                Globals.AddInSafetyCheck.dialogWindow.logGridView.Refresh();
+                // UI
+                DataGridView tView = this.dialogWindow.logGridView;
+                if (tView.InvokeRequired)
+                    tView.Invoke(new Action(delegate () {
+                        tView.Refresh();
+                    }));
+                else
+                    tView.Refresh();
+                // populate data
                 populateTable<dtWarnings>(refresh);
 			}
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::resetLog()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::resetLog()");
             }
         }
 
@@ -242,7 +269,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::ParseEnvelope()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::ParseEnvelope()");
             }
         }
 
@@ -254,7 +281,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::ParseHeaders()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::ParseHeaders()");
             }
         }
  
@@ -267,7 +294,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeContacts()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::AnalyzeContacts()");
             }
         }
 
@@ -279,7 +306,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeBody()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::AnalyzeBody()");
             }
         }
         public void AnalyzeLinks(bool refresh = false)
@@ -291,7 +318,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeLinks()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::AnalyzeLinks()");
             }
         }
 
@@ -300,12 +327,12 @@ namespace OutlookSafetyChex
         {
             try
 			{
-				populateTable<dtRouteList>(refresh);
+                populateTable<dtRouteList>(refresh);
 				populateTable<dtRoutesCheck>(refresh);
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeRoutes()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::AnalyzeRoutes()");
             }
         }
 
@@ -317,7 +344,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::AnalyzeAttachments()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::AnalyzeAttachments()");
             }
         }
 
@@ -325,7 +352,7 @@ namespace OutlookSafetyChex
 
         #region helper utilities
         // Blacklist
-        public static List<String> getBaseBlacklist()
+        public List<String> getBaseBlacklist()
         {
             List<String> rc = null;
             try
@@ -335,7 +362,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static List<String> getLocalBlacklist()
+        public List<String> getLocalBlacklist()
         {
             List<String> rc = null;
             try
@@ -345,7 +372,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static void saveLocalBlacklist(List<String> newList)
+        public void saveLocalBlacklist(List<String> newList)
         {
             try
             {
@@ -355,12 +382,12 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalBlacklist()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveLocalBlacklist()");
             }
         }
 
         //Whitelist
-        public static List<String> getBaseWhitelist()
+        public List<String> getBaseWhitelist()
         {
             List<String> rc = null;
             try
@@ -371,7 +398,7 @@ namespace OutlookSafetyChex
             return rc;
         }
 
-        public static List<String> getLocalWhitelist()
+        public List<String> getLocalWhitelist()
         {
             List<String> rc = null;
             try
@@ -381,7 +408,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static void saveLocalWhitelist(List<String> newList)
+        public void saveLocalWhitelist(List<String> newList)
         {
             try
             {
@@ -391,12 +418,12 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalWhitelist()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveLocalWhitelist()");
             }
         }
 
         // TLD
-        public static List<String> getCacheTLDs()
+        public List<String> getCacheTLDs()
         {
             if (cacheTLDs == null)
             {
@@ -405,7 +432,7 @@ namespace OutlookSafetyChex
             // read TLDs from IANA
             if (cacheTLDs.Count == 0)
             {
-                String t = cst_Util.wgetString("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
+                String t = mWebUtil.wgetString("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
                 String[] res = t.Split('\n');
                 for (int i = 0; i < res.Length; i++)
                 {
@@ -423,14 +450,14 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheTLDs()");
+                    if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveCacheTLDs()");
                 }
             }
             return cacheTLDs;
         }
 
         // DNSBL
-        public static List<String> getCommonDNSBLsites()
+        public List<String> getCommonDNSBLsites()
         {
             List<String> rc = null;
             try
@@ -441,7 +468,7 @@ namespace OutlookSafetyChex
             return rc;
         }
 
-        public static List<String> getLocalDNSBL()
+        public List<String> getLocalDNSBL()
         {
             List<String> rc = null;
             try
@@ -452,7 +479,7 @@ namespace OutlookSafetyChex
             return rc;
         }
 
-        public static void saveDNSBLsites(List<String> newList)
+        public void saveDNSBLsites(List<String> newList)
         {
             try
             {
@@ -462,11 +489,11 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalDNSBLs()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveLocalDNSBLs()");
             }
         }
 
-        public static List<String> getCacheMIMETYPEs()
+        public List<String> getCacheMIMETYPEs()
         {
             if (cacheMIMETYPEs == null)
             {
@@ -495,7 +522,7 @@ namespace OutlookSafetyChex
                     }
                     catch (Exception ex)
                     {
-                        cst_Log.logException(ex, "AddInSafetyCheck::getCacheMIMETYPEs()");
+                        if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::getCacheMIMETYPEs()");
                     }
                 }
                 cacheMIMETYPEs = tCache.Distinct().ToList();
@@ -508,13 +535,13 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheMIMETYPEs()");
+                    if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveCacheMIMETYPEs()");
                 }
             }
             return cacheMIMETYPEs;
         }
 
-        public static List<String> getCommonMIMETYPEs()
+        public List<String> getCommonMIMETYPEs()
         {
             List<String> rc = null;
             try
@@ -524,7 +551,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static List<String> getLocalMIMETYPEs()
+        public List<String> getLocalMIMETYPEs()
         {
             List<String> rc = null;
             try
@@ -536,7 +563,7 @@ namespace OutlookSafetyChex
         }
 
 
-        public static void saveLocalMIMETYPEs(List<String> newList)
+        public void saveLocalMIMETYPEs(List<String> newList)
         {
             try
             {
@@ -546,11 +573,11 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalMIMETYPEs()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveLocalMIMETYPEs()");
             }
         }
 
-        public static List<String> getCacheCODEPAGEs()
+        public List<String> getCacheCODEPAGEs()
         {
             if (cacheCODEPAGEs == null)
             {
@@ -574,7 +601,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Log.logException(ex, "AddInSafetyCheck::getCacheCODEPAGEs()");
+                    if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::getCacheCODEPAGEs()");
                 }
                 cacheCODEPAGEs = tCache.Distinct().ToList();
                 // store cache
@@ -586,13 +613,13 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheCODEPAGEs()");
+                    if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveCacheCODEPAGEs()");
                 }
             }
             return cacheCODEPAGEs;
         }
 
-        public static List<String> getCommonCODEPAGEs()
+        public List<String> getCommonCODEPAGEs()
         {
             List<String> rc = null;
             try
@@ -602,7 +629,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static List<String> getLocalCODEPAGEs()
+        public List<String> getLocalCODEPAGEs()
         {
             List<String> rc = null;
             try
@@ -612,7 +639,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static void saveLocalCODEPAGEs(List<String> newList)
+        public void saveLocalCODEPAGEs(List<String> newList)
         {
             try
             {
@@ -622,11 +649,11 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalCODEPAGEs()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveLocalCODEPAGEs()");
             }
         }
 
-        public static List<String> getCacheCULTUREs()
+        public List<String> getCacheCULTUREs()
         {
             if (cacheCULTUREs == null)
             {
@@ -652,13 +679,13 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Log.logException(ex, "AddInSafetyCheck::saveCacheCULTUREs()");
+                    if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveCacheCULTUREs()");
                 }
             }
             return cacheCULTUREs;
         }
 
-        public static List<String> getCommonCULTUREs()
+        public List<String> getCommonCULTUREs()
         {
             List<String> rc = null;
             try
@@ -668,7 +695,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static List<String> getLocalCULTUREs()
+        public List<String> getLocalCULTUREs()
         {
             List<String> rc = null;
             try
@@ -678,7 +705,7 @@ namespace OutlookSafetyChex
             catch { }
             return rc;
         }
-        public static void saveLocalCULTUREs(List<String> newList)
+        public void saveLocalCULTUREs(List<String> newList)
         {
             try
             {
@@ -688,7 +715,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::saveLocalCULTUREs()");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::saveLocalCULTUREs()");
             }
         }
 
@@ -716,7 +743,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::checkPUNYcode(" + fqdn + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::checkPUNYcode(" + fqdn + ")");
             }
             return rc;
         }
@@ -734,7 +761,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::checkDiacritics(" + fqdn + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::checkDiacritics(" + fqdn + ")");
             }
             return rc;
         }
@@ -746,7 +773,7 @@ namespace OutlookSafetyChex
             {
                 if (cst_Util.isValidString(tStr))
                 {
-                    String aStr = cst_Util.idnMapping.GetAscii(tStr);
+                    String aStr = mWebUtil.idnMapping.GetAscii(tStr);
                     if (aStr != tStr)
                     {
                         rc += "IDN misdirection\r\n";
@@ -755,7 +782,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::checkIDNchars(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::checkIDNchars(" + tStr + ")");
             }
             return rc;
         }
@@ -773,7 +800,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::chkBufferOverflow(" + maxLen + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::chkBufferOverflow(" + maxLen + ")");
             }
             return rc;
         }
@@ -791,7 +818,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::checkASCII(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::checkASCII(" + tStr + ")");
             }
             return rc;
         }
@@ -816,7 +843,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::checkSubstitution(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::checkSubstitution(" + tStr + ")");
             }
             return rc;
         }
@@ -838,7 +865,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::checkLeetSpeak(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::checkLeetSpeak(" + tStr + ")");
             }
             return rc;
         }
@@ -852,7 +879,7 @@ namespace OutlookSafetyChex
             { 
                 if ( tAttachment != null && cst_Util.isValidString(tAttachment.FileName))
                 {
-                    String tReason = Globals.AddInSafetyCheck.chkBufferOverflow(tAttachment.FileName, 1024);
+                    String tReason = this.chkBufferOverflow(tAttachment.FileName, 1024);
                     if (cst_Util.isValidString(tReason))
                     {
                         tNotes += tReason + "\r\n";
@@ -888,7 +915,7 @@ namespace OutlookSafetyChex
                             }
                             catch (Exception ex)
                             {
-                                cst_Log.logException(ex, "AddInSafetyCheck::MimeGuesser(\"" + tAttachment.FileName + "\")");
+                                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::MimeGuesser(\"" + tAttachment.FileName + "\")");
                             }
                             if (!tFileSig.Equals(tMimeType, StringComparison.CurrentCultureIgnoreCase))
                             {
@@ -902,7 +929,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousAttachment(" + tAttachment.FileName + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousAttachment(" + tAttachment.FileName + ")");
             }
             return tNotes;
 		}
@@ -942,7 +969,7 @@ namespace OutlookSafetyChex
                                             || tHost.EndsWith("." + t, StringComparison.CurrentCultureIgnoreCase);
                             if (found)
                             {
-                                // cst_Log.logInfo("[Local WHITELIST]: " + t, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
+                                // if (mLogger != null) mLogger.logInfo("[Local WHITELIST]: " + t, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
                                 whitelists.Add(t);
                             }
                         }
@@ -965,7 +992,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::checkLocalHostLists(" + tHost + ")");
             }
             return rc;
         }
@@ -975,8 +1002,8 @@ namespace OutlookSafetyChex
             String rc = "";
             if (tMailAddress != null)
             {
-                String tName = cst_Util.sanitizeEmail(tMailAddress.DisplayName,false);
-                String tAddr = cst_Util.sanitizeEmail(tMailAddress.Address,true);
+                String tName = mWebUtil.sanitizeEmail(tMailAddress.DisplayName,false);
+                String tAddr = mWebUtil.sanitizeEmail(tMailAddress.Address,true);
                 String tHost = tMailAddress.Host;
                 try
                 {
@@ -984,11 +1011,11 @@ namespace OutlookSafetyChex
                     rc += checkIDNchars(tName);
                     rc += checkLeetSpeak(tName);
                     rc += checkPUNYcode(tAddr);
-                    String myDomain = cst_Util.pullDomain(tHost);
+                    String myDomain = mWebUtil.pullDomain(tHost);
                     String tReason = null;
                     if (Properties.Settings.Default.opt_Lookup_HIBP)
                     {
-                        Dictionary<String, String> map = cst_HIBP.wasEmailPasted(tAddr, Properties.Settings.Default.opt_Use_CACHE);
+                        Dictionary<String, String> map = mHIBP.wasEmailPasted(tAddr, Properties.Settings.Default.opt_Use_CACHE);
                         foreach (String t in map.Values)
                         {
                             if (cst_Util.isValidString(t))
@@ -996,7 +1023,7 @@ namespace OutlookSafetyChex
                                 rc += "[EMAIL PASTED]: " + t + "\r\n";
                             }
                         }
-                        map = cst_HIBP.wasEmailBreached(tAddr, Properties.Settings.Default.opt_Use_CACHE);
+                        map = mHIBP.wasEmailBreached(tAddr, Properties.Settings.Default.opt_Use_CACHE);
                         foreach (String t in map.Values)
                         {
                             if (cst_Util.isValidString(t))
@@ -1004,7 +1031,7 @@ namespace OutlookSafetyChex
                                 rc += "[EMAIL LEAKED]: " + t + "\r\n";
                             }
                         }
-                        map = cst_HIBP.wasDomainBreached(myDomain, Properties.Settings.Default.opt_Use_CACHE);
+                        map = mHIBP.wasDomainBreached(myDomain, Properties.Settings.Default.opt_Use_CACHE);
                         foreach (String t in map.Values)
                         {
                             if (cst_Util.isValidString(t))
@@ -1015,7 +1042,7 @@ namespace OutlookSafetyChex
                     }
                     if (Properties.Settings.Default.opt_Lookup_DNSBL)
                     {
-                        tReason = cst_DNSBL.checkDNSBL(tHost, Properties.Settings.Default.opt_Use_CACHE);
+                        tReason = mDNSBL.checkDNSBL(tHost, Properties.Settings.Default.opt_Use_CACHE);
                         if (cst_Util.isValidString(tReason))
                         {
                             rc += "[HOST BLACKLISTED]: " + tReason + "\r\n";
@@ -1053,7 +1080,7 @@ namespace OutlookSafetyChex
                 }
                 catch (Exception ex)
                 {
-                    cst_Log.logException(ex, "AddInSafetyCheck::suspiciousEmail(" + tMailAddress.Address + ")");
+                    if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousEmail(" + tMailAddress.Address + ")");
                 }
             }
             return rc;
@@ -1070,8 +1097,8 @@ namespace OutlookSafetyChex
                 //rc += checkLeetSpeak(fqdn);
                 if (Properties.Settings.Default.opt_Lookup_HIBP)
                 {
-                    String myDomain = cst_Util.pullDomain(fqdn);
-                    Dictionary<String, String> map = cst_HIBP.wasDomainBreached(myDomain, Properties.Settings.Default.opt_Use_CACHE);
+                    String myDomain = mWebUtil.pullDomain(fqdn);
+                    Dictionary<String, String> map = mHIBP.wasDomainBreached(myDomain, Properties.Settings.Default.opt_Use_CACHE);
                     foreach (String t in map.Values)
                     {
                         rc += "[HOST PWNeD]: " + t + "\r\n";
@@ -1079,7 +1106,7 @@ namespace OutlookSafetyChex
                 }
                 if (Properties.Settings.Default.opt_Lookup_DNSBL)
                 {
-                    String tReason = cst_DNSBL.checkDNSBL(fqdn, Properties.Settings.Default.opt_Use_CACHE);
+                    String tReason = mDNSBL.checkDNSBL(fqdn, Properties.Settings.Default.opt_Use_CACHE);
                     if (cst_Util.isValidString(tReason))
                     {
                         rc += "[HOST BLACKLISTED]: " + tReason + "\r\n";
@@ -1089,7 +1116,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousHost(" + fqdn + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousHost(" + fqdn + ")");
             }
             return rc;
 		}
@@ -1101,7 +1128,7 @@ namespace OutlookSafetyChex
             {
                 if (Properties.Settings.Default.opt_Lookup_HIBP)
                 {
-                    Dictionary<String, String> map = cst_HIBP.wasDomainBreached(ipAddr, Properties.Settings.Default.opt_Use_CACHE);
+                    Dictionary<String, String> map = mHIBP.wasDomainBreached(ipAddr, Properties.Settings.Default.opt_Use_CACHE);
                     foreach (String t in map.Values)
                     {
                         if (cst_Util.isValidString(t))
@@ -1112,7 +1139,7 @@ namespace OutlookSafetyChex
                 }
                 if (Properties.Settings.Default.opt_Lookup_DNSBL)
                 {
-                    String tReason = cst_DNSBL.checkDNSBL(ipAddr, Properties.Settings.Default.opt_Use_CACHE);
+                    String tReason = mDNSBL.checkDNSBL(ipAddr, Properties.Settings.Default.opt_Use_CACHE);
                     if (cst_Util.isValidString(tReason))
                     {
                         rc += "[BLACKLISTED]: " + tReason + "\r\n";
@@ -1121,7 +1148,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousIP(" + ipAddr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousIP(" + ipAddr + ")");
             }
             return rc;
         }
@@ -1143,7 +1170,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousLabel(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousLabel(" + tStr + ")");
             }
             return rc;
         }
@@ -1160,7 +1187,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousText(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousText(" + tStr + ")");
             }
             return rc;
         }
@@ -1184,7 +1211,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousValue(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousValue(" + tStr + ")");
             }
             return rc;
         }
@@ -1207,7 +1234,7 @@ namespace OutlookSafetyChex
                 cst_URL tURL = cst_URL.parseURL(tLink);
                 if (tURL != null)
                 {
-                    String tReason = Globals.AddInSafetyCheck.chkBufferOverflow(tLink, 1024);
+                    String tReason = this.chkBufferOverflow(tLink, 1024);
                     if (cst_Util.isValidString(tReason))
                     {
                         tNotes += tReason + "\r\n";
@@ -1245,7 +1272,7 @@ namespace OutlookSafetyChex
                             tNotes += "[NON-COMMON PROTOCOL]: Link uses protocol \"" + tURL.mUri.Scheme + "\"\r\n";
                         }
                         // checks against all link protocols
-                        if (cst_Util.isValidIPAddress(tURL.mUri.Host))
+                        if (mWebUtil.isValidIPAddress(tURL.mUri.Host))
                         {
                             tNotes += "[EXPLICIT IP]: Link specifies a hardcoded IP Address\r\n";
                             tNotes += suspiciousIP(tURL.mUri.Host);
@@ -1266,6 +1293,11 @@ namespace OutlookSafetyChex
                         {
                             tNotes += "[POTENTIAL BEACON]: Unexpected Link Parameters\r\n";
                         }
+                        // check for ADS (alternate data streem)
+                        if ( tLink.Contains("::$DATA") )
+                        {
+                            tNotes += "[POTENTIAL ATTACK]: Alternate Data Stream (::$DATA) Referenced\r\n";
+                        }
                     }
                     catch 
                     {
@@ -1275,7 +1307,7 @@ namespace OutlookSafetyChex
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "AddInSafetyCheck::suspiciousLink(" + tLink + ")");
+                if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::suspiciousLink(" + tLink + ")");
             }
             return tNotes;
         }

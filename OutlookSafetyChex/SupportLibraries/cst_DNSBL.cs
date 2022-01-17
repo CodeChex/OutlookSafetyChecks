@@ -4,45 +4,46 @@ using System.Collections.Generic;
 
 namespace CheccoSafetyTools
 {
-    abstract class cst_DNSBL
+    public class cst_DNSBL
     {
         private static Dictionary<String, String> dnsblCache = new Dictionary<String, String>();
 
-        static cst_DNSBL()
+        public List<String> arrDNSBL = null;
+        private cst_Log mLogger = null;
+
+        public cst_DNSBL(cst_Log tLogger)
         {
+            mLogger = tLogger;
         }
 
-        public static void clearCaches()
+        public void clearCaches()
 		{
-			dnsblCache.Clear();
+            cst_DNSBL.dnsblCache.Clear();
 		}
 
-		public static String checkDNSBL(String ipaddr, bool use_CACHE)
+ 		public String checkDNSBL(String ipaddr, bool use_CACHE)
 		{
 			String rc = null;
-            List<String> spamLists = AddInSafetyCheck.getLocalDNSBL();
-            if (!cst_Util.isValidCollection(spamLists))
-                spamLists = AddInSafetyCheck.getCommonDNSBLsites();
             try
             {
                 String tKey = ipaddr.Trim().ToLower();
-                bool isCached = dnsblCache.TryGetValue(tKey, out rc);
+                bool isCached = cst_DNSBL.dnsblCache.TryGetValue(tKey, out rc);
                 if (!use_CACHE || !isCached)
                 {
-                    SpamListlookup.VerifyIP IP = new SpamListlookup.VerifyIP(tKey, spamLists.ToArray());
+                    SpamListlookup.VerifyIP IP = new SpamListlookup.VerifyIP(tKey, arrDNSBL.ToArray());
                     if (IP.IPAddr.Valid)
                     {
                         if (IP.BlackList.IsListed)
                         {
                             rc = IP.BlackList.VerifiedOnServer;
                         }
-                        if (!isCached) dnsblCache.Add(tKey, rc);
+                        if (!isCached) cst_DNSBL.dnsblCache.Add(tKey, rc);
                     }
                 }
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_DNSBL::checkDNSBL(" + ipaddr + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_DNSBL::checkDNSBL(" + ipaddr + ")");
             }
             return rc;
 		}

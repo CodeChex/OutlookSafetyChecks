@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace CheccoSafetyTools
 {
-	abstract class cst_Outlook
+    abstract class cst_Outlook
 	{
-        public static bool isValidMailItem(Outlook.MailItem tItem)
+		public static bool isValidMailItem(Outlook.MailItem tItem)
         {
             return (tItem != null && cst_Util.isValidString(tItem.EntryID));
         }
@@ -34,7 +32,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Log.logException(ex, "cst_Outlook::FindContacts("+tQuery+")");
+				//mLogger.logException(ex, "cst_Outlook::FindContacts("+tQuery+")");
 			}
 			return arrRC;
 		}

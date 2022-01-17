@@ -25,21 +25,23 @@ namespace OutlookSafetyChex
 
         public override int buildData(dsMailItem parent, Outlook.MailItem myItem)
         {
+            if (mLogger != null) 
+                mLogger.logInfo("Inspecting [" + myItem.Attachments.Count + "]", logArea);
             foreach (Outlook.Attachment tAttachment in myItem.Attachments)
             {
-                cst_Log.logVerbose(tAttachment.DisplayName, "Attachments");
+                if (mLogger != null) mLogger.logVerbose(tAttachment.DisplayName, logArea);
                 String tMimeType = "[not checked]";
                 String tFileSig = "[not checked]";
-                String tNotes = Globals.AddInSafetyCheck.suspiciousAttachment(tAttachment, out tMimeType, out tFileSig);
+                String tNotes = instance.suspiciousAttachment(tAttachment, out tMimeType, out tFileSig);
                 String[] rowData = new[] {
                         tAttachment.DisplayName,
                         tAttachment.FileName,
                         tMimeType,
                         tFileSig,
                         tNotes };
-                this.Rows.Add(rowData);
+                this.addDataRow(rowData);
                 // log it
-                if (cst_Util.isValidString(tNotes)) parent.log(logArea, "4", "SUSPICIOUS ATTACHMENT", tNotes);
+                if (cst_Util.isValidString(tNotes)) parent.logFinding(logArea, "4", "SUSPICIOUS ATTACHMENT", tNotes);
             }
             return this.Rows.Count;
         }

@@ -1,9 +1,11 @@
 ﻿using CheccoSafetyTools;
 using OutlookSafetyChex.Forms;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
@@ -11,11 +13,16 @@ namespace OutlookSafetyChex
 {
     public partial class dlgSafetyCheck : Form
     {
-        AddInSafetyCheck myVSTO = Globals.AddInSafetyCheck;
+        AddInSafetyCheck instance = Globals.AddInSafetyCheck;
+        cst_Log mLogger = Globals.AddInSafetyCheck.mLogger;
+
+        public Dictionary<Thread, Stopwatch> pendingThreads = new Dictionary<Thread, Stopwatch>();
+        public Stopwatch gStopwatch = new Stopwatch();
 
         public dlgSafetyCheck(Outlook.MailItem myItem)
         {
             InitializeComponent();
+            initializePane();
             // UI
             String title = "Subject: " + myItem.Subject;
             this.textBoxProgress.Text = title;
@@ -25,26 +32,13 @@ namespace OutlookSafetyChex
 #endif
                 + Properties.Resources.ShortName + " - " + title;
             this.rawHeaderTextBox.Text = cst_Outlook.getHeaders(myItem);
-            // set version info
-            this.labelVersion.Text = AddInSafetyCheck.metaData.Title
-                    + "\r\n"
-#if DEBUG
-                    + "DEBUG"
-#else
-                    + "Release"
-#endif
-                    + " v" + AddInSafetyCheck.metaData.Version
-                    + "\r\n" 
-                    + AddInSafetyCheck.metaData.Copyright + ", " + AddInSafetyCheck.metaData.Company;
-            // Data
-            cst_Log.setLoggingUI(this.textDebug, this.textBoxProgress);
-            initializePane();
+            this.btnCancel.Enabled = false;
         }
 
         private void dlgSafetyCheck_FormClosing(object sender, FormClosingEventArgs e)
         {
             // reset logger
-            cst_Log.setLoggingUI(null, null);
+            if (mLogger != null) mLogger.setLoggingUI(null, null);
         }
 
 #region application customizations
@@ -53,44 +47,46 @@ namespace OutlookSafetyChex
         {
             try
             {
-                // options
-                this.initializeOptionState();
+                // Link logger
+                if (mLogger != null) mLogger.setLoggingUI(
+                    new TextBox[] { this.textDebug },
+                    new TextBox[] { this.textBoxProgress });
                 // Main TAB
-                initializeGridView(this.logGridView, myVSTO.findTableClass<dtWarnings>());
+                initializeGridView(this.logGridView, instance.findTableClass<dtWarnings>());
                 // Info TAB
                 this.envelopeTab.Text = Properties.Resources.Title_Envelope;
-                initializeGridView(this.envelopeGridView, myVSTO.findTableClass<dtEnvelope>());
+                initializeGridView(this.envelopeGridView, instance.findTableClass<dtEnvelope>());
                 // Header TAB
                 this.headerTab.Text = Properties.Resources.Title_Headers;
-                initializeGridView(this.headerGridView, myVSTO.findTableClass<dtHeaders>());
+                initializeGridView(this.headerGridView, instance.findTableClass<dtHeaders>());
                 // Route TAB
                 this.routeTab.Text = Properties.Resources.Title_Routing;
-                initializeGridView(this.routeCheckGridView, myVSTO.findTableClass<dtRoutesCheck>());
-                initializeGridView(this.routeListGridView, myVSTO.findTableClass<dtRouteList>());
+                initializeGridView(this.routeCheckGridView, instance.findTableClass<dtRoutesCheck>());
+                initializeGridView(this.routeListGridView, instance.findTableClass<dtRouteList>());
                 // Contact TAB
                 this.contactTab.Text = Properties.Resources.Title_Contacts;
-                initializeGridView(this.senderGridView, myVSTO.findTableClass<dtSender>());
-                initializeGridView(this.recipientsGridView, myVSTO.findTableClass<dtRecipients>());
+                initializeGridView(this.senderGridView, instance.findTableClass<dtSender>());
+                initializeGridView(this.recipientsGridView, instance.findTableClass<dtRecipients>());
                 // Body TAB
                 this.bodyTab.Text = Properties.Resources.Title_Body;
-                initializeGridView(this.bodyGridView, myVSTO.findTableClass<dtBody>());
+                initializeGridView(this.bodyGridView, instance.findTableClass<dtBody>());
                 // Links TAB
                 this.linksTab.Text = Properties.Resources.Title_Links;
-                initializeGridView(this.linkCheckGridView, myVSTO.findTableClass<dtLinksCheck>());
-                initializeGridView(this.linkListGridView, myVSTO.findTableClass<dtLinkList>());
+                initializeGridView(this.linkCheckGridView, instance.findTableClass<dtLinksCheck>());
+                initializeGridView(this.linkListGridView, instance.findTableClass<dtLinkList>());
                 // Attachments TAB
                 this.attachmentsTab.Text = Properties.Resources.Title_Attachments;
-                initializeGridView(this.attachmentsGridView, myVSTO.findTableClass<dtAttachments>());
+                initializeGridView(this.attachmentsGridView, instance.findTableClass<dtAttachments>());
                 // reset log
-                cst_Log.logInfo(null, null, true);
+                if (mLogger != null) mLogger.logInfo(null, null, true);
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "initializePane()");
+                if (mLogger != null) mLogger.logException(ex, "initializePane()");
             }
         }
 
-        void initializeGridView(DataGridView myGridView, DataTable myTable = null)
+        void initializeGridView(DataGridView myGridView, dtTemplate myTable = null)
         {
             if (myGridView != null)
             {
@@ -114,420 +110,218 @@ namespace OutlookSafetyChex
                     myGridView.ScrollBars = ScrollBars.Both;
                     myGridView.ReadOnly = true;
                     myGridView.TabIndex = 0;
-                    if (myTable != null) myGridView.DataSource = new DataView(myTable);
+                    if (myTable != null)
+                    {
+                        myGridView.DataSource = new DataView(myTable);
+                        myTable.mView = myGridView;
+                    }
                 }
                 catch (Exception ex)
                 {
-                    cst_Log.logException(ex, "initializeGridView(" + myGridView.Name + ")");
+                    if (mLogger != null) mLogger.logException(ex, "initializeGridView(" + myGridView.Name + ")");
                 }
                 myGridView.ResumeLayout(true);
             }
         }
 
-#endregion
+        #endregion
 
         private void btnRunTests_Click(object sender, EventArgs ev)
         {
-            Button myControl = sender as Button;
-            myControl.Enabled = false;
+            gStopwatch.Reset();
+            gStopwatch.Start();
+            instance.ABORT_PROCESSING = false;
+            this.btnRunTests.Enabled = false;
+            this.btnSettings.Enabled = false;
+            this.btnAbout.Enabled = false;
+            this.btnCancel.Enabled = true;
+            if (Properties.Settings.Default.opt_ShowLog)
+            {
+                this.myTabControl.SelectedTab = this.loggingTab;
+            }
+            instance.resetLog(Properties.Settings.Default.opt_Force_REFRESH);
+            if (mLogger != null) mLogger.logMessage("BEGIN ...", "" + DateTime.Now + "", true);
+            spawnThread(new ThreadStart(runChecks), "Main Thread");
+         }
+
+        private void spawnThread(ThreadStart worker, String title = null)
+        {
+            worker += () => { threadComplete(); };
+            Thread z = new Thread(worker);
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             try
             {
-                bool refresh = Properties.Settings.Default.opt_Force_REFRESH;
-                Stopwatch watch = new Stopwatch();
-                watch.Start(); 
-                cst_Log.logMessage("BEGIN ...", "" + DateTime.Now + "",true);
-                if (myControl == this.btnRunTests)
+                pendingThreads.Add(z, watch);
+                z.Start();
+                if (mLogger != null)
                 {
-                    this.Cursor = Cursors.WaitCursor;
-                    if (Properties.Settings.Default.opt_ShowLog)
-                    {
-                        this.myTabControl.SelectedTab = this.loggingTab;
-                    }
-                     Globals.AddInSafetyCheck.resetLog(refresh);
-                    // always parse envelope
-                    {
-                        cst_Log.logInfo("[" + Properties.Resources.Title_Envelope + "] ...",
-                            "" + DateTime.Now + "");
-                        Globals.AddInSafetyCheck.ParseEnvelope(refresh);
-                    }
-                    // always parse headers
-                    {
-                        cst_Log.logInfo("[" + Properties.Resources.Title_Headers + "] ...",
-                            "" + DateTime.Now + "");
-                        Globals.AddInSafetyCheck.ParseHeaders(refresh);
-                    }
-                    if (this.cbTabContacts.CheckState == CheckState.Checked)
-                    {
-                        cst_Log.logInfo("[" + Properties.Resources.Title_Contacts + "] ...",
-                            "" + DateTime.Now + "");
-                        Globals.AddInSafetyCheck.AnalyzeContacts(refresh);
-                    }
-                    if (this.cbTabRoutes.CheckState == CheckState.Checked)
-                    {
-                        cst_Log.logInfo("[" + Properties.Resources.Title_Routing + "] ...",
-                            "" + DateTime.Now + "");
-                        Globals.AddInSafetyCheck.AnalyzeRoutes(refresh);
-                    }
-                    if (this.cbTabBody.CheckState == CheckState.Checked)
-                    {
-                        cst_Log.logInfo("[" + Properties.Resources.Title_Body + "] ...",
-                            "" + DateTime.Now + "");
-                        Globals.AddInSafetyCheck.AnalyzeBody(refresh);
-                    }
-                    if (this.cbTabLinks.CheckState == CheckState.Checked)
-                    {
-                        cst_Log.logInfo("[" + Properties.Resources.Title_Links + "] ...",
-                            "" + DateTime.Now + "");
-                        Globals.AddInSafetyCheck.AnalyzeLinks(refresh);
-                    }
-                    if (this.cbTabAttachments.CheckState == CheckState.Checked)
-                    {
-                        cst_Log.logInfo("[" + Properties.Resources.Title_Attachments + "] ...", 
-                            "" + DateTime.Now + "");
-                        Globals.AddInSafetyCheck.AnalyzeAttachments(refresh);
-                    }
-                    watch.Stop();
-                    cst_Log.logMessage("DONE", "Elapsed (" + watch.Elapsed + ")");
+                    mLogger.logMessage("Thread [" + z.ManagedThreadId + "] Spawned", title);
+                    mLogger.logMessage("PENDING Threads = " + pendingThreads.Count, "spawnThread");
                 }
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "TESTS");
-            }
-            this.Cursor = Cursors.Default;
-            myControl.Enabled = true;
-            //MessageBox.Show("Tests Complete","AddInSafetyCheck");
-            this.myTabControl.SelectedTab = this.optionsTab;
-        }
-
-        private void btnClearCache_Click(object sender, EventArgs ev)
-        {
-            Button myControl = sender as Button;
-            if (myControl == this.btnClearCache)
-            {
-                cst_WHOIS.clearCaches();
-                cst_DNSBL.clearCaches();
-                cst_HIBP.clearCaches();
+                pendingThreads.Remove(z);
+                if (mLogger != null) mLogger.logMessage(ex.Message, "ThreadStart [" + title + "] Exception");
             }
         }
 
-        private void updateCheckBox(CheckBox cbItem, bool optState)
+        private void postRun()
         {
-            CheckState chkState = optState ? CheckState.Checked : CheckState.Unchecked;
-            if (cbItem != null) cbItem.CheckState = chkState;
+            gStopwatch.Stop();
+            String completionStatus = "Elapsed (" + gStopwatch.Elapsed + ")";
+            this.btnRunTests.Enabled = true;
+            this.btnSettings.Enabled = true;
+            this.btnAbout.Enabled = true;
+            this.btnCancel.Enabled = false;
+            MessageBox.Show(completionStatus, "AddInSafetyCheck");
+            if (mLogger != null) mLogger.logMessage(completionStatus, "Tests Complete");
         }
 
-        public void initializeOptionState()
+        private void threadComplete()
         {
-            // tests
-            updateCheckBox(this.cbTabContacts, Properties.Settings.Default.test_Contacts);
-            updateCheckBox(this.cbTabRoutes, Properties.Settings.Default.test_Routes);
-            updateCheckBox(this.cbTabBody, Properties.Settings.Default.test_Body);
-            updateCheckBox(this.cbTabLinks, Properties.Settings.Default.test_Links);
-            updateCheckBox(this.cbTabAttachments, Properties.Settings.Default.test_Attachments);
-            updateCheckBox(this.cbTabHeaders, Properties.Settings.Default.test_Headers);
-            // options
-            updateCheckBox(this.cbForceDataRefresh, Properties.Settings.Default.opt_Force_REFRESH);
-            updateCheckBox(this.cbLookupWHOIS, Properties.Settings.Default.opt_Lookup_WHOIS);
-            updateCheckBox(this.cbLookupDNSBL, Properties.Settings.Default.opt_Lookup_DNSBL);
-            updateCheckBox(this.cbLookupHIBP, Properties.Settings.Default.opt_Lookup_HIBP);
-            updateCheckBox(this.cbUseCACHE, Properties.Settings.Default.opt_Use_CACHE);
-            updateCheckBox(this.cbVerifyContacts, Properties.Settings.Default.opt_Lookup_CONTACTS);
-            updateCheckBox(this.cbHost_Blacklist, Properties.Settings.Default.opt_Local_BLACKLIST);
-            updateCheckBox(this.cbHost_Whitelist, Properties.Settings.Default.opt_Local_WHITELIST);
-            updateCheckBox(this.cbFlagUnknownContacts, Properties.Settings.Default.opt_Flag_UNKNOWN_CONTACTS);
-            updateCheckBox(this.cbInspectAttachents, Properties.Settings.Default.opt_DeepInspect_ATTACHMENTS);
-            updateCheckBox(this.cbInspectLinks, Properties.Settings.Default.opt_DeepInspect_LINKS);
-            updateCheckBox(this.cbShowLog, Properties.Settings.Default.opt_ShowLog);
-            updateCheckBox(this.cb_MIMEtypes, Properties.Settings.Default.opt_Lookup_MIMEtypes);
-            updateCheckBox(this.cb_Codepages, Properties.Settings.Default.opt_Lookup_Codepages);
-            updateCheckBox(this.cb_Cultures, Properties.Settings.Default.opt_Lookup_Cultures);
-            updateCheckBox(this.cbHiliteSpam, Properties.Settings.Default.opt_ShowSpamHeaders);
-            // special case
-            this.cbFlagUnknownContacts.Enabled = Properties.Settings.Default.opt_Lookup_CONTACTS;
-            // update logging level (radio checkbox)
-            this.rbLogNone.Checked = false;
-            this.rbLogInfo.Checked = false;
-            this.rbLogError.Checked = false;
-            this.rbLogVerbose.Checked = false;
-            switch (Properties.Settings.Default.log_Level)
-            {
-                case cst_Log.LOG_NONE: 
-                    this.rbLogNone.Checked = true;
-                    break;
-                case cst_Log.LOG_INFO:
-                    this.rbLogInfo.Checked = true;
-                    break;
-                case cst_Log.LOG_ERROR:
-                    this.rbLogError.Checked = true;
-                    break;
-                case cst_Log.LOG_VERBOSE:
-                    this.rbLogVerbose.Checked = true;
-                    break;
-                case cst_Log.LOG_ALL:
-                default:
-                    this.rbLogVerbose.Checked = true;
-                    break;
-            }
-        }
-
-        private void onChange_CheckBox(object sender, EventArgs ev)
-        {
-            CheckBox myControl = sender as CheckBox;
-            bool isChecked = (myControl.CheckState == CheckState.Checked);
-            if (myControl == this.cbForceDataRefresh)
-            {
-                Properties.Settings.Default.opt_Force_REFRESH = isChecked;
-            }
-            else if (myControl == this.cbLookupWHOIS)
-            {
-                Properties.Settings.Default.opt_Lookup_WHOIS = isChecked;
-            }
-            else if (myControl == this.cbLookupDNSBL)
-            {
-                Properties.Settings.Default.opt_Lookup_DNSBL = isChecked;
-            }
-            else if (myControl == this.cbLookupHIBP)
-            {
-                Properties.Settings.Default.opt_Lookup_HIBP = isChecked;
-            }
-            else if (myControl == this.cbUseCACHE)
-            {
-                Properties.Settings.Default.opt_Use_CACHE = isChecked;
-            }
-            else if (myControl == this.cbVerifyContacts)
-            {
-                Properties.Settings.Default.opt_Lookup_CONTACTS = isChecked;
-                this.cbFlagUnknownContacts.Enabled = isChecked;
-            }
-            else if (myControl == this.cbHost_Blacklist)
-            {
-                Properties.Settings.Default.opt_Local_BLACKLIST = isChecked;
-            }
-            else if (myControl == this.cbHost_Whitelist)
-            {
-                Properties.Settings.Default.opt_Local_WHITELIST = isChecked;
-            }
-            else if (myControl == this.cbFlagUnknownContacts)
-            {
-                Properties.Settings.Default.opt_Flag_UNKNOWN_CONTACTS = isChecked;
-            }
-            else if (myControl == this.cbInspectAttachents)
-            {
-                Properties.Settings.Default.opt_DeepInspect_ATTACHMENTS = isChecked;
-            }
-            else if (myControl == this.cbInspectLinks)
-            {
-                Properties.Settings.Default.opt_DeepInspect_LINKS = isChecked;
-            }
-            else if (myControl == this.cbTabContacts)
-            {
-                Properties.Settings.Default.test_Contacts = isChecked;
-            }
-            else if (myControl == this.cbTabRoutes)
-            {
-                Properties.Settings.Default.test_Routes = isChecked;
-            }
-            else if (myControl == this.cbTabBody)
-            {
-                Properties.Settings.Default.test_Body = isChecked;
-            }
-            else if (myControl == this.cbTabLinks)
-            {
-                Properties.Settings.Default.test_Links = isChecked;
-            }
-            else if (myControl == this.cbTabAttachments)
-            {
-                Properties.Settings.Default.test_Attachments = isChecked;
-            }
-            else if (myControl == this.cbShowLog)
-            {
-                Properties.Settings.Default.opt_ShowLog = isChecked;
-            }
-            else if (myControl == this.cbTabHeaders)
-            {
-                Properties.Settings.Default.test_Headers = isChecked;
-            }
-            else if (myControl == this.cb_Cultures)
-            {
-                Properties.Settings.Default.opt_Lookup_Cultures = isChecked;
-            }
-            else if (myControl == this.cb_Codepages)
-            {
-                Properties.Settings.Default.opt_Lookup_Codepages = isChecked;
-            }
-            else if (myControl == this.cb_MIMEtypes)
-            {
-                Properties.Settings.Default.opt_Lookup_MIMEtypes = isChecked;
-            }
-            else if (myControl == this.cbHiliteSpam)
-            {
-                Properties.Settings.Default.opt_ShowSpamHeaders = isChecked;
-            }
-            else
-            {
-                MessageBox.Show("Unknown CheckBox: [" + myControl.Text + "]");
-            }
-        }
-
-        private void editDNSBL_Dialog(object sender, EventArgs ev)
-        {
-            this.Visible = false;
+            Thread z = Thread.CurrentThread;
+            String completionStatus = (instance.ABORT_PROCESSING ? "ABORTED" : "DONE");
             try
             {
-                templateOptionList dlg = new templateOptionList("Edit DNSBL Sources",
-                                AddInSafetyCheck.getCommonDNSBLsites(), 
-                                AddInSafetyCheck.getLocalDNSBL(), 
-                                null );
-                if ( dlg.ShowDialog() == DialogResult.OK )
+                if (pendingThreads.ContainsKey(z))
                 {
-                    AddInSafetyCheck.saveDNSBLsites(dlg.listBoxSelected.Items.Cast<String>().ToList());
+                    Stopwatch watch = pendingThreads[z];
+                    if (watch != null)
+                    {
+                        watch.Stop();
+                        String elapsedTime = "Elapsed (" + watch.Elapsed + ")";
+                        completionStatus += " " + elapsedTime;
+                    }
+                    pendingThreads.Remove(z);
                 }
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "editSpamlist");
+                if (mLogger != null) mLogger.logMessage(ex.Message, "ThreadComplete [" + z.ManagedThreadId + "] Exception");
             }
-            this.Visible = true;
+            if (mLogger != null)
+            {
+                mLogger.logMessage(completionStatus, "ThreadComplete [" + z.ManagedThreadId + "]");
+                mLogger.logMessage("PENDING Threads = " + pendingThreads.Count, "threadComplete");
+            }
+            if (pendingThreads.Count == 0)
+            {
+                this.Invoke(new Action(delegate () {
+                    this.postRun();
+                }));
+            }
         }
 
-        private void editWhitelist_Dialog(object sender, EventArgs ev)
+        private void runChecks() 
         {
-            this.Visible = false;
+            bool linearTask = !Properties.Settings.Default.opt_ThreadedProcessing;
+            Thread z = Thread.CurrentThread;
             try
             {
-                templateOptionList dlg = new templateOptionList("Edit Local Whitelist", 
-                                    AddInSafetyCheck.getCacheTLDs(), 
-                                    AddInSafetyCheck.getLocalWhitelist(),
-                                    AddInSafetyCheck.getBaseWhitelist());
-                if (dlg.ShowDialog() == DialogResult.OK)
+                // always parse envelope
+                if (true)
                 {
-                    AddInSafetyCheck.saveLocalWhitelist(dlg.listBoxSelected.Items.Cast<String>().ToList());
+                    parseEnvelope();
                 }
+                if (!instance.ABORT_PROCESSING && Properties.Settings.Default.test_Headers)
+                {
+                    parseHeaders();
+                }
+                // here is where we can parallelize tasks
+                if (!instance.ABORT_PROCESSING && Properties.Settings.Default.test_Contacts)
+                {
+                    if (linearTask) testContacts();
+                    else spawnThread(new ThreadStart(testContacts), "Inspecting Contacts");
+                }
+                if (!instance.ABORT_PROCESSING && Properties.Settings.Default.test_Routes)
+                {
+                    if (linearTask) testRoutes();
+                    else spawnThread(new ThreadStart(testRoutes), "Inspecting Routes");
+                }
+                if (!instance.ABORT_PROCESSING && Properties.Settings.Default.test_Links)
+                {
+                    if (linearTask) testLinks();
+                    else spawnThread(new ThreadStart(testLinks), "Inspecting Links");
+                }
+                if (!instance.ABORT_PROCESSING && Properties.Settings.Default.test_Attachments)
+                {
+                    if (linearTask) testAttachments();
+                    else spawnThread(new ThreadStart(testAttachments), "Inspecting Attachments");
+                }
+                if (!instance.ABORT_PROCESSING && Properties.Settings.Default.test_Body)
+                {
+                    if (linearTask) testBody();
+                    else spawnThread(new ThreadStart(testBody), "Inspecting Body/Contents");
+                }
+                String completionStatus = (instance.ABORT_PROCESSING ? "ABORTED" : "DONE");
+                if (mLogger != null) mLogger.logMessage(completionStatus, "Thread [" + z.ManagedThreadId + "]");
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "editLocalWhitelist");
+                if (mLogger != null) mLogger.logMessage(ex.Message, "Thread [" + z.ManagedThreadId + "] Exception");
             }
-            this.Visible = true;
         }
 
-        private void rbLogNone_CheckedChanged(object sender, EventArgs e)
+        private void parseEnvelope()
         {
-            Properties.Settings.Default.log_Level = cst_Log.LOG_NONE;
+            if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Envelope + "] ...",
+                 "" + DateTime.Now + "");
+            instance.ParseEnvelope(Properties.Settings.Default.opt_Force_REFRESH);
+        }
+        private void parseHeaders()
+        {
+            if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Headers + "] ...",
+                 "" + DateTime.Now + "");
+            instance.ParseHeaders(Properties.Settings.Default.opt_Force_REFRESH);
+        }
+        private void testContacts()
+        {
+            if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Contacts + "] ...",
+                "" + DateTime.Now + "");
+            instance.AnalyzeContacts(Properties.Settings.Default.opt_Force_REFRESH);
+        }
+        private void testRoutes()
+        {
+            if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Routing + "] ...",
+                "" + DateTime.Now + "");
+            instance.AnalyzeRoutes(Properties.Settings.Default.opt_Force_REFRESH);
+        }
+        private void testLinks()
+        {
+            if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Links + "] ...",
+                 "" + DateTime.Now + "");
+            instance.AnalyzeLinks(Properties.Settings.Default.opt_Force_REFRESH);
+        }
+        private void testAttachments()
+        {
+            if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Attachments + "] ...",
+                "" + DateTime.Now + "");
+            instance.AnalyzeAttachments(Properties.Settings.Default.opt_Force_REFRESH);
+        }
+        private void testBody()
+        {
+            if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Body + "] ...",
+                "" + DateTime.Now + "");
+            instance.AnalyzeBody(Properties.Settings.Default.opt_Force_REFRESH);
         }
 
-        private void rbLogError_CheckedChanged(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.log_Level = cst_Log.LOG_ERROR;
+            instance.ABORT_PROCESSING = true;
         }
 
-        private void rbLogInfo_CheckedChanged(object sender, EventArgs e)
+        private void btnSettings_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.log_Level = cst_Log.LOG_INFO;
+            dlgSafetyCheckConfig tDlg = new dlgSafetyCheckConfig();
+            tDlg.ShowDialog();
         }
 
-        private void rbLogVerbose_CheckedChanged(object sender, EventArgs e)
+        private void btnAbout_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.log_Level = cst_Log.LOG_VERBOSE;
-        }
-
-        private void btnSaveOptions_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.Save();
-        }
-
-        private void labelVersion_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            // https://github.com/CodeChex/OutlookSafetyChex
-            String tUrl = AddInSafetyCheck.metaData.Description; 
-            this.labelVersion.LinkVisited = true;
-            System.Diagnostics.Process.Start(tUrl);
-        }
-
-        private void editBlacklist_Dialog(object sender, EventArgs e)
-        {
-            this.Visible = false;
-            try
-            {
-                templateOptionList dlg = new templateOptionList("Edit Local Blacklist",
-                                    AddInSafetyCheck.getCacheTLDs(),
-                                    AddInSafetyCheck.getLocalBlacklist(),
-                                    AddInSafetyCheck.getBaseBlacklist());
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    AddInSafetyCheck.saveLocalBlacklist(dlg.listBoxSelected.Items.Cast<String>().ToList());
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Log.logException(ex, "editLocalBlacklist");
-            }
-            this.Visible = true;
-        }
-
-        private void editMIMEtypes_Dialog(object sender, EventArgs e)
-        {
-            this.Visible = false;
-            try
-            {
-                templateOptionList dlg = new templateOptionList("Edit Allowed MIMETYPEs",
-                                    AddInSafetyCheck.getCacheMIMETYPEs(),
-                                    AddInSafetyCheck.getLocalMIMETYPEs(),
-                                    AddInSafetyCheck.getCommonMIMETYPEs());
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    AddInSafetyCheck.saveLocalMIMETYPEs(dlg.listBoxSelected.Items.Cast<String>().ToList());
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Log.logException(ex, "Edit Allowed MIMETYPEs");
-            }
-            this.Visible = true;
-        }
-
-        private void editCodepages_Dialog(object sender, EventArgs e)
-        {
-            this.Visible = false;
-            try
-            {
-                templateOptionList dlg = new templateOptionList("Edit Allowed CODEPAGEs",
-                                    AddInSafetyCheck.getCacheCODEPAGEs(),
-                                    AddInSafetyCheck.getLocalCODEPAGEs(),
-                                    AddInSafetyCheck.getCommonCODEPAGEs());
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    AddInSafetyCheck.saveLocalCODEPAGEs(dlg.listBoxSelected.Items.Cast<String>().ToList());
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Log.logException(ex, "Edit Allowed CODEPAGEs");
-            }
-            this.Visible = true;
-
-        }
-
-        private void editCULTUREs_Dialog(object sender, EventArgs e)
-        {
-            this.Visible = false;
-            try
-            {
-                templateOptionList dlg = new templateOptionList("Edit Allowed CULTUREs",
-                                    AddInSafetyCheck.getCacheCULTUREs(),
-                                    AddInSafetyCheck.getLocalCULTUREs(),
-                                    AddInSafetyCheck.getCommonCULTUREs());
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    AddInSafetyCheck.saveLocalCULTUREs(dlg.listBoxSelected.Items.Cast<String>().ToList());
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Log.logException(ex, "Edit Allowed CULTUREs");
-            }
-            this.Visible = true;
+            dlgAbout tDlg = new dlgAbout();
+            tDlg.ShowDialog();
         }
     } // class
 } // namespace

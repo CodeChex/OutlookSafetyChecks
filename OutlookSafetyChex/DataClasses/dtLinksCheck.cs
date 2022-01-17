@@ -24,6 +24,8 @@ namespace OutlookSafetyChex
             if (listLinks != null)
             {
                 if (listLinks.Rows.Count == 0) listLinks.populate(false);
+                if (mLogger != null)
+                    mLogger.logInfo("Inspecting [" + listLinks.Rows.Count + "] Link References", logArea);
                 List<String> listHosts = new List<String>();
                 List<MailAddress> listEmails = new List<MailAddress>();
                 foreach (DataRow tRow in listLinks.Rows)
@@ -47,25 +49,29 @@ namespace OutlookSafetyChex
                         // DO NOTHING HERE
                     }
                 }
+                if (mLogger != null)
+                    mLogger.logInfo("Inspecting [" + listHosts.Count + "] Host References", logArea);
                 foreach (String tHost in listHosts.Distinct())
                 {
-                    String tDomain = cst_Util.pullDomain(tHost);
+                    String tDomain = instance.mWebUtil.pullDomain(tHost);
                     String tOwner = "[not checked]";
                     String tNotes = "";
                     // start checks
-                    String tReason = Globals.AddInSafetyCheck.suspiciousHost(tHost);
+                    String tReason = instance.suspiciousHost(tHost);
                     if (cst_Util.isValidString(tReason))
                     {
                         tNotes += tReason;
-                        parent.log(logArea, "4", "HOST", tReason);
+                        parent.logFinding(logArea, "4", "HOST", tReason);
                     }
                     if (Properties.Settings.Default.opt_Lookup_WHOIS)
                     {
-                        tOwner = cst_WHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
+                        tOwner = instance.mWHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
                     }
                     String[] rowData = new[] { tHost, tOwner, tNotes };
-                    this.Rows.Add(rowData);
+                    this.addDataRow(rowData);
                 }
+                if (mLogger != null)
+                    mLogger.logInfo("Inspecting [" + listEmails.Count + "] Email References", logArea);
                 foreach (MailAddress tMailAddress in listEmails.Distinct())
                 {
                     String tOwner = "[not checked]";
@@ -73,12 +79,12 @@ namespace OutlookSafetyChex
                     // start checks
                     if (Properties.Settings.Default.opt_Lookup_WHOIS)
                     {
-                        String tDomain = cst_Util.pullDomain(tMailAddress.Host);
-                        tOwner = cst_WHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
+                        String tDomain = instance.mWebUtil.pullDomain(tMailAddress.Host);
+                        tOwner = instance.mWHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
                     }
                     tNotes = checkEmail(tMailAddress, Properties.Resources.Title_Links + " / Checks");
                     String[] rowData = new[] { tMailAddress.Address, tOwner, tNotes };
-                    this.Rows.Add(rowData);
+                    this.addDataRow(rowData);
                 }
             }
             return this.Rows.Count;

@@ -34,7 +34,7 @@ namespace OutlookSafetyChex
     public class CustomUI_Handler : Office.IRibbonExtensibility
     {
         private Office.IRibbonUI ribbon;
-
+  
         public CustomUI_Handler()
         {
             ribbon = null;
@@ -83,135 +83,6 @@ namespace OutlookSafetyChex
             Outlook.MailItem myMail = Globals.AddInSafetyCheck.getOpenMailItem();
             Globals.AddInSafetyCheck.loadDialog(myMail);
         }
-
-/*
-        public void Toggle_WHOIS(Office.IRibbonControl control, bool pressed)
-        {
-            Globals.AddInSafetyCheck.check_WHOIS = pressed;
-        }
-        public bool IsSelected_WHOIS(Office.IRibbonControl control)
-        {
-            bool fSelected = Globals.AddInSafetyCheck.check_WHOIS;
-            return fSelected;
-        }
-
-        public void Toggle_DNSBL(Office.IRibbonControl control, bool pressed)
-        {
-            Globals.AddInSafetyCheck.check_BLACKLIST = pressed;
-        }
-        public bool IsSelected_DNSBL(Office.IRibbonControl control)
-        {
-            bool fSelected = Globals.AddInSafetyCheck.check_BLACKLIST;
-            return fSelected;
-        }
-
-        public void Toggle_CACHE(Office.IRibbonControl control, bool pressed)
-        {
-            bool fSelected = Globals.AddInSafetyCheck.check_BLACKLIST;
-            Globals.AddInSafetyCheck.use_CACHE = pressed;
-        }
-        public bool IsSelected_CACHE(Office.IRibbonControl control)
-        {
-            bool fSelected = Globals.AddInSafetyCheck.use_CACHE;
-            return fSelected;
-        }
-
-        public void ShowEnvelope_Selector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            Globals.AddInSafetyCheck.ShowEnvelope(myMail);
-        }
-        public void ShowEnvelope_Inspector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            Globals.AddInSafetyCheck.ShowEnvelope(myMail);
-        }
-
-        public void DumpHeaders_Selector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            Globals.AddInSafetyCheck.DumpHeaders(myMail);
-        }
-        public void DumpHeaders_Inspector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            Globals.AddInSafetyCheck.DumpHeaders(myMail);
-        }
-
-        public void CheckReplyTo_Selector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            Globals.AddInSafetyCheck.CheckReplyTo(myMail);
-        }
-        public void CheckReplyTo_Inspector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            Globals.AddInSafetyCheck.CheckReplyTo(myMail);
-        }
-
-        public void CheckLinks_Selector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            Globals.AddInSafetyCheck.InspectLinks(myMail);
-        }
-        public void CheckLinks_Inspector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            Globals.AddInSafetyCheck.InspectLinks(myMail);
-        }
-
-        public void CheckAttachments_Selector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            Globals.AddInSafetyCheck.InspectAttachments(myMail);
-        }
-        public void CheckAttachments_Inspector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            Globals.AddInSafetyCheck.InspectAttachments(myMail);
-        }
-
-        public bool EnableAttachments_Selector(Office.IRibbonControl control)
-        {
-            bool fEnable = false;
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            fEnable = (myMail != null) && (myMail.Attachments.Count > 0);
-            return fEnable;
-        }
-        public bool EnableAttachments_Inspector(Office.IRibbonControl control)
-        {
-            bool fEnable = false;
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            fEnable = (myMail != null) && (myMail.Attachments.Count > 0);
-            return fEnable;
-        }
-
-        public void CheckRouting_Selector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            Globals.AddInSafetyCheck.InspectRouting(myMail);
-        }
-        public void CheckRouting_Inspector(Office.IRibbonControl control)
-        {
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            Globals.AddInSafetyCheck.InspectRouting(myMail);
-        }
-
-        public bool EnableRouting_Selector(Office.IRibbonControl control)
-        {
-            bool fEnable = false;
-            Outlook.MailItem myMail = getSelectedMailItem(control);
-            fEnable = (myMail != null) && (myMail.SenderEmailType == "SMTP");
-            return fEnable;
-        }
-        public bool EnableRouting_Inspector(Office.IRibbonControl control)
-        {
-            bool fEnable = false;
-            Outlook.MailItem myMail = getOpenMailItem(control);
-            fEnable = (myMail != null) && (myMail.SenderEmailType == "SMTP");
-            return fEnable;
-        }
-*/
 
         public void CustomUI_Load(Office.IRibbonUI ribbonUI)
         {

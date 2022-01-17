@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
+using OutlookSafetyChex;
 using System;
 using System.Collections.Generic;
 
 namespace CheccoSafetyTools
 {
-    abstract class cst_WHOISXML_API
+    public class cst_WHOISXML_API
 	{
 		private static String API_KEY = ""; // OutlookSafetyChex.Properties.Settings.Default.WhoisXml_ApiKey;
 
@@ -14,13 +15,15 @@ namespace CheccoSafetyTools
 		private readonly static Dictionary<String, JToken> whoisCache = new Dictionary<String, JToken>();
 		private readonly static Dictionary<String, JToken> geoCache = new Dictionary<String, JToken>();
 
+		protected readonly cst_Log mLogger = Globals.AddInSafetyCheck.mLogger;
+
 		public static void clearCaches()
 		{
 			whoisCache.Clear();
 			geoCache.Clear();
 		}
 
-		private static List<String> lookupHost(String tHost, out List<String> arrGEO)
+		private List<String> lookupHost(String tHost, out List<String> arrGEO)
 		{
 			List<String> arrOWNER = null;
 			arrGEO = null;
@@ -47,7 +50,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Log.logException(ex, "cst_WHOISXML_API::lookupHost(" + tHost+")");
+				if (mLogger != null) mLogger.logException(ex, "cst_WHOISXML_API::lookupHost(" + tHost+")");
 			}
 			return arrOWNER;
 		}
@@ -90,7 +93,7 @@ namespace CheccoSafetyTools
 			}
 		}
  		*/
-		private static KeyValuePair<String, String> parseWhoisJSON(JToken json)
+		private KeyValuePair<String, String> parseWhoisJSON(JToken json)
 		{
 			KeyValuePair<String, String> rc = new KeyValuePair<String, String>();
 			try
@@ -126,13 +129,12 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-				cst_Log.logException(ex, "cst_WHOISXML_API::parseWhoisJSON");
-
+				if (mLogger != null) mLogger.logException(ex, "cst_WHOISXML_API::parseWhoisJSON");
             }
 			return rc;
 		}
 
-		public static List<String> checkWHOIS(String tHost)
+		public List<String> checkWHOIS(String tHost)
 		{
 			List<String> rc = new List<String>();
 			try
@@ -142,14 +144,14 @@ namespace CheccoSafetyTools
 				if (!whoisCache.TryGetValue(inStr, out json) || json == null)
 				{
 					String tURL = WHOIS_URL + "domainName=" + inStr;
-					json = cst_Util.wgetJSON(tURL);
+					json = mWebUtil.wgetJSON(tURL);
 					if (json != null) whoisCache.Add(inStr, json);
 				}
 				rc.Add(parseWhoisJSON(json).Value);
 			}
 			catch (Exception ex)
 			{
-                cst_Log.logException(ex, "cst_WHOISXML_API::checkWHOIS(" + tHost + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_WHOISXML_API::checkWHOIS(" + tHost + ")");
             }
             return rc;
 		}
@@ -169,7 +171,7 @@ namespace CheccoSafetyTools
 			   }
 			}
 		*/
-		private static KeyValuePair<String, String> parseGeoipJSON(JToken json)
+		private KeyValuePair<String, String> parseGeoipJSON(JToken json)
 		{
 			KeyValuePair<String, String> rc = new KeyValuePair<String, String>();
 			try
@@ -200,12 +202,12 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Log.logException(ex, "cst_WHOISXML_API::parseGeoipJSON()");
+                if (mLogger != null) mLogger.logException(ex, "cst_WHOISXML_API::parseGeoipJSON()");
             }
             return rc;
 		}
 
-		public static List<String> geoLocateIP(String tIPAddr)
+		public List<String> geoLocateIP(String tIPAddr)
 		{
 			List<String> rc = new List<String>();
 			try
@@ -215,20 +217,20 @@ namespace CheccoSafetyTools
 				if (!geoCache.TryGetValue(inStr, out json) || json == null)
 				{
 					String tURL = GEOIP_URL + "ipAddress=" + inStr;
-					json = cst_Util.wgetJSON(tURL);
+					json = mUtil.wgetJSON(tURL);
 					if (json != null) geoCache.Add(inStr, json);
 				}
 				rc.Add(parseGeoipJSON(json).Value);
 			}
 			catch (Exception ex)
 			{
-                cst_Log.logException(ex, "cst_WHOISXML_API::geoLocateIP(" + tIPAddr + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_WHOISXML_API::geoLocateIP(" + tIPAddr + ")");
             }
             return rc;
 		}
 		#endregion
 
-		public static String whoisOwner(String fqdn,bool use_CACHE)
+		public String whoisOwner(String fqdn,bool use_CACHE)
 		{
 			String rc = null;
 			String tKey = fqdn.ToLower();
@@ -254,7 +256,7 @@ namespace CheccoSafetyTools
 			}
 			catch (Exception ex)
 			{
-                cst_Log.logException(ex, "cst_WHOISXML_API::whoisOwner(" + fqdn + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_WHOISXML_API::whoisOwner(" + fqdn + ")");
             }
             return rc;
 		}

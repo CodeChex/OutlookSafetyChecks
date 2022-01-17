@@ -11,10 +11,147 @@ using System.Net.Mime;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CheccoSafetyTools
 {
+    abstract class cst_Util
+    {
+        // static thread-safe members
+        private static String rgxWordPattern = @"\b(\w+)\b";
+        private static String rgxLeetPattern = @"([a-zA-Z]\d+[a-zA-Z])";
+ 
+        #region  Array/list utils
+        public static bool isValidArray(dynamic[] tArr)
+        {
+            if (tArr == null) return false;
+            return (tArr.Length > 0);
+        }
+
+        public static bool isValidCollection(IEnumerable<dynamic> tArr)
+        {
+            if (tArr == null) return false;
+            return (tArr.Count() > 0);
+        }
+
+        #endregion
+
+        #region string utils
+        public static List<String> getWordList(String tStr)
+        {
+            List<String> rc = new List<String>();
+            try
+            {
+                // looking for strings that display leetspeak
+                if (isValidString(tStr))
+                {
+                    // foreach word in the string:
+                    Regex rgxWord = new Regex(rgxWordPattern, RegexOptions.Compiled);
+                    MatchCollection mWords = rgxWord.Matches(tStr);
+                    foreach (Match match in mWords)
+                    {
+                        String word = match.Value.Trim();
+                        if (isValidString(word) && word.Length > 1)
+                        {
+                            rc.Add(word);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // if (mLogger != null) mLogger.logException(ex, "AddInSafetyCheck::getWordList(" + tStr + ")");
+            }
+            return rc;
+        }
+
+        public static bool isValidString(String tStr, bool trimFirst = true)
+        {
+            if (tStr == null) return false;
+            String chk = trimFirst ? tStr.Trim() : tStr;
+            return (chk.Length > 0);
+        }
+
+        public static bool isValidURL(String tStr)
+        {
+            cst_URL tURL = cst_URL.parseURL(tStr);
+            return (tURL != null);
+        }
+
+        public static bool containsLeet(String word)
+        {
+            bool rc = false;
+            // Determine Leet substitutions (O=0, I=1, Z=2, E=3, H=4, S=5, G=6, T=7, B=8, Q=9)
+            Regex rgxLeet = new Regex(rgxLeetPattern, RegexOptions.Compiled);
+            Match mLeet = rgxLeet.Match(word);
+            rc = (mLeet.Groups.Count > 1);
+            return rc;
+        }
+
+        public static String toAscii(String tStr)
+        {
+            String rc = "";
+            try
+            {
+                var tBytes = System.Text.Encoding.UTF8.GetBytes(tStr);
+                rc = System.Text.Encoding.ASCII.GetString(tBytes);
+            }
+            catch (Exception)
+            {
+                // ignore all errors
+                rc = "";
+            }
+            // trying to be safe
+            return rc;
+        }
+
+        public static String RemoveDiacritics(String text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
+
+            text = text.Normalize(NormalizationForm.FormD);
+            var chars = text.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
+            return new String(chars).Normalize(NormalizationForm.FormC);
+        }
+
+        public static String B64encode(String tStr)
+        {
+            String rc = "";
+            try
+            {
+                var tBytes = System.Text.Encoding.UTF8.GetBytes(tStr);
+                rc = System.Convert.ToBase64String(tBytes);
+            }
+            catch (Exception)
+            {
+                // ignore all errors
+                rc = "";
+            }
+            // trying to be safe
+            return rc;
+        }
+
+        public static String B64decode(String tStr)
+        {
+            String rc = "";
+            try
+            {
+                var tBytes = System.Convert.FromBase64String(tStr);
+                rc = System.Text.Encoding.UTF8.GetString(tBytes);
+            }
+            catch (Exception)
+            {
+                // ignore all errors
+                rc = "";
+            }
+            // trying to be safe
+            return rc;
+        }
+        #endregion
+
+    } // class
 
     public class cst_URL
     {
@@ -135,7 +272,7 @@ namespace CheccoSafetyTools
 
     }
 
-    public abstract class cst_Log
+    public class cst_Log
     {
         public const ushort LOG_NONE = 0;
         public const ushort LOG_ERROR = 1;
@@ -143,85 +280,78 @@ namespace CheccoSafetyTools
         public const ushort LOG_VERBOSE = 3;
         public const ushort LOG_ALL = 99;
 
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static TextBox ctlLogger = null;
-        private static TextBox ctlStatus = null;
+        public List<TextBox> arrLogger = new List<TextBox>();
+        private List<TextBox> arrStatus = new List<TextBox>();
 
-        #region logging
-        private static void updateLogUI(String s, bool erase = false)
+        private uint lines = 0;
+
+       private void updateLogUI(String s, bool erase = false)
         {
-            //prependLogUI(s, erase);
+            if (erase) lines = 0;
+            lines ++;
             appendLogUI(s, erase);
-            updateStatusLine(s, erase);
+            updateStatusLine(s, true);
         }
 
-        private static void prependLogUI(String s, bool erase = false)
+        private void updateTextBox(TextBox ctl, String msg, bool erase = false)
         {
-            // update logging window
-            if (ctlLogger != null)
+            try
             {
-                try
+                if (erase)
                 {
-                    if (erase) ctlLogger.Clear();
-                    if (cst_Util.isValidString(s))
-                    {
-                         ctlLogger.Text = s + "\r\n" + ctlLogger.Text;
-                    }
-                    ctlLogger.Refresh();
+                    if (ctl.InvokeRequired)
+                        ctl.Invoke(new Action(delegate () {
+                            ctl.Clear();
+                        }));
+                    else
+                        ctl.Clear();
                 }
-                catch (Exception ex)
+                if (cst_Util.isValidString(msg))
                 {
-                    log.Error("cst_Util::prependLogUI(logWindow)", ex);
+                    if (ctl.InvokeRequired)
+                        ctl.Invoke(new Action(delegate () {
+                            ctl.AppendText("\r\n" + msg);
+                        }));
+                    else
+                        ctl.AppendText("\r\n" + msg);
                 }
+                if (ctl.InvokeRequired)
+                    ctl.Invoke(new Action(delegate () {
+                        ctl.Refresh();
+                    }));
+                else
+                    ctl.Refresh();
+            }
+            catch (Exception ex)
+            {
+                log.Error("cst_Util::updateTextBox()", ex);
             }
         }
 
-        private static void appendLogUI(String s, bool erase = false)
+        private void appendLogUI(String s, bool erase = false)
         {
             // update logging window
-            if (ctlLogger != null)
+            foreach (TextBox ctlLogger in arrLogger)
             {
-                try
-                {
-                    if (erase) ctlLogger.Clear();
-                    if (cst_Util.isValidString(s))
-                    {
-                        ctlLogger.AppendText("\r\n" + s);
-                    }
-                    ctlLogger.Refresh();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("cst_Util::prependLogUI(logWindow)", ex);
-                }
+                updateTextBox(ctlLogger, s, erase);
             } 
         }
 
-        private static void updateStatusLine(String s, bool erase = false)
-        { 
+        private void updateStatusLine(String s, bool erase = false)
+        {
             // update status line
-            if (ctlStatus != null)
+            foreach (TextBox ctlStatus in arrStatus)
             {
-                try
-                {
-                    if (erase) ctlStatus.Text = "";
-                    if (cst_Util.isValidString(s))
-                    {
-                        ctlStatus.Text = s.Trim();
-                    }
-                    ctlStatus.Refresh();
-                }
-                catch (Exception ex)
-                {
-                    log.Error("cst_Util::prependLogUI(statusLine)", ex);
-                }
+                updateTextBox(ctlStatus, s, erase);
             }
         }
 
-        private static String prepareLogMsg(String details, String context)
+        private String prepareLogMsg(String details, String context)
         {
-            String rc = "";
+            Thread z = Thread.CurrentThread;
+            String rc = "[" + lines + "][Thread " + z.ManagedThreadId + "]: ";
             if (cst_Util.isValidString(context))
             {
                 rc += context.Trim();
@@ -233,7 +363,7 @@ namespace CheccoSafetyTools
             return rc;
         }
 
-        public static void logVerbose(String details, String context, bool erase = false)
+        public void logVerbose(String details, String context, bool erase = false)
         {
             if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_VERBOSE
                 && cst_Util.isValidString(details))
@@ -244,7 +374,7 @@ namespace CheccoSafetyTools
             }
         }
 
-        public static void logInfo(String details, String context, bool erase = false)
+        public void logInfo(String details, String context, bool erase = false)
         {
             if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_INFO &&
                 cst_Util.isValidString(details))
@@ -255,7 +385,7 @@ namespace CheccoSafetyTools
             }
         }
 
-        public static void logException(Exception ex, String context, bool erase = false)
+        public void logException(Exception ex, String context, bool erase = false)
         {
             if (OutlookSafetyChex.Properties.Settings.Default.log_Level >= LOG_ERROR &&
                 ex != null)
@@ -266,7 +396,7 @@ namespace CheccoSafetyTools
             }
         }
 
-        public static void logMessage(String details, String context, bool erase = false)
+        public void logMessage(String details, String context, bool erase = false)
         {
             if (cst_Util.isValidString(details))
             {
@@ -276,200 +406,78 @@ namespace CheccoSafetyTools
             }
         }
 
-        public static void setLoggingUI(TextBox wndLogger, TextBox wndStatus = null)
+        public void setLoggingUI(TextBox[] wndLogger, TextBox[] wndStatus = null)
         {
-            ctlLogger = wndLogger;
-            ctlStatus = wndStatus;
+            arrLogger = new List<TextBox>();
+            if (wndLogger != null) arrLogger.AddRange(wndLogger);
+            arrStatus = new List<TextBox>();
+            if (wndStatus != null) arrStatus.AddRange(wndStatus);
         }
-
-        #endregion
 
     }
 
-    public abstract class cst_Util
+    public class cst_Web
     {
-        public static HtmlParser htmlParser = new HtmlParser();
-        public static IdnMapping idnMapping = new IdnMapping();
- 
-        private static String rgxWordPattern = @"\b(\w+)\b"; 
-        private static Regex rgxWord = new Regex(rgxWordPattern, RegexOptions.Compiled);
-        private static String rgxLeetPattern = @"([a-zA-Z]\d+[a-zA-Z])";
-        private static Regex rgxLeet = new Regex(rgxLeetPattern, RegexOptions.Compiled);
+        private cst_Log mLogger = null;
+
         private static String rgxIPAddrPattern = @"(\d+\.\d+\.\d+\.\d+)";
-        private static Regex rgxIPAddr = new Regex(rgxIPAddrPattern, RegexOptions.Compiled);
+        // non-static member
+        public HtmlParser htmlParser = new HtmlParser();
+        public IdnMapping idnMapping = new IdnMapping();
 
-        #region  Array/list utils
-        public static bool isValidArray(dynamic[] tArr)
+ 
+        public cst_Web(cst_Log tLogger)
         {
-            if (tArr == null) return false;
-            return (tArr.Length > 0);
+            mLogger = tLogger;
         }
 
-        public static bool isValidCollection(IEnumerable<dynamic> tArr)
+        public String pullDomain(String fqdn)
         {
-            if (tArr == null) return false;
-            return (tArr.Count() > 0);
-        }
-
-        #endregion
-
-        #region string utils
-        public static List<String> getWordList(String tStr)
-        {
-            List<String> rc = new List<String>();
-            try
-            {
-                // looking for strings that display leetspeak
-                if (isValidString(tStr))
-                {
-                    // foreach word in the string:
-                    MatchCollection mWords = rgxWord.Matches(tStr);
-                    foreach (Match match in mWords)
-                    {
-                        String word = match.Value.Trim();
-                        if (isValidString(word) && word.Length > 1)
-                        {
-                            rc.Add(word);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Log.logException(ex, "AddInSafetyCheck::getWordList(" + tStr + ")");
-            }
-            return rc;
-        }
-        
-        public static bool isValidString(String tStr, bool trimFirst = true)
-        {
-            if (tStr == null) return false;
-            String chk = trimFirst ? tStr.Trim() : tStr;
-            return (chk.Length > 0);
-        }
-
-        public static bool isValidURL(String tStr)
-        {
-            cst_URL tURL = cst_URL.parseURL(tStr);
-            return (tURL != null);
-        }
-
-        public static bool containsLeet(String word)
-        {
-            bool rc = false;
-            // Determine Leet substitutions (O=0, I=1, Z=2, E=3, H=4, S=5, G=6, T=7, B=8, Q=9)
-            Match mLeet = rgxLeet.Match(word);
-            rc = (mLeet.Groups.Count > 1 );
-            return rc;
-        }
-
-        public static String toAscii(String tStr)
-        {
-            String rc = "";
-            try
-            {
-                var tBytes = System.Text.Encoding.UTF8.GetBytes(tStr);
-                rc = System.Text.Encoding.ASCII.GetString(tBytes);
-            }
-            catch (Exception)
-            {
-                // ignore all errors
-                rc = "";
-            }
-            // trying to be safe
-            return rc;
-        }
-
-        public static String RemoveDiacritics(String text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return text;
-
-            text = text.Normalize(NormalizationForm.FormD);
-            var chars = text.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
-            return new String(chars).Normalize(NormalizationForm.FormC);
-        }
-
-        public static String B64encode(String tStr)
-        {
-            String rc = "";
-            try
-            {
-                var tBytes = System.Text.Encoding.UTF8.GetBytes(tStr);
-                rc = System.Convert.ToBase64String(tBytes);
-            }
-            catch (Exception)
-            {
-                // ignore all errors
-                rc = "";
-            }
-            // trying to be safe
-            return rc;
-        }
-
-        public static String B64decode(String tStr)
-        {
-            String rc = "";
-            try
-            {
-                var tBytes = System.Convert.FromBase64String(tStr);
-                rc = System.Text.Encoding.UTF8.GetString(tBytes);
-            }
-            catch (Exception)
-            {
-                // ignore all errors
-                rc = "";
-            }
-            // trying to be safe
-            return rc;
-        }
-
-        public static String pullDomain(String fqdn)
-		{
-			String rc = fqdn;
-            try
-            { 
-			    String[] parts = fqdn.Split('.');
-			    int Z = parts.Length - 1;
-			    if (Z > 1) rc = parts[Z-1] + "." + parts[Z];
-                // special cases
-                if (rc.Equals("co.uk",StringComparison.OrdinalIgnoreCase) && parts.Length > 2)
-                {
-                    rc = parts[Z-2] + '.' + rc;
-                }
-            }
-            catch (Exception ex)
-            {
-                cst_Log.logException(ex, "cst_Util::pullDomain(" + fqdn + ")");
-            }
-			// trying to be safe
-			return rc;
-		}
-
-		public static String pullTLD(String fqdn)
-		{
-			String rc = fqdn;
+            String rc = fqdn;
             try
             {
                 String[] parts = fqdn.Split('.');
-			    int Z = parts.Length - 1;
-			    if (Z > 0) rc = parts[Z];
+                int Z = parts.Length - 1;
+                if (Z > 1) rc = parts[Z - 1] + "." + parts[Z];
+                // special cases
+                if (rc.Equals("co.uk", StringComparison.OrdinalIgnoreCase) && parts.Length > 2)
+                {
+                    rc = parts[Z - 2] + '.' + rc;
+                }
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::pullTLD(" + fqdn + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::pullDomain(" + fqdn + ")");
             }
             // trying to be safe
             return rc;
-		}
+        }
 
-        public static String parseIPaddress(String tStr)
+        public String pullTLD(String fqdn)
+        {
+            String rc = fqdn;
+            try
+            {
+                String[] parts = fqdn.Split('.');
+                int Z = parts.Length - 1;
+                if (Z > 0) rc = parts[Z];
+            }
+            catch (Exception ex)
+            {
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::pullTLD(" + fqdn + ")");
+            }
+            // trying to be safe
+            return rc;
+        }
+
+        public String parseIPaddress(String tStr)
         {
             String rc = "";
             try
             {
-                if (isValidString(tStr))
+                if (cst_Util.isValidString(tStr))
                 {
+                    Regex rgxIPAddr = new Regex(rgxIPAddrPattern, RegexOptions.Compiled);
                     Match m = rgxIPAddr.Match(tStr.Trim());
                     if (m.Groups.Count > 1)
                     {
@@ -479,31 +487,31 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::parseIPaddress(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::parseIPaddress(" + tStr + ")");
             }
             return rc;
         }
 
-         public static IPAddress toIPaddress(String tStr)
+        public IPAddress toIPaddress(String tStr)
         {
             IPAddress rc = null;
             try
             {
                 IPAddressRange rcIP = null;
-                if ( IPAddressRange.TryParse(tStr,out rcIP) )
+                if (IPAddressRange.TryParse(tStr, out rcIP))
                     rc = rcIP.Begin;
             }
             catch { }
             return rc;
         }
 
-        public static List<IPAddress> listIPaddress(String tStr, ushort maxLen=0)
+        public List<IPAddress> listIPaddress(String tStr, ushort maxLen = 0)
         {
             List<IPAddress> rc = new List<IPAddress>();
             try
             {
                 IPAddressRange rcIP = null;
-                if (IPAddressRange.TryParse(tStr, out rcIP) )
+                if (IPAddressRange.TryParse(tStr, out rcIP))
                 {
                     foreach (IPAddress ip in rcIP)
                     {
@@ -519,7 +527,7 @@ namespace CheccoSafetyTools
             return rc;
         }
 
-        public static bool isValidIPAddress(String tStr)
+        public bool isValidIPAddress(String tStr)
         {
             IPAddress ip = toIPaddress(tStr);
             bool rc = (ip != null);
@@ -536,13 +544,13 @@ namespace CheccoSafetyTools
             }
 			catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::isValidIPAddress(" + tStr + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::isValidIPAddress(" + tStr + ")");
 			}
             */
             return rc;
         }
-  
-        public static String sanitizeEmail(String inAddr, bool strict)
+
+        public String sanitizeEmail(String inAddr, bool strict)
         {
             String rc = strict ? "" : inAddr;
             try
@@ -558,26 +566,23 @@ namespace CheccoSafetyTools
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::sanitizeEmail(" + inAddr + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::sanitizeEmail(" + inAddr + ")");
             }
             return rc;
         }
-        #endregion
-
-        #region web queries
-        public static String wgetContentType(String tURL, Dictionary<String, String> arrHeaders = null)
+        public String wgetContentType(String tURL, Dictionary<String, String> arrHeaders = null)
         {
             String rc = null;
-            WebHeaderCollection arr = wgetHead(tURL,arrHeaders);
+            WebHeaderCollection arr = wgetHead(tURL, arrHeaders);
             if (arr != null)
             {
                 rc = arr.Get("Content-Type");
-                if ( !cst_Util.isValidString(rc) ) rc = arr.Get("[Exception]");
+                if (!cst_Util.isValidString(rc)) rc = arr.Get("[Exception]");
             }
             return rc;
         }
 
-        public static WebHeaderCollection wgetHead(String tURL, Dictionary<String,String> arrHeaders = null)
+        public WebHeaderCollection wgetHead(String tURL, Dictionary<String, String> arrHeaders = null)
         {
             WebHeaderCollection rc = null;
             try
@@ -596,38 +601,38 @@ namespace CheccoSafetyTools
                     }
                 }
                 WebResponse tResp = tReq.GetResponse();
-                if ( tResp != null )
+                if (tResp != null)
                 {
                     rc = tResp.Headers;
                 }
             }
             catch (WebException we)
             {
-                cst_Log.logException(we, "cst_Util::wgetHead(" + tURL + ")");
-                rc.Add("[Exception]",we.Message);
+                if (mLogger != null) mLogger.logException(we, "cst_Util::wgetHead(" + tURL + ")");
+                rc.Add("[Exception]", we.Message);
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::wgetHead(" + tURL + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::wgetHead(" + tURL + ")");
                 rc.Add("[Exception]", ex.Message);
             }
             return rc;
         }
 
-        public static byte[] wgetBinary(String tURL, String[] allowableContentTypes = null, Dictionary<String, String> arrHeaders = null)
-		{
-			byte[] rc = null;
-			try
-			{
+        public byte[] wgetBinary(String tURL, String[] allowableContentTypes = null, Dictionary<String, String> arrHeaders = null)
+        {
+            byte[] rc = null;
+            try
+            {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 //ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
                 using (WebClient tClient = new WebClient())
-				{
+                {
                     if (arrHeaders != null)
                     {
                         foreach (String t in arrHeaders.Keys)
                         {
-                            tClient.Headers.Add(t,arrHeaders[t]);
+                            tClient.Headers.Add(t, arrHeaders[t]);
                         }
                     }
                     rc = tClient.DownloadData(tURL);
@@ -651,7 +656,7 @@ namespace CheccoSafetyTools
                         }
                         if (foundContent == 0)
                         {
-                            cst_Log.logInfo("No Allowable Content-Type Found", "cst_Util::wgetBinary(" + tURL + ")");
+                            if (mLogger != null) mLogger.logInfo("No Allowable Content-Type Found", "cst_Util::wgetBinary(" + tURL + ")");
                             rc = null;
                         }
                     }
@@ -659,17 +664,17 @@ namespace CheccoSafetyTools
             }
             catch (WebException webEx)
             {
-                cst_Log.logException(webEx, "cst_Util::wgetData(" + tURL + ")");
+                if (mLogger != null) mLogger.logException(webEx, "cst_Util::wgetData(" + tURL + ")");
             }
             catch (Exception ex)
-			{
-				cst_Log.logException(ex, "cst_Util::wgetData(" + tURL+")");
+            {
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::wgetData(" + tURL + ")");
             }
-			return rc;
-		}
+            return rc;
+        }
 
-        public static String wgetString(String tURL, String[] allowableContentTypes = null, Dictionary<String, String> arrHeaders = null)
-       {
+        public String wgetString(String tURL, String[] allowableContentTypes = null, Dictionary<String, String> arrHeaders = null)
+        {
             String rc = null;
             try
             {
@@ -681,7 +686,7 @@ namespace CheccoSafetyTools
                     {
                         foreach (String t in arrHeaders.Keys)
                         {
-                            tClient.Headers.Add(t,arrHeaders[t]);
+                            tClient.Headers.Add(t, arrHeaders[t]);
                         }
                     }
                     rc = tClient.DownloadString(tURL);
@@ -693,19 +698,19 @@ namespace CheccoSafetyTools
                         WebHeaderCollection tResponseHeaders = tClient.ResponseHeaders;
                         // Loop through the ResponseHeaders and display the header name/value pairs.
                         String[] arrResp = tResponseHeaders.GetValues("Content-Type");
-                        foreach ( String tVal in arrResp)
+                        foreach (String tVal in arrResp)
                         {
-                            foreach ( String tContentType in allowableContentTypes )
+                            foreach (String tContentType in allowableContentTypes)
                             {
                                 if (tVal.StartsWith(tContentType, StringComparison.CurrentCultureIgnoreCase))
                                 {
-                                    foundContent ++;
+                                    foundContent++;
                                 }
                             }
                         }
-                        if ( foundContent == 0 )
+                        if (foundContent == 0)
                         {
-                            cst_Log.logInfo("No Allowable Content-Type Found", "cst_Util::wgetString(" + tURL + ")");
+                            if (mLogger != null) mLogger.logInfo("No Allowable Content-Type Found", "cst_Util::wgetString(" + tURL + ")");
                             rc = null;
                         }
                     }
@@ -713,43 +718,41 @@ namespace CheccoSafetyTools
             }
             catch (WebException webEx)
             {
-                cst_Log.logException(webEx, "cst_Util::wgetString(" + tURL + ")");
+                if (mLogger != null) mLogger.logException(webEx, "cst_Util::wgetString(" + tURL + ")");
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::wgetString(" + tURL + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::wgetString(" + tURL + ")");
             }
             return rc;
         }
 
-        public static IHtmlDocument wgetHTML(String tURL, Dictionary<String, String> arrHeaders = null)
+        public IHtmlDocument wgetHTML(String tURL, Dictionary<String, String> arrHeaders = null)
         {
             IHtmlDocument rc = null;
             try
             {
-                String tHtml = cst_Util.wgetString(tURL, 
-                                                     new[] { MediaTypeNames.Text.Html },
-                                                     arrHeaders);
+                String tHtml = wgetString(tURL, new[] { MediaTypeNames.Text.Html },
+                                            arrHeaders);
                 if (cst_Util.isValidString(tHtml))
                 {
-                    rc = cst_Util.htmlParser.ParseDocument(tHtml);
+                    rc = htmlParser.ParseDocument(tHtml);
                 }
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::wgetHTML(" + tURL + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::wgetHTML(" + tURL + ")");
             }
             return rc;
         }
 
-        public static JToken wgetJSON(String tURL, Dictionary<String, String> arrHeaders = null)
+        public JToken wgetJSON(String tURL, Dictionary<String, String> arrHeaders = null)
         {
             JToken rc = null;
             try
             {
-                String results = cst_Util.wgetString(tURL,
-                                                     new[] { MediaTypeNames.Text.Plain, "application/json" },
-                                                     arrHeaders);
+                String results = wgetString(tURL, new[] { MediaTypeNames.Text.Plain, "application/json" },
+                                            arrHeaders);
                 if (cst_Util.isValidString(results))
                 {
                     rc = JToken.Parse(results);
@@ -757,19 +760,17 @@ namespace CheccoSafetyTools
                     if ( results.StartsWith("{") ) rc = JObject.Parse(results);
                     else if (results.StartsWith("[") ) rc = JArray.Parse(results);
                     */
-                 }
+                }
             }
             catch (Exception ex)
             {
-                cst_Log.logException(ex, "cst_Util::wgetJSON(" + tURL + ")");
+                if (mLogger != null) mLogger.logException(ex, "cst_Util::wgetJSON(" + tURL + ")");
             }
             return rc;
         }
-        #endregion
+    }
 
-    } // class
-
-    public class AssemblyInfo
+     public class AssemblyInfo
     {
         // The assembly information values.
         public string Title = "",
