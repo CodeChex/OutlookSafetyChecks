@@ -40,6 +40,7 @@ namespace OutlookSafetyChex
                                     mLogger.logInfo("Inspecting [" + tNodeList.Count + "] HTML Elements", logArea);
                                 foreach (IElement tNode in tNodeList)
                                 {
+                                    bool listIt = false;
                                     String tTag = tNode.NodeName;
                                     if (mLogger != null) mLogger.logVerbose(tTag, "HTML Parsing");
                                     tNotes = "";
@@ -47,7 +48,6 @@ namespace OutlookSafetyChex
                                     String tStr = tNode.TextContent;
                                     tNotes += instance.suspiciousText(tStr);
                                     // check HTML attributes for hiding/beaconing techniques
-                                    String tLink = "";
                                     int uWD = -1;
                                     int uHT = -1;
                                     String tSIZE = "";
@@ -58,8 +58,8 @@ namespace OutlookSafetyChex
                                         case "iframe":
                                         case "embed":
                                         case "area":
-                                            tLink = tNode.GetAttribute("src");
-                                            tNotes += instance.suspiciousLink(tLink, tTag, false);
+                                            listIt = true;
+                                            tNotes += verifySRC(tNode, "src");
                                             uWD = int.Parse(tNode.GetAttribute("width"));
                                             uHT = int.Parse(tNode.GetAttribute("height"));
                                             if (uWD == 0 || uHT == 0)
@@ -68,13 +68,13 @@ namespace OutlookSafetyChex
                                             }
                                             break;
                                         case "a":
-                                            tLink = tNode.GetAttribute("href");
-                                            tNotes += instance.suspiciousLink(tLink, tTag, false);
+                                            listIt = true;
+                                            tNotes += verifyHREF(tNode, "href");
                                             break;
                                         case "object":
                                         case "applet":
-                                            tLink = tNode.GetAttribute("codebase");
-                                            tNotes += instance.suspiciousLink(tLink, tTag);
+                                            listIt = true;
+                                            tNotes += verifyCODEBASE(tNode, "codebase");
                                             uWD = int.Parse(tNode.GetAttribute("width"));
                                             uHT = int.Parse(tNode.GetAttribute("height"));
                                             if (uWD == 0 || uHT == 0)
@@ -132,7 +132,7 @@ namespace OutlookSafetyChex
                                                         break;
                                                     case "background-image":
                                                     case "background-attachment":
-                                                        tReason = instance.suspiciousLink(tValue, tName, false);
+                                                        tReason = verifyImage(tValue);
                                                         if (cst_Util.isValidString(tReason))
                                                         {
                                                             sneaky = true;
@@ -151,9 +151,15 @@ namespace OutlookSafetyChex
                                     // log results
                                     if ( cst_Util.isValidString(tNotes) )
                                     {
+                                        listIt = true;
+                                        // log it
+                                        parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
+                                    }
+                                    if (listIt)
+                                    {
+                                        // only add if there is a reason to
                                         rowData = new[] { "HTML <" + tTag + ">", "" + tNode.Text().Length + "", tNotes };
                                         this.addDataRow(rowData);
-                                        parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                                     }
                                 }
                             }
@@ -186,8 +192,10 @@ namespace OutlookSafetyChex
                                 // log results
                                 if (cst_Util.isValidString(tNotes))
                                 {
+                                    // only add if there is a reason to
                                     rowData = new[] { "RTF {" + tTag + "}", "" + tStr.Length + "", tNotes };
                                     this.addDataRow(rowData);
+                                    // log it
                                     parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                                 }
                             }
@@ -205,8 +213,10 @@ namespace OutlookSafetyChex
                         // log results
                         if (cst_Util.isValidString(tNotes))
                         {
+                            // only add if there is a reason to
                             rowData = new[] { "Plain Text", "" + tText.Length + "", tNotes };
                             this.addDataRow(rowData);
+                            // log it
                             parent.logFinding(logArea, "4", "SUSPICIOUS CONTENT", tNotes);
                         }
                         break;

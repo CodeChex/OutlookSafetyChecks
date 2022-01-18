@@ -49,10 +49,8 @@ namespace OutlookSafetyChex
             this.cbTabAttachments = new System.Windows.Forms.CheckBox();
             this.cbTabLinks = new System.Windows.Forms.CheckBox();
             this.cbTabRoutes = new System.Windows.Forms.CheckBox();
-            this.btnClearCache = new System.Windows.Forms.Button();
             this.cbTabContacts = new System.Windows.Forms.CheckBox();
             this.cbForceDataRefresh = new System.Windows.Forms.CheckBox();
-            this.cbUseCACHE = new System.Windows.Forms.CheckBox();
             this.deepTab = new System.Windows.Forms.TabPage();
             this.deeptTabPanel = new System.Windows.Forms.Panel();
             this.btnEdit_CULTUREs = new System.Windows.Forms.Button();
@@ -73,7 +71,11 @@ namespace OutlookSafetyChex
             this.cbLookupHIBP = new System.Windows.Forms.CheckBox();
             this.cbLookupWHOIS = new System.Windows.Forms.CheckBox();
             this.cbLookupDNSBL = new System.Windows.Forms.CheckBox();
+            this.processingTab = new System.Windows.Forms.TabPage();
             this.cbThreading = new System.Windows.Forms.CheckBox();
+            this.cbUseCACHE = new System.Windows.Forms.CheckBox();
+            this.btnClearCache = new System.Windows.Forms.Button();
+            this.btnRevert = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.headerCheckGridView)).BeginInit();
             this.myTabControl.SuspendLayout();
             this.testTab.SuspendLayout();
@@ -81,6 +83,7 @@ namespace OutlookSafetyChex
             this.groupLogLevel.SuspendLayout();
             this.deepTab.SuspendLayout();
             this.deeptTabPanel.SuspendLayout();
+            this.processingTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // headerCheckGridView
@@ -94,6 +97,7 @@ namespace OutlookSafetyChex
             // 
             this.myTabControl.Controls.Add(this.testTab);
             this.myTabControl.Controls.Add(this.deepTab);
+            this.myTabControl.Controls.Add(this.processingTab);
             this.myTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.myTabControl.Location = new System.Drawing.Point(0, 0);
             this.myTabControl.Name = "myTabControl";
@@ -114,7 +118,7 @@ namespace OutlookSafetyChex
             // 
             // testTabPanel
             // 
-            this.testTabPanel.Controls.Add(this.cbThreading);
+            this.testTabPanel.Controls.Add(this.btnRevert);
             this.testTabPanel.Controls.Add(this.cbHiliteSpam);
             this.testTabPanel.Controls.Add(this.cbShowLog);
             this.testTabPanel.Controls.Add(this.cbTabHeaders);
@@ -124,10 +128,8 @@ namespace OutlookSafetyChex
             this.testTabPanel.Controls.Add(this.cbTabAttachments);
             this.testTabPanel.Controls.Add(this.cbTabLinks);
             this.testTabPanel.Controls.Add(this.cbTabRoutes);
-            this.testTabPanel.Controls.Add(this.btnClearCache);
             this.testTabPanel.Controls.Add(this.cbTabContacts);
             this.testTabPanel.Controls.Add(this.cbForceDataRefresh);
-            this.testTabPanel.Controls.Add(this.cbUseCACHE);
             this.testTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testTabPanel.Location = new System.Drawing.Point(0, 0);
             this.testTabPanel.Name = "testTabPanel";
@@ -137,18 +139,20 @@ namespace OutlookSafetyChex
             // cbHiliteSpam
             // 
             this.cbHiliteSpam.AutoSize = true;
-            this.cbHiliteSpam.Location = new System.Drawing.Point(185, 41);
+            this.cbHiliteSpam.ForeColor = System.Drawing.Color.DarkGreen;
+            this.cbHiliteSpam.Location = new System.Drawing.Point(134, 41);
             this.cbHiliteSpam.Name = "cbHiliteSpam";
-            this.cbHiliteSpam.Size = new System.Drawing.Size(117, 17);
+            this.cbHiliteSpam.Size = new System.Drawing.Size(129, 17);
             this.cbHiliteSpam.TabIndex = 41;
-            this.cbHiliteSpam.Text = "Log Spam Headers";
+            this.cbHiliteSpam.Text = "Flag X-Spam Headers";
             this.cbHiliteSpam.UseVisualStyleBackColor = true;
             this.cbHiliteSpam.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
             // cbShowLog
             // 
             this.cbShowLog.AutoSize = true;
-            this.cbShowLog.Location = new System.Drawing.Point(185, 63);
+            this.cbShowLog.ForeColor = System.Drawing.Color.DarkGreen;
+            this.cbShowLog.Location = new System.Drawing.Point(134, 63);
             this.cbShowLog.Name = "cbShowLog";
             this.cbShowLog.Size = new System.Drawing.Size(118, 17);
             this.cbShowLog.TabIndex = 29;
@@ -170,13 +174,13 @@ namespace OutlookSafetyChex
             // 
             // btnSaveOptions
             // 
-            this.btnSaveOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSaveOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSaveOptions.Image = global::OutlookSafetyChex.Properties.Resources.Save_16x_32;
-            this.btnSaveOptions.Location = new System.Drawing.Point(321, 130);
+            this.btnSaveOptions.Location = new System.Drawing.Point(134, 124);
             this.btnSaveOptions.Name = "btnSaveOptions";
-            this.btnSaveOptions.Size = new System.Drawing.Size(83, 27);
+            this.btnSaveOptions.Size = new System.Drawing.Size(146, 33);
             this.btnSaveOptions.TabIndex = 37;
-            this.btnSaveOptions.Text = "&Save";
+            this.btnSaveOptions.Text = "&Save && Close";
             this.btnSaveOptions.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnSaveOptions.UseVisualStyleBackColor = true;
             this.btnSaveOptions.Click += new System.EventHandler(this.btnSaveOptions_Click);
@@ -187,12 +191,13 @@ namespace OutlookSafetyChex
             this.groupLogLevel.Controls.Add(this.rbLogInfo);
             this.groupLogLevel.Controls.Add(this.rbLogError);
             this.groupLogLevel.Controls.Add(this.rbLogNone);
-            this.groupLogLevel.Location = new System.Drawing.Point(306, 6);
+            this.groupLogLevel.ForeColor = System.Drawing.Color.Indigo;
+            this.groupLogLevel.Location = new System.Drawing.Point(306, 18);
             this.groupLogLevel.Name = "groupLogLevel";
             this.groupLogLevel.Size = new System.Drawing.Size(98, 99);
             this.groupLogLevel.TabIndex = 39;
             this.groupLogLevel.TabStop = false;
-            this.groupLogLevel.Text = "Logging Options";
+            this.groupLogLevel.Text = "Logging Level";
             // 
             // rbLogVerbose
             // 
@@ -246,7 +251,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabBody.AutoSize = true;
             this.cbTabBody.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabBody.Location = new System.Drawing.Point(93, 64);
+            this.cbTabBody.Location = new System.Drawing.Point(19, 132);
             this.cbTabBody.Name = "cbTabBody";
             this.cbTabBody.Size = new System.Drawing.Size(50, 17);
             this.cbTabBody.TabIndex = 38;
@@ -258,7 +263,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabAttachments.AutoSize = true;
             this.cbTabAttachments.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabAttachments.Location = new System.Drawing.Point(93, 41);
+            this.cbTabAttachments.Location = new System.Drawing.Point(19, 109);
             this.cbTabAttachments.Name = "cbTabAttachments";
             this.cbTabAttachments.Size = new System.Drawing.Size(85, 17);
             this.cbTabAttachments.TabIndex = 36;
@@ -270,7 +275,7 @@ namespace OutlookSafetyChex
             // 
             this.cbTabLinks.AutoSize = true;
             this.cbTabLinks.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbTabLinks.Location = new System.Drawing.Point(93, 18);
+            this.cbTabLinks.Location = new System.Drawing.Point(19, 86);
             this.cbTabLinks.Name = "cbTabLinks";
             this.cbTabLinks.Size = new System.Drawing.Size(51, 17);
             this.cbTabLinks.TabIndex = 35;
@@ -290,17 +295,6 @@ namespace OutlookSafetyChex
             this.cbTabRoutes.UseVisualStyleBackColor = true;
             this.cbTabRoutes.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
-            // btnClearCache
-            // 
-            this.btnClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearCache.Location = new System.Drawing.Point(120, 107);
-            this.btnClearCache.Name = "btnClearCache";
-            this.btnClearCache.Size = new System.Drawing.Size(78, 23);
-            this.btnClearCache.TabIndex = 30;
-            this.btnClearCache.Text = "Clear Cache";
-            this.btnClearCache.UseVisualStyleBackColor = true;
-            this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
-            // 
             // cbTabContacts
             // 
             this.cbTabContacts.AutoSize = true;
@@ -316,26 +310,14 @@ namespace OutlookSafetyChex
             // cbForceDataRefresh
             // 
             this.cbForceDataRefresh.AutoSize = true;
-            this.cbForceDataRefresh.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbForceDataRefresh.Location = new System.Drawing.Point(185, 18);
+            this.cbForceDataRefresh.ForeColor = System.Drawing.Color.DarkGreen;
+            this.cbForceDataRefresh.Location = new System.Drawing.Point(134, 18);
             this.cbForceDataRefresh.Name = "cbForceDataRefresh";
             this.cbForceDataRefresh.Size = new System.Drawing.Size(93, 17);
             this.cbForceDataRefresh.TabIndex = 31;
             this.cbForceDataRefresh.Text = "Force Refresh";
             this.cbForceDataRefresh.UseVisualStyleBackColor = true;
             this.cbForceDataRefresh.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
-            // 
-            // cbUseCACHE
-            // 
-            this.cbUseCACHE.AutoSize = true;
-            this.cbUseCACHE.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbUseCACHE.Location = new System.Drawing.Point(19, 111);
-            this.cbUseCACHE.Name = "cbUseCACHE";
-            this.cbUseCACHE.Size = new System.Drawing.Size(95, 17);
-            this.cbUseCACHE.TabIndex = 32;
-            this.cbUseCACHE.Text = "Cache Results";
-            this.cbUseCACHE.UseVisualStyleBackColor = true;
-            this.cbUseCACHE.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
             // deepTab
             // 
@@ -383,6 +365,7 @@ namespace OutlookSafetyChex
             this.btnEdit_CULTUREs.Text = "Edit";
             this.btnEdit_CULTUREs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnEdit_CULTUREs.UseVisualStyleBackColor = true;
+            this.btnEdit_CULTUREs.Click += new System.EventHandler(this.editCULTUREs_Dialog);
             // 
             // cb_Cultures
             // 
@@ -407,6 +390,7 @@ namespace OutlookSafetyChex
             this.btnEdit_CODEPAGEs.Text = "Edit";
             this.btnEdit_CODEPAGEs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnEdit_CODEPAGEs.UseVisualStyleBackColor = true;
+            this.btnEdit_CODEPAGEs.Click += new System.EventHandler(this.editCodepages_Dialog);
             // 
             // cb_Codepages
             // 
@@ -430,6 +414,7 @@ namespace OutlookSafetyChex
             this.btnEdit_MIMETYPEs.Text = "Edit";
             this.btnEdit_MIMETYPEs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnEdit_MIMETYPEs.UseVisualStyleBackColor = true;
+            this.btnEdit_MIMETYPEs.Click += new System.EventHandler(this.editMIMEtypes_Dialog);
             // 
             // cb_MIMEtypes
             // 
@@ -477,6 +462,7 @@ namespace OutlookSafetyChex
             this.btnEdit_Blacklist.Text = "Edit";
             this.btnEdit_Blacklist.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnEdit_Blacklist.UseVisualStyleBackColor = true;
+            this.btnEdit_Blacklist.Click += new System.EventHandler(this.editBlacklist_Dialog);
             // 
             // btnEdit_Whitelist
             // 
@@ -488,6 +474,7 @@ namespace OutlookSafetyChex
             this.btnEdit_Whitelist.Text = "Edit";
             this.btnEdit_Whitelist.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnEdit_Whitelist.UseVisualStyleBackColor = true;
+            this.btnEdit_Whitelist.Click += new System.EventHandler(this.editWhitelist_Dialog);
             // 
             // cbVerifyContacts
             // 
@@ -511,6 +498,7 @@ namespace OutlookSafetyChex
             this.btnEdit_DNSBL.Text = "Edit";
             this.btnEdit_DNSBL.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnEdit_DNSBL.UseVisualStyleBackColor = true;
+            this.btnEdit_DNSBL.Click += new System.EventHandler(this.editDNSBL_Dialog);
             // 
             // cbInspectAttachents
             // 
@@ -584,16 +572,61 @@ namespace OutlookSafetyChex
             this.cbLookupDNSBL.UseVisualStyleBackColor = true;
             this.cbLookupDNSBL.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
+            // processingTab
+            // 
+            this.processingTab.Controls.Add(this.btnClearCache);
+            this.processingTab.Controls.Add(this.cbUseCACHE);
+            this.processingTab.Controls.Add(this.cbThreading);
+            this.processingTab.Location = new System.Drawing.Point(4, 22);
+            this.processingTab.Name = "processingTab";
+            this.processingTab.Size = new System.Drawing.Size(423, 170);
+            this.processingTab.TabIndex = 3;
+            this.processingTab.Text = "Processing Options";
+            this.processingTab.UseVisualStyleBackColor = true;
+            // 
             // cbThreading
             // 
             this.cbThreading.AutoSize = true;
-            this.cbThreading.Location = new System.Drawing.Point(19, 134);
+            this.cbThreading.Location = new System.Drawing.Point(200, 17);
             this.cbThreading.Name = "cbThreading";
-            this.cbThreading.Size = new System.Drawing.Size(115, 17);
-            this.cbThreading.TabIndex = 42;
-            this.cbThreading.Text = "Multi-Thread Mode";
+            this.cbThreading.Size = new System.Drawing.Size(141, 17);
+            this.cbThreading.TabIndex = 43;
+            this.cbThreading.Text = "Process Tests in Parallel";
             this.cbThreading.UseVisualStyleBackColor = true;
             this.cbThreading.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // cbUseCACHE
+            // 
+            this.cbUseCACHE.AutoSize = true;
+            this.cbUseCACHE.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cbUseCACHE.Location = new System.Drawing.Point(23, 17);
+            this.cbUseCACHE.Name = "cbUseCACHE";
+            this.cbUseCACHE.Size = new System.Drawing.Size(122, 17);
+            this.cbUseCACHE.TabIndex = 44;
+            this.cbUseCACHE.Text = "Cache Web Checks";
+            this.cbUseCACHE.UseVisualStyleBackColor = true;
+            this.cbUseCACHE.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            // 
+            // btnClearCache
+            // 
+            this.btnClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClearCache.Location = new System.Drawing.Point(50, 40);
+            this.btnClearCache.Name = "btnClearCache";
+            this.btnClearCache.Size = new System.Drawing.Size(78, 23);
+            this.btnClearCache.TabIndex = 45;
+            this.btnClearCache.Text = "Clear Cache";
+            this.btnClearCache.UseVisualStyleBackColor = true;
+            this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
+            // 
+            // btnRevert
+            // 
+            this.btnRevert.Location = new System.Drawing.Point(297, 124);
+            this.btnRevert.Name = "btnRevert";
+            this.btnRevert.Size = new System.Drawing.Size(107, 33);
+            this.btnRevert.TabIndex = 42;
+            this.btnRevert.Text = "&Reload Settings";
+            this.btnRevert.UseVisualStyleBackColor = true;
+            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
             // 
             // dlgSafetyCheckConfig
             // 
@@ -616,6 +649,8 @@ namespace OutlookSafetyChex
             this.deepTab.ResumeLayout(false);
             this.deeptTabPanel.ResumeLayout(false);
             this.deeptTabPanel.PerformLayout();
+            this.processingTab.ResumeLayout(false);
+            this.processingTab.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -639,10 +674,8 @@ namespace OutlookSafetyChex
         private CheckBox cbTabAttachments;
         private CheckBox cbTabLinks;
         private CheckBox cbTabRoutes;
-        private Button btnClearCache;
         private CheckBox cbTabContacts;
         private CheckBox cbForceDataRefresh;
-        private CheckBox cbUseCACHE;
         private Panel deeptTabPanel;
         private Button btnEdit_CULTUREs;
         private CheckBox cb_Cultures;
@@ -662,6 +695,10 @@ namespace OutlookSafetyChex
         private CheckBox cbLookupHIBP;
         private CheckBox cbLookupWHOIS;
         private CheckBox cbLookupDNSBL;
+        private TabPage processingTab;
+        private Button btnClearCache;
+        private CheckBox cbUseCACHE;
         private CheckBox cbThreading;
+        private Button btnRevert;
     }
 }

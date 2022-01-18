@@ -27,6 +27,7 @@ namespace OutlookSafetyChex
             String tLink = "";
             String tDisplay = "";
             String tLabel = "";
+            String tTag = "";
             String tNotes = "";
             // Check Body for Links
             switch (myItem.BodyFormat)
@@ -38,30 +39,66 @@ namespace OutlookSafetyChex
                     // Read links from DOM
                     IHtmlDocument doc = instance.mWebUtil.htmlParser.ParseDocument(tHtml);
                     // HTML node types that have <A HREF="...">
-                    IHtmlCollection<IElement> tNodeList = doc.Body.QuerySelectorAll("a[href]");
+                    tTag = "href";
+                    IHtmlCollection<IElement> tNodeList = doc.Body.QuerySelectorAll("a["+tTag+"]");
                     if (mLogger != null)
-                        mLogger.logInfo("Inspecting [" + tNodeList.Length + "] HREF Elements", logArea);
+                        mLogger.logInfo("Inspecting [" + tNodeList.Length + "] " + tTag.ToUpper() + " Elements", logArea);
                     foreach (IElement tNode in tNodeList)
                     {
-                        tNotes = verifyHREF(parent, tNode, "href");
+                        tDisplay = tNode.TextContent;
+                        tLink = tNode.GetAttribute(tTag);
+                        tLabel = "<" + tNode.NodeName + " " + tTag + "=...>";
+                        tNotes = verifyHREF(tNode, tTag);
+                        // update List of Links
+                        String[] rowData = new[] { tLabel, tDisplay, tLink, tNotes };
+                        this.addDataRow(rowData);
+                        // log it
+                        if (cst_Util.isValidString(tNotes))
+                        {
+                            parent.logFinding(logArea, "4", "SUSPICIOUS " + tLabel, tNotes);
+                            if (mLogger != null) mLogger.logMessage(tNode.OuterHtml, tNotes);
+                        }
                     }
                     // HTML node types that have <zzz SRC="...">
                     // { "img","div","iframe","embed",... };
-                    tNodeList = doc.Body.QuerySelectorAll("[src]");
+                    tTag = "src";
+                    tNodeList = doc.Body.QuerySelectorAll("[" + tTag + "]");
                     if (mLogger != null)
-                        mLogger.logInfo("Inspecting [" + tNodeList.Length + "] SRC Elements", logArea);
+                        mLogger.logInfo("Inspecting [" + tNodeList.Length + "] " + tTag.ToUpper() + " Elements", logArea);
                     foreach (IElement tNode in tNodeList)
                     {
-                        tNotes = verifySRC(parent, tNode, "src");
+                        tDisplay = tNode.TextContent;
+                        tLink = tNode.GetAttribute(tTag);
+                        tLabel = "<" + tNode.NodeName + " " + tTag + "=...>";
+                        tNotes = verifySRC(tNode, tTag);
+                        // update List of Links
+                        String[] rowData = new[] { tLabel, tDisplay, tLink, tNotes };
+                        this.addDataRow(rowData);
+                        // log it
+                        if (cst_Util.isValidString(tNotes))
+                        {
+                            parent.logFinding(logArea, "4", "SUSPICIOUS " + tLabel, tNotes);
+                            if (mLogger != null) mLogger.logMessage(tNode.OuterHtml, tNotes);
+                        }
                     }
                     // HTML node types that have <zzz CODEBASE="...">
                     // { "embed", "object", "applet", ... };
-                    tNodeList = doc.Body.QuerySelectorAll("[codebase]");
+                    tTag = "codebase";
+                    tNodeList = doc.Body.QuerySelectorAll("[" + tTag + "]");
                     if (mLogger != null)
-                        mLogger.logInfo("Inspecting [" + tNodeList.Length + "] CODEBASE Elements", logArea);
+                        mLogger.logInfo("Inspecting [" + tNodeList.Length + "] " + tTag.ToUpper() + " Elements", logArea);
                     foreach (IElement tNode in tNodeList)
                     {
-                        tNotes = verifyCODEBASE(parent, tNode, "codebase");
+                        tNotes = verifyCODEBASE(tNode, tTag);
+                        // update List of Links
+                        String[] rowData = new[] { tLabel, tDisplay, tLink, tNotes };
+                        this.addDataRow(rowData);
+                        // log it
+                        if (cst_Util.isValidString(tNotes))
+                        {
+                            parent.logFinding(logArea, "4", "SUSPICIOUS " + tLabel, tNotes);
+                            if (mLogger != null) mLogger.logMessage(tNode.OuterHtml, tNotes);
+                        }
                     }
                     break;
                 case Outlook.OlBodyFormat.olFormatRichText:
@@ -86,12 +123,14 @@ namespace OutlookSafetyChex
                         tLink = t.mURL;
                         tDisplay = t.mURL;
                         tNotes = verifyLink(tLink, tDisplay, true);
+                        // update list
+                        String[] rowData = new[] { tLabel, tDisplay, tLink, tNotes };
+                        this.addDataRow(rowData);
                         // log it
                         if (cst_Util.isValidString(tNotes))
                         {
-                            String[] rowData = new[] { tLabel, tDisplay, tLink, tNotes };
-                            this.addDataRow(rowData);
                             parent.logFinding(logArea, "4", "SUSPICIOUS LINK", tNotes);
+                            if (mLogger != null) mLogger.logMessage(t.mURL, tNotes);
                         }
                     }
                     break;
@@ -100,132 +139,6 @@ namespace OutlookSafetyChex
                     break;
             }
             return this.Rows.Count;
-        }
-
-        private String verifyHREF(dsMailItem parent, IElement tNode, String tTag="href")
-        {
-            String tNotes = "";
-            bool dump = false;
-            try
-            {
-                String tDisplay = tNode.TextContent;
-                String tLink = tNode.GetAttribute(tTag);
-                String tLabel = "<" + tNode.NodeName + " " + tTag + "=...>";
-                if (mLogger != null) mLogger.logVerbose(tLabel, "Link");
-                // needs to have some visible 
-                if (!cst_Util.isValidString(tDisplay) && !tNode.HasChildNodes)
-                {
-                    tDisplay = "[empty]";
-                    tNotes += "NO VISIBLE Text\r\n";
-                    dump = true;
-                }
-                if (!cst_Util.isValidString(tLink))
-                {
-                    tLink = "[empty]";
-                    tNotes += "NO Location Specified\r\n";
-                    dump = true;
-                }
-                else
-                {
-                    tNotes += verifyLink(tLink, tDisplay, true);
-                }
-                // update List of Links
-                String[] rowData = new[] { tLabel, tDisplay, tLink, tNotes };
-                this.addDataRow(rowData);
-                // log now if necessary and possible
-                if (cst_Util.isValidString(tNotes) && parent!=null)
-                {
-                    parent.logFinding(logArea, "4", "SUSPICIOUS " + tLabel, tNotes);
-                    if (dump) if (mLogger != null) mLogger.logMessage(tNode.OuterHtml, tNotes);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (mLogger != null) mLogger.logException(ex, "dtLinkList::verifyHREF\r\n\t" + tNode.OuterHtml + "\r\n");
-            }
-            return tNotes;
-        }
-        private String verifySRC(dsMailItem parent, IElement tNode, String tTag="src")
-        {
-            String tNotes = "";
-            bool dump = false;
-            try
-            {
-                String tDisplay = tNode.TextContent;
-                String tLink = tNode.GetAttribute(tTag);
-                String tLabel = "<" + tNode.NodeName + " " + tTag + "=...>";
-                if (mLogger != null) mLogger.logVerbose(tLabel, "Link");
-                if (!cst_Util.isValidString(tLink))
-                {
-                    tLink = "[empty]";
-                    tNotes += "NO Location Specified\r\n";
-                    dump = true;
-                }
-                else
-                {
-                    tNotes += verifyLink(tLink, tDisplay, false);
-                }
-                // update List of Links
-                String[] rowData = new[] { tLabel, tDisplay, tLink, tNotes };
-                this.addDataRow(rowData);
-                // log now if necessary and possible
-                if (cst_Util.isValidString(tNotes) && parent != null)
-                {
-                    parent.logFinding(logArea, "4", "SUSPICIOUS " + tLabel, tNotes);
-                    if (dump) if (mLogger != null) mLogger.logMessage(tNode.OuterHtml,tNotes);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (mLogger != null) mLogger.logException(ex, "dtLinkList::verifySRC\r\n\t" + tNode.OuterHtml + "\r\n");
-            }
-            return tNotes;
-        }
-        private String verifyCODEBASE(dsMailItem parent, IElement tNode, String tTag="codebase")
-        {
-            String tNotes = "";
-            try
-            {
-                String tDisplay = tNode.TextContent;
-                String tLink = tNode.GetAttribute(tTag);
-                String tLabel = "<" + tNode.NodeName + " " + tTag + "=...>";
-                // additional warning
-                tNotes += "Potential Executable Object\r\n";
-                // check codebase URL
-                tNotes += verifySRC(parent, tNode, tTag);
-            }
-            catch (Exception ex)
-            {
-                if (mLogger != null) mLogger.logException(ex, "dtLinkList::verifySRC\r\n\t" + tNode.OuterHtml + "\r\n");
-            }
-            return tNotes;
-        }
-
-        private String verifyLink(String tLink, String tText, bool allowParam )
-        {
-            String tNotes = "";
-            // check each link
-            String tProtocol = "[unknown]";
-            String tMimeType = "[not checked]";
-            tNotes += instance.suspiciousLink(tLink, tText);
-            try
-            {
-                cst_URL tURL = cst_URL.parseURL(tLink);
-                tProtocol = tURL.mUri.Scheme;
-                if (tProtocol == Uri.UriSchemeMailto)
-                {
-                    tMimeType = "[Email-Address]";
-                }
-                else if (Properties.Settings.Default.opt_DeepInspect_LINKS)
-                {
-                    tMimeType = instance.mWebUtil.wgetContentType(tLink);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (mLogger != null) mLogger.logException(ex, "dtLinkList::verifyLink(" + tLink + ")");
-            }
-            return tNotes;
         }
 
         private int traverseRTF(dsMailItem parent, RTFDomElementList tList)
@@ -250,7 +163,7 @@ namespace OutlookSafetyChex
                         // log it
                         if (cst_Util.isValidString(tNotes))
                         {
-                             parent.logFinding(logArea, "4", "SUSPICIOUS {HYPERLINK}", tNotes);
+                            parent.logFinding(logArea, "4", "SUSPICIOUS {HYPERLINK}", tNotes);
                             if (mLogger != null) mLogger.logMessage(s, tNotes);
                         }
                     }

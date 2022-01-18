@@ -126,6 +126,36 @@ namespace OutlookSafetyChex
 
         #endregion
 
+        private void setTabVisibility(TabPage tTab, bool visible)
+        {
+            int idx = this.myTabControl.TabPages.IndexOf(this.loggingTab);
+            if (this.myTabControl.InvokeRequired)
+            {
+                myTabControl.Invoke(new Action(delegate ()
+                {
+                    if (!visible)
+                    {
+                        this.myTabControl.TabPages.Remove(tTab);
+                    }
+                    else if (!this.myTabControl.TabPages.Contains(tTab))
+                    {
+                        this.myTabControl.TabPages.Insert(idx, tTab);
+                    }
+                }));
+            }
+            else
+            {
+                if (!visible)
+                {
+                    this.myTabControl.TabPages.Remove(tTab);
+                }
+                else if ( !this.myTabControl.TabPages.Contains(tTab) )
+                {
+                    this.myTabControl.TabPages.Insert(idx,tTab);
+                }
+            }
+        }
+
         private void btnRunTests_Click(object sender, EventArgs ev)
         {
             gStopwatch.Reset();
@@ -135,12 +165,21 @@ namespace OutlookSafetyChex
             this.btnSettings.Enabled = false;
             this.btnAbout.Enabled = false;
             this.btnCancel.Enabled = true;
+            // hide tabs
+            setTabVisibility(envelopeTab, false);
+            setTabVisibility(headerTab, false);
+            setTabVisibility(contactTab, false);
+            setTabVisibility(routeTab, false);
+            setTabVisibility(linksTab, false);
+            setTabVisibility(attachmentsTab, false);
+            setTabVisibility(bodyTab, false);
+            // jump to log
             if (Properties.Settings.Default.opt_ShowLog)
             {
                 this.myTabControl.SelectedTab = this.loggingTab;
             }
             instance.resetLog(Properties.Settings.Default.opt_Force_REFRESH);
-            if (mLogger != null) mLogger.logMessage("BEGIN ...", "" + DateTime.Now + "", true);
+            if (mLogger != null) mLogger.logMessage("Start Time: " + DateTime.Now + "", "<<< BEGIN >>>", true);
             spawnThread(new ThreadStart(runChecks), "Main Thread");
          }
 
@@ -175,8 +214,8 @@ namespace OutlookSafetyChex
             this.btnSettings.Enabled = true;
             this.btnAbout.Enabled = true;
             this.btnCancel.Enabled = false;
-            MessageBox.Show(completionStatus, "AddInSafetyCheck");
-            if (mLogger != null) mLogger.logMessage(completionStatus, "Tests Complete");
+            if (mLogger != null) mLogger.logMessage(completionStatus, "<<< Q.E.D. >>>");
+            //MessageBox.Show(completionStatus, "AddInSafetyCheck");
         }
 
         private void threadComplete()
@@ -268,42 +307,49 @@ namespace OutlookSafetyChex
         {
             if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Envelope + "] ...",
                  "" + DateTime.Now + "");
+            setTabVisibility(envelopeTab, true);
             instance.ParseEnvelope(Properties.Settings.Default.opt_Force_REFRESH);
         }
         private void parseHeaders()
         {
             if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Headers + "] ...",
                  "" + DateTime.Now + "");
+            setTabVisibility(headerTab, true);
             instance.ParseHeaders(Properties.Settings.Default.opt_Force_REFRESH);
         }
         private void testContacts()
         {
             if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Contacts + "] ...",
                 "" + DateTime.Now + "");
+            setTabVisibility(contactTab, true);
             instance.AnalyzeContacts(Properties.Settings.Default.opt_Force_REFRESH);
         }
         private void testRoutes()
         {
             if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Routing + "] ...",
                 "" + DateTime.Now + "");
+            setTabVisibility(routeTab, true);
             instance.AnalyzeRoutes(Properties.Settings.Default.opt_Force_REFRESH);
         }
         private void testLinks()
         {
             if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Links + "] ...",
                  "" + DateTime.Now + "");
+            setTabVisibility(linksTab, true);
             instance.AnalyzeLinks(Properties.Settings.Default.opt_Force_REFRESH);
         }
         private void testAttachments()
         {
             if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Attachments + "] ...",
                 "" + DateTime.Now + "");
+            setTabVisibility(attachmentsTab, true);
             instance.AnalyzeAttachments(Properties.Settings.Default.opt_Force_REFRESH);
         }
         private void testBody()
         {
             if (mLogger != null) mLogger.logInfo("[" + Properties.Resources.Title_Body + "] ...",
                 "" + DateTime.Now + "");
+            setTabVisibility(bodyTab, true);
             instance.AnalyzeBody(Properties.Settings.Default.opt_Force_REFRESH);
         }
 

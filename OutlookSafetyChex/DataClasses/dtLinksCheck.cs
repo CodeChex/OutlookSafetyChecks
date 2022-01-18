@@ -74,17 +74,13 @@ namespace OutlookSafetyChex
                     mLogger.logInfo("Inspecting [" + listEmails.Count + "] Email References", logArea);
                 foreach (MailAddress tMailAddress in listEmails.Distinct())
                 {
-                    String tOwner = "[not checked]";
-                    String tNotes = "";
                     // start checks
-                    if (Properties.Settings.Default.opt_Lookup_WHOIS)
+                    String tNotes = checkEmail(tMailAddress, Properties.Resources.Title_Links + " / Checks");
+                    if (cst_Util.isValidString(tNotes))
                     {
-                        String tDomain = instance.mWebUtil.pullDomain(tMailAddress.Host);
-                        tOwner = instance.mWHOIS.whoisOwner(tDomain, Properties.Settings.Default.opt_Use_CACHE);
+                        String[] rowData = new[] { "Email <" + tMailAddress.Address + ">", "[N/A]", tNotes };
+                        this.addDataRow(rowData);
                     }
-                    tNotes = checkEmail(tMailAddress, Properties.Resources.Title_Links + " / Checks");
-                    String[] rowData = new[] { tMailAddress.Address, tOwner, tNotes };
-                    this.addDataRow(rowData);
                 }
             }
             return this.Rows.Count;

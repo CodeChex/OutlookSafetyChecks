@@ -3,13 +3,14 @@ using OutlookSafetyChex.Forms;
 using System;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace OutlookSafetyChex
 {
     public partial class dlgSafetyCheckConfig : Form
     {
-        private Properties.Settings orig = Properties.Settings.Default;
+        private Properties.Settings oSettings = Properties.Settings.Default;
         AddInSafetyCheck instance = Globals.AddInSafetyCheck;
         cst_Log mLogger = Globals.AddInSafetyCheck.mLogger;
 
@@ -21,10 +22,11 @@ namespace OutlookSafetyChex
 
         private bool settingsChanged()
         {
-            return (Properties.Settings.Default != orig);
+            bool rc = Properties.Settings.Default.Equals(oSettings);
+            return rc;
         }
 
-        private void dlgSafetyCheck_FormClosing(object sender, FormClosingEventArgs e)
+         private void dlgSafetyCheck_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (settingsChanged())
             {
@@ -339,6 +341,7 @@ namespace OutlookSafetyChex
         private void btnSaveOptions_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Save();
+            this.Close();
         }
 
         private void editBlacklist_Dialog(object sender, EventArgs e)
@@ -426,5 +429,11 @@ namespace OutlookSafetyChex
             this.Visible = true;
         }
 
-     } // class
+        private void btnRevert_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Reload();
+            initializeOptionState();
+        }
+
+    } // class
 } // namespace

@@ -4,6 +4,7 @@ using NetTools;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -21,7 +22,7 @@ namespace CheccoSafetyTools
         // static thread-safe members
         private static String rgxWordPattern = @"\b(\w+)\b";
         private static String rgxLeetPattern = @"([a-zA-Z]\d+[a-zA-Z])";
- 
+
         #region  Array/list utils
         public static bool isValidArray(dynamic[] tArr)
         {
@@ -150,7 +151,6 @@ namespace CheccoSafetyTools
             return rc;
         }
         #endregion
-
     } // class
 
     public class cst_URL
