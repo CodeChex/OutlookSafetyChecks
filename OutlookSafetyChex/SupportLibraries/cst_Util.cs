@@ -290,9 +290,12 @@ namespace CheccoSafetyTools
        private void updateLogUI(String s, bool erase = false)
         {
             if (erase) lines = 0;
-            lines ++;
-            appendLogUI(s, erase);
-            updateStatusLine(s, true);
+            lines++;
+            String msg = s.Trim();
+            if (cst_Util.isValidString(msg))
+                msg = "[" + lines + "] " + msg;
+            appendLogUI(msg, erase);
+            updateStatusLine(msg, true);
         }
 
         private void updateTextBox(TextBox ctl, String msg, bool erase = false)
@@ -351,7 +354,7 @@ namespace CheccoSafetyTools
         private String prepareLogMsg(String details, String context)
         {
             Thread z = Thread.CurrentThread;
-            String rc = "[" + lines + "][Thread " + z.ManagedThreadId + "]: ";
+            String rc = "[Thread " + z.ManagedThreadId + "]: ";
             if (cst_Util.isValidString(context))
             {
                 rc += context.Trim();

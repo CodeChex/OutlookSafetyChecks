@@ -1,4 +1,5 @@
 ﻿using CheccoSafetyTools;
+using CheccoSafetyTools;
 using OutlookSafetyChex.Forms;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ namespace OutlookSafetyChex
         {
             try
             {
+                resetTabs();
                 // Link logger
                 if (mLogger != null) mLogger.setLoggingUI(
                     new TextBox[] { this.textDebug },
@@ -156,6 +158,18 @@ namespace OutlookSafetyChex
             }
         }
 
+        private void resetTabs()
+        {
+            // hide tabs
+            setTabVisibility(envelopeTab, false);
+            setTabVisibility(headerTab, false);
+            setTabVisibility(contactTab, false);
+            setTabVisibility(routeTab, false);
+            setTabVisibility(linksTab, false);
+            setTabVisibility(attachmentsTab, false);
+            setTabVisibility(bodyTab, false);
+        }
+
         private void btnRunTests_Click(object sender, EventArgs ev)
         {
             gStopwatch.Reset();
@@ -165,14 +179,7 @@ namespace OutlookSafetyChex
             this.btnSettings.Enabled = false;
             this.btnAbout.Enabled = false;
             this.btnCancel.Enabled = true;
-            // hide tabs
-            setTabVisibility(envelopeTab, false);
-            setTabVisibility(headerTab, false);
-            setTabVisibility(contactTab, false);
-            setTabVisibility(routeTab, false);
-            setTabVisibility(linksTab, false);
-            setTabVisibility(attachmentsTab, false);
-            setTabVisibility(bodyTab, false);
+            resetTabs();
             // jump to log
             if (Properties.Settings.Default.opt_ShowLog)
             {

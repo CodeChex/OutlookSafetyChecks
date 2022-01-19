@@ -22,7 +22,7 @@ namespace OutlookSafetyChex
 
         private bool settingsChanged()
         {
-            bool rc = Properties.Settings.Default.Equals(oSettings);
+            bool rc = !Properties.Settings.Default.Equals(oSettings);
             return rc;
         }
 

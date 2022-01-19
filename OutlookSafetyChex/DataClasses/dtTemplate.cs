@@ -164,7 +164,7 @@ namespace OutlookSafetyChex
                 if (tProtocol == Uri.UriSchemeMailto)
                 {
                     tMimeType = "[Email-Address]";
-                    tNotes += checkEmail(new MailAddress(tURL.mPath));
+                    tNotes += checkEmail(new MailAddress(tURL.mHost));
                 }
                 else
                 {
