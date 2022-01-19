@@ -120,8 +120,15 @@
   <data name="Option_TLDWhitelist" xml:space="preserve">
     <value>Local Whitelist</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="add_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\add_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Title_Main" xml:space="preserve">
     <value>✓ Email Safety Chex</value>
+  </data>
+  <data name="settings_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\settings_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Action_Run" xml:space="preserve">
     <value>Run Tests</value>
@@ -129,24 +136,29 @@
   <data name="Title_Links" xml:space="preserve">
     <value>Links</value>
   </data>
-  <data name="Title_Headers" xml:space="preserve">
-    <value>Headers</value>
-  </data>
   <data name="ShortName" xml:space="preserve">
     <value>✓ Safety Chex</value>
   </data>
   <data name="Action_ClearCache" xml:space="preserve">
     <value>Clear Cache</value>
   </data>
+  <data name="Option_TLDBlacklist" xml:space="preserve">
+    <value>Local Blacklist</value>
+  </data>
+  <data name="reload_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\reload_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Title_Contacts" xml:space="preserve">
     <value>Contacts</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ASX_Edit_blue_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ASX_Edit_blue_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Option_TLDBlacklist" xml:space="preserve">
-    <value>Local Blacklist</value>
+  <data name="stop_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stop_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Title_Body" xml:space="preserve">
+    <value>Body</value>
   </data>
   <data name="Option_InspectAttachments" xml:space="preserve">
     <value>Inspect Attachments **</value>
@@ -169,17 +181,29 @@
   <data name="Title_Attachments" xml:space="preserve">
     <value>Attachments</value>
   </data>
+  <data name="Run_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Run_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Option_UseCache" xml:space="preserve">
     <value>Use Cached Results</value>
   </data>
   <data name="Label_Options" xml:space="preserve">
     <value>Options</value>
   </data>
+  <data name="arrow_right_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\arrow_right_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="chevron_right_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\chevron_right_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Option_LookupWHOIS" xml:space="preserve">
     <value>Lookup Owner (WHOIS) *</value>
   </data>
   <data name="LongName" xml:space="preserve">
     <value>✓ Outlook Email Safety Checks</value>
+  </data>
+  <data name="remove_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\remove_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Option_VerifyContacts" xml:space="preserve">
     <value>Verify Contact List *</value>
@@ -193,6 +217,12 @@
   <data name="Save_16x_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Save_16x_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="info_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\info_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Title_Headers" xml:space="preserve">
+    <value>Headers</value>
+  </data>
   <data name="Title_Envelope" xml:space="preserve">
     <value>Envelope</value>
   </data>
@@ -202,10 +232,7 @@
   <data name="Label_Blacklists" xml:space="preserve">
     <value>Blacklists</value>
   </data>
-  <data name="Run_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Run_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Title_Body" xml:space="preserve">
-    <value>Body</value>
+  <data name="trash_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\trash_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

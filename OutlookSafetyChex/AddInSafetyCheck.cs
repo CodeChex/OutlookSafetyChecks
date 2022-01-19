@@ -69,12 +69,14 @@ namespace OutlookSafetyChex
             //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
             selectMailItem(null);
             dsMailItem.RemoveAll();
+            cleanupDialog();
         }
 
         ~AddInSafetyCheck()
         {
             selectMailItem(null);
             dsMailItem.RemoveAll();
+            cleanupDialog();
         }
 
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
@@ -128,10 +130,14 @@ namespace OutlookSafetyChex
         {
             try
             {
-                if (selectMailItem(myItem) )
+                if (dialogWindow != null)
+                {
+                    MessageBox.Show("Cannot launch more than one instsance.",Properties.Resources.Title_Main);
+                }
+                else if (selectMailItem(myItem) )
                 {
                     dialogWindow = new dlgSafetyCheck(myItem);
-                    dialogWindow.ShowDialog(); 
+                    dialogWindow.Show(); // ShowDialog(); 
                 }
                 else
                 {
@@ -144,6 +150,11 @@ namespace OutlookSafetyChex
             }
         }
 
+        public void cleanupDialog()
+        {
+            dialogWindow = null;
+        }
+        
         public bool isCurrentMailItem(Outlook.MailItem myItem)
         {
             bool rc = false;

@@ -99,5 +99,10 @@ namespace OutlookSafetyChex.Forms
             if (cst_Util.isValidCollection(this.arrSuggested))
                 this.listBoxSelected.Items.AddRange(this.arrSuggested.ToArray());
         }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            // ???
+        }
     }
 }

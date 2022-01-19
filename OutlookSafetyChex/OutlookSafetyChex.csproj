@@ -397,6 +397,17 @@
     <None Include="Resources\Run_16x.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\add_16x16.png" />
+    <Content Include="Resources\arrow_left_16x16.png" />
+    <Content Include="Resources\arrow_right_16x16.png" />
+    <Content Include="Resources\chevron_left_16x16.png" />
+    <Content Include="Resources\chevron_right_16x16.png" />
+    <Content Include="Resources\info_16x16.png" />
+    <Content Include="Resources\reload_16x16.png" />
+    <Content Include="Resources\remove_16x16.png" />
+    <Content Include="Resources\settings_16x16.png" />
+    <Content Include="Resources\stop_16x16.png" />
+    <Content Include="Resources\trash_16x16.png" />
     <Content Include="ToDo.txt" />
   </ItemGroup>
   <PropertyGroup>

@@ -76,12 +76,18 @@ namespace OutlookSafetyChex
         public void SafetyCheck_Selector(Office.IRibbonControl control)
         {
             Outlook.MailItem myMail = Globals.AddInSafetyCheck.getSelectedMailItem();
-            Globals.AddInSafetyCheck.loadDialog(myMail);
+            if (myMail != null)
+            {
+                Globals.AddInSafetyCheck.loadDialog(myMail);
+            }
         }
         public void SafetyCheck_Inspector(Office.IRibbonControl control)
         {
             Outlook.MailItem myMail = Globals.AddInSafetyCheck.getOpenMailItem();
-            Globals.AddInSafetyCheck.loadDialog(myMail);
+            if (myMail != null)
+            {
+                Globals.AddInSafetyCheck.loadDialog(myMail);
+            }
         }
 
         public void CustomUI_Load(Office.IRibbonUI ribbonUI)

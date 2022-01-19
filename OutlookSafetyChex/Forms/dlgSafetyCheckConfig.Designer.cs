@@ -36,6 +36,7 @@ namespace OutlookSafetyChex
             this.myTabControl = new System.Windows.Forms.TabControl();
             this.testTab = new System.Windows.Forms.TabPage();
             this.testTabPanel = new System.Windows.Forms.Panel();
+            this.btnRevert = new System.Windows.Forms.Button();
             this.cbHiliteSpam = new System.Windows.Forms.CheckBox();
             this.cbShowLog = new System.Windows.Forms.CheckBox();
             this.cbTabHeaders = new System.Windows.Forms.CheckBox();
@@ -72,10 +73,9 @@ namespace OutlookSafetyChex
             this.cbLookupWHOIS = new System.Windows.Forms.CheckBox();
             this.cbLookupDNSBL = new System.Windows.Forms.CheckBox();
             this.processingTab = new System.Windows.Forms.TabPage();
-            this.cbThreading = new System.Windows.Forms.CheckBox();
-            this.cbUseCACHE = new System.Windows.Forms.CheckBox();
             this.btnClearCache = new System.Windows.Forms.Button();
-            this.btnRevert = new System.Windows.Forms.Button();
+            this.cbUseCACHE = new System.Windows.Forms.CheckBox();
+            this.cbThreading = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.headerCheckGridView)).BeginInit();
             this.myTabControl.SuspendLayout();
             this.testTab.SuspendLayout();
@@ -136,6 +136,18 @@ namespace OutlookSafetyChex
             this.testTabPanel.Size = new System.Drawing.Size(423, 170);
             this.testTabPanel.TabIndex = 0;
             // 
+            // btnRevert
+            // 
+            this.btnRevert.Image = global::OutlookSafetyChex.Properties.Resources.reload_16x16;
+            this.btnRevert.Location = new System.Drawing.Point(292, 124);
+            this.btnRevert.Name = "btnRevert";
+            this.btnRevert.Size = new System.Drawing.Size(123, 33);
+            this.btnRevert.TabIndex = 42;
+            this.btnRevert.Text = "&Reload Settings";
+            this.btnRevert.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnRevert.UseVisualStyleBackColor = true;
+            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
+            // 
             // cbHiliteSpam
             // 
             this.cbHiliteSpam.AutoSize = true;
@@ -176,7 +188,7 @@ namespace OutlookSafetyChex
             // 
             this.btnSaveOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSaveOptions.Image = global::OutlookSafetyChex.Properties.Resources.Save_16x_32;
-            this.btnSaveOptions.Location = new System.Drawing.Point(134, 124);
+            this.btnSaveOptions.Location = new System.Drawing.Point(117, 124);
             this.btnSaveOptions.Name = "btnSaveOptions";
             this.btnSaveOptions.Size = new System.Drawing.Size(146, 33);
             this.btnSaveOptions.TabIndex = 37;
@@ -584,16 +596,16 @@ namespace OutlookSafetyChex
             this.processingTab.Text = "Processing Options";
             this.processingTab.UseVisualStyleBackColor = true;
             // 
-            // cbThreading
+            // btnClearCache
             // 
-            this.cbThreading.AutoSize = true;
-            this.cbThreading.Location = new System.Drawing.Point(200, 17);
-            this.cbThreading.Name = "cbThreading";
-            this.cbThreading.Size = new System.Drawing.Size(141, 17);
-            this.cbThreading.TabIndex = 43;
-            this.cbThreading.Text = "Process Tests in Parallel";
-            this.cbThreading.UseVisualStyleBackColor = true;
-            this.cbThreading.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
+            this.btnClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClearCache.Location = new System.Drawing.Point(50, 40);
+            this.btnClearCache.Name = "btnClearCache";
+            this.btnClearCache.Size = new System.Drawing.Size(78, 23);
+            this.btnClearCache.TabIndex = 45;
+            this.btnClearCache.Text = "Clear Cache";
+            this.btnClearCache.UseVisualStyleBackColor = true;
+            this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
             // 
             // cbUseCACHE
             // 
@@ -607,26 +619,16 @@ namespace OutlookSafetyChex
             this.cbUseCACHE.UseVisualStyleBackColor = true;
             this.cbUseCACHE.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
-            // btnClearCache
+            // cbThreading
             // 
-            this.btnClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearCache.Location = new System.Drawing.Point(50, 40);
-            this.btnClearCache.Name = "btnClearCache";
-            this.btnClearCache.Size = new System.Drawing.Size(78, 23);
-            this.btnClearCache.TabIndex = 45;
-            this.btnClearCache.Text = "Clear Cache";
-            this.btnClearCache.UseVisualStyleBackColor = true;
-            this.btnClearCache.Click += new System.EventHandler(this.btnClearCache_Click);
-            // 
-            // btnRevert
-            // 
-            this.btnRevert.Location = new System.Drawing.Point(297, 124);
-            this.btnRevert.Name = "btnRevert";
-            this.btnRevert.Size = new System.Drawing.Size(107, 33);
-            this.btnRevert.TabIndex = 42;
-            this.btnRevert.Text = "&Reload Settings";
-            this.btnRevert.UseVisualStyleBackColor = true;
-            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
+            this.cbThreading.AutoSize = true;
+            this.cbThreading.Location = new System.Drawing.Point(200, 17);
+            this.cbThreading.Name = "cbThreading";
+            this.cbThreading.Size = new System.Drawing.Size(141, 17);
+            this.cbThreading.TabIndex = 43;
+            this.cbThreading.Text = "Process Tests in Parallel";
+            this.cbThreading.UseVisualStyleBackColor = true;
+            this.cbThreading.CheckedChanged += new System.EventHandler(this.onChange_CheckBox);
             // 
             // dlgSafetyCheckConfig
             // 

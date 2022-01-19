@@ -118,16 +118,6 @@
   &lt;string&gt;multirbl.valli.org&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="common_MIMETYPEs" Type="System.Collections.Specialized.StringCollection" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-  &lt;string&gt;text/html&lt;/string&gt;
-  &lt;string&gt;text/plain&lt;/string&gt;
-  &lt;string&gt;application/rtf&lt;/string&gt;
-  &lt;string&gt;multipart/alternative&lt;/string&gt;
-  &lt;string&gt;multipart/related&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
     <Setting Name="common_CODEPAGEs" Type="System.Collections.Specialized.StringCollection" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
@@ -159,7 +149,14 @@
     </Setting>
     <Setting Name="local_MIMETYPEs" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" /&gt;</Value>
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;text/html&lt;/string&gt;
+  &lt;string&gt;text/plain&lt;/string&gt;
+  &lt;string&gt;application/rtf&lt;/string&gt;
+  &lt;string&gt;multipart/alternative&lt;/string&gt;
+  &lt;string&gt;multipart/mixed&lt;/string&gt;
+  &lt;string&gt;multipart/related&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="local_CODEPAGEs" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
@@ -205,6 +202,17 @@
     </Setting>
     <Setting Name="opt_ThreadedProcessing" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="common_MIMETYPEs" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;text/html&lt;/string&gt;
+  &lt;string&gt;text/plain&lt;/string&gt;
+  &lt;string&gt;application/rtf&lt;/string&gt;
+  &lt;string&gt;multipart/alternative&lt;/string&gt;
+  &lt;string&gt;multipart/mixed&lt;/string&gt;
+  &lt;string&gt;multipart/related&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -37,10 +37,10 @@ namespace OutlookSafetyChex
             this.findingsTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.logGridView = new System.Windows.Forms.DataGridView();
             this.textBoxProgress = new System.Windows.Forms.TextBox();
-            this.btnRunTests = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnAbout = new System.Windows.Forms.Button();
+            this.btnRunTests = new System.Windows.Forms.Button();
             this.envelopeTab = new System.Windows.Forms.TabPage();
             this.envelopeGridView = new System.Windows.Forms.DataGridView();
             this.headerTab = new System.Windows.Forms.TabPage();
@@ -161,15 +161,15 @@ namespace OutlookSafetyChex
             this.findingsTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.findingsTableLayout.Controls.Add(this.logGridView, 0, 2);
             this.findingsTableLayout.Controls.Add(this.textBoxProgress, 0, 1);
-            this.findingsTableLayout.Controls.Add(this.btnRunTests, 0, 0);
             this.findingsTableLayout.Controls.Add(this.btnCancel, 2, 0);
             this.findingsTableLayout.Controls.Add(this.btnSettings, 1, 0);
             this.findingsTableLayout.Controls.Add(this.btnAbout, 3, 0);
+            this.findingsTableLayout.Controls.Add(this.btnRunTests, 0, 0);
             this.findingsTableLayout.Location = new System.Drawing.Point(3, 3);
             this.findingsTableLayout.Name = "findingsTableLayout";
             this.findingsTableLayout.RowCount = 3;
-            this.findingsTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.findingsTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.findingsTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.findingsTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.findingsTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.findingsTableLayout.Size = new System.Drawing.Size(875, 480);
             this.findingsTableLayout.TabIndex = 0;
@@ -180,10 +180,10 @@ namespace OutlookSafetyChex
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.findingsTableLayout.SetColumnSpan(this.logGridView, 4);
-            this.logGridView.Location = new System.Drawing.Point(3, 83);
+            this.logGridView.Location = new System.Drawing.Point(3, 60);
             this.logGridView.Name = "logGridView";
             this.logGridView.ReadOnly = true;
-            this.logGridView.Size = new System.Drawing.Size(869, 394);
+            this.logGridView.Size = new System.Drawing.Size(869, 417);
             this.logGridView.TabIndex = 32;
             // 
             // textBoxProgress
@@ -192,27 +192,12 @@ namespace OutlookSafetyChex
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.findingsTableLayout.SetColumnSpan(this.textBoxProgress, 4);
-            this.textBoxProgress.Location = new System.Drawing.Point(3, 53);
+            this.textBoxProgress.Location = new System.Drawing.Point(3, 34);
             this.textBoxProgress.Name = "textBoxProgress";
             this.textBoxProgress.ReadOnly = true;
             this.textBoxProgress.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxProgress.Size = new System.Drawing.Size(869, 20);
             this.textBoxProgress.TabIndex = 31;
-            // 
-            // btnRunTests
-            // 
-            this.btnRunTests.FlatAppearance.BorderColor = System.Drawing.Color.Green;
-            this.btnRunTests.FlatAppearance.BorderSize = 3;
-            this.btnRunTests.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRunTests.Image = global::OutlookSafetyChex.Properties.Resources.Run_16x;
-            this.btnRunTests.Location = new System.Drawing.Point(3, 3);
-            this.btnRunTests.Name = "btnRunTests";
-            this.btnRunTests.Size = new System.Drawing.Size(134, 44);
-            this.btnRunTests.TabIndex = 11;
-            this.btnRunTests.Text = "&Run Checks";
-            this.btnRunTests.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnRunTests.UseVisualStyleBackColor = true;
-            this.btnRunTests.Click += new System.EventHandler(this.btnRunTests_Click);
             // 
             // btnCancel
             // 
@@ -220,11 +205,13 @@ namespace OutlookSafetyChex
             this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.Green;
             this.btnCancel.FlatAppearance.BorderSize = 3;
             this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(543, 3);
+            this.btnCancel.Image = global::OutlookSafetyChex.Properties.Resources.stop_16x16;
+            this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCancel.Location = new System.Drawing.Point(511, 3);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(108, 44);
+            this.btnCancel.Size = new System.Drawing.Size(140, 25);
             this.btnCancel.TabIndex = 34;
-            this.btnCancel.Text = "&Cancel";
+            this.btnCancel.Text = "&Stop Inspection";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -235,9 +222,11 @@ namespace OutlookSafetyChex
             this.btnSettings.FlatAppearance.BorderColor = System.Drawing.Color.Green;
             this.btnSettings.FlatAppearance.BorderSize = 3;
             this.btnSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSettings.Location = new System.Drawing.Point(273, 3);
+            this.btnSettings.Image = global::OutlookSafetyChex.Properties.Resources.settings_16x16;
+            this.btnSettings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSettings.Location = new System.Drawing.Point(282, 3);
             this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(108, 44);
+            this.btnSettings.Size = new System.Drawing.Size(90, 25);
             this.btnSettings.TabIndex = 35;
             this.btnSettings.Text = "&Settings";
             this.btnSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -250,14 +239,31 @@ namespace OutlookSafetyChex
             this.btnAbout.FlatAppearance.BorderColor = System.Drawing.Color.Green;
             this.btnAbout.FlatAppearance.BorderSize = 3;
             this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAbout.Location = new System.Drawing.Point(764, 3);
+            this.btnAbout.Image = global::OutlookSafetyChex.Properties.Resources.info_16x16;
+            this.btnAbout.Location = new System.Drawing.Point(797, 3);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(108, 44);
+            this.btnAbout.Size = new System.Drawing.Size(75, 25);
             this.btnAbout.TabIndex = 36;
             this.btnAbout.Text = "&About";
             this.btnAbout.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            // 
+            // btnRunTests
+            // 
+            this.btnRunTests.FlatAppearance.BorderColor = System.Drawing.Color.Green;
+            this.btnRunTests.FlatAppearance.BorderSize = 3;
+            this.btnRunTests.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRunTests.Image = global::OutlookSafetyChex.Properties.Resources.Run_16x;
+            this.btnRunTests.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRunTests.Location = new System.Drawing.Point(3, 3);
+            this.btnRunTests.Name = "btnRunTests";
+            this.btnRunTests.Size = new System.Drawing.Size(125, 25);
+            this.btnRunTests.TabIndex = 11;
+            this.btnRunTests.Text = "&Inspect Email";
+            this.btnRunTests.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnRunTests.UseVisualStyleBackColor = true;
+            this.btnRunTests.Click += new System.EventHandler(this.btnRunTests_Click);
             // 
             // envelopeTab
             // 

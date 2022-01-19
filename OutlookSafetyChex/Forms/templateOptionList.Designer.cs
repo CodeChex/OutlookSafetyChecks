@@ -96,11 +96,13 @@
             this.btnAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAddNew.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddNew.Image = global::OutlookSafetyChex.Properties.Resources.add_16x16;
             this.btnAddNew.Location = new System.Drawing.Point(22, 37);
             this.btnAddNew.Name = "btnAddNew";
-            this.btnAddNew.Size = new System.Drawing.Size(68, 24);
+            this.btnAddNew.Size = new System.Drawing.Size(82, 24);
             this.btnAddNew.TabIndex = 5;
-            this.btnAddNew.Text = "Add";
+            this.btnAddNew.Text = "&Add New";
+            this.btnAddNew.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnAddNew.UseVisualStyleBackColor = true;
             this.btnAddNew.Click += new System.EventHandler(this.addNew_Click);
             // 
@@ -168,17 +170,20 @@
             this.btnSave.Text = "Save";
             this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnRevert
             // 
             this.btnRevert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRevert.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRevert.Image = global::OutlookSafetyChex.Properties.Resources.reload_16x16;
             this.btnRevert.Location = new System.Drawing.Point(6, 407);
             this.btnRevert.Name = "btnRevert";
             this.btnRevert.Size = new System.Drawing.Size(88, 24);
             this.btnRevert.TabIndex = 5;
             this.btnRevert.Text = "Revert";
+            this.btnRevert.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnRevert.UseVisualStyleBackColor = true;
             this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
             // 
@@ -215,11 +220,13 @@
             // 
             this.btnMoveAllRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMoveAllRight.Image = global::OutlookSafetyChex.Properties.Resources.chevron_right_16x16;
             this.btnMoveAllRight.Location = new System.Drawing.Point(6, 96);
             this.btnMoveAllRight.Name = "btnMoveAllRight";
             this.btnMoveAllRight.Size = new System.Drawing.Size(88, 38);
             this.btnMoveAllRight.TabIndex = 3;
-            this.btnMoveAllRight.Text = "---->>";
+            this.btnMoveAllRight.Text = "Add All";
+            this.btnMoveAllRight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnMoveAllRight.UseVisualStyleBackColor = true;
             this.btnMoveAllRight.Click += new System.EventHandler(this.addAll_Click);
             // 
@@ -228,11 +235,13 @@
             this.btnMoveAllLeft.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMoveAllLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMoveAllLeft.Image = global::OutlookSafetyChex.Properties.Resources.trash_16x16;
             this.btnMoveAllLeft.Location = new System.Drawing.Point(6, 321);
             this.btnMoveAllLeft.Name = "btnMoveAllLeft";
             this.btnMoveAllLeft.Size = new System.Drawing.Size(88, 38);
             this.btnMoveAllLeft.TabIndex = 2;
-            this.btnMoveAllLeft.Text = "<<----";
+            this.btnMoveAllLeft.Text = "Remove All";
+            this.btnMoveAllLeft.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnMoveAllLeft.UseVisualStyleBackColor = true;
             this.btnMoveAllLeft.Click += new System.EventHandler(this.removeAll_Click);
             // 
@@ -241,11 +250,13 @@
             this.btnMoveLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMoveLeft.Image = global::OutlookSafetyChex.Properties.Resources.remove_16x16;
             this.btnMoveLeft.Location = new System.Drawing.Point(6, 233);
             this.btnMoveLeft.Name = "btnMoveLeft";
             this.btnMoveLeft.Size = new System.Drawing.Size(88, 38);
             this.btnMoveLeft.TabIndex = 1;
-            this.btnMoveLeft.Text = "<----";
+            this.btnMoveLeft.Text = "Remove Selected";
+            this.btnMoveLeft.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.btnMoveLeft.UseVisualStyleBackColor = true;
             this.btnMoveLeft.Click += new System.EventHandler(this.removeSelected_Click);
             // 
@@ -254,11 +265,13 @@
             this.btnMoveRight.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMoveRight.Image = global::OutlookSafetyChex.Properties.Resources.arrow_right_16x16;
             this.btnMoveRight.Location = new System.Drawing.Point(6, 178);
             this.btnMoveRight.Name = "btnMoveRight";
             this.btnMoveRight.Size = new System.Drawing.Size(88, 38);
             this.btnMoveRight.TabIndex = 0;
-            this.btnMoveRight.Text = "---->";
+            this.btnMoveRight.Text = "Add Selected";
+            this.btnMoveRight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnMoveRight.UseVisualStyleBackColor = true;
             this.btnMoveRight.Click += new System.EventHandler(this.addSelected_Click);
             // 

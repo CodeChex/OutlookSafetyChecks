@@ -352,22 +352,6 @@ namespace OutlookSafetyChex.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
-  <string>text/html</string>
-  <string>text/plain</string>
-  <string>application/rtf</string>
-  <string>multipart/alternative</string>
-  <string>multipart/related</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection common_MIMETYPEs {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["common_MIMETYPEs"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <string>utf-8</string>
   <string>utf-16</string>
   <string>windows-1250</string>
@@ -441,8 +425,15 @@ namespace OutlookSafetyChex.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
-            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>text/html</string>
+  <string>text/plain</string>
+  <string>application/rtf</string>
+  <string>multipart/alternative</string>
+  <string>multipart/mixed</string>
+  <string>multipart/related</string>
+</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection local_MIMETYPEs {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["local_MIMETYPEs"]));
@@ -552,6 +543,23 @@ namespace OutlookSafetyChex.Properties {
             }
             set {
                 this["opt_ThreadedProcessing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>text/html</string>
+  <string>text/plain</string>
+  <string>application/rtf</string>
+  <string>multipart/alternative</string>
+  <string>multipart/mixed</string>
+  <string>multipart/related</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection common_MIMETYPEs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["common_MIMETYPEs"]));
             }
         }
     }

@@ -1,11 +1,9 @@
 ﻿using CheccoSafetyTools;
-using CheccoSafetyTools;
 using OutlookSafetyChex.Forms;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -38,8 +36,8 @@ namespace OutlookSafetyChex
 
         private void dlgSafetyCheck_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // reset logger
             if (mLogger != null) mLogger.setLoggingUI(null, null);
+            if (instance != null) instance.cleanupDialog();
         }
 
 #region application customizations
