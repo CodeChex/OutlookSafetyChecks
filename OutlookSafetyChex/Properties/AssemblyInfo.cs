@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("✓ Outlook Email Safety Checks")]
-[assembly: AssemblyDescription("https://github.com/CodeChex/OutlookSafetyChex")]
+[assembly: AssemblyDescription("https://github.com/CodeChex/OutlookSafetyChecks")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("John C. Checco (@CodeChex)")]
+[assembly: AssemblyCompany("John ✓ Checco (@CodeChex)")]
 [assembly: AssemblyProduct("OutlookSafetyChex")]
-[assembly: AssemblyCopyright("© Copyright 2018, Checco Services, All Rights Reserved")]
+[assembly: AssemblyCopyright("© Copyright 2018-2022, Checco Services")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
