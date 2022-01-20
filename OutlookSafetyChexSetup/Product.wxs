@@ -113,29 +113,20 @@
 				<File Id="OutlookSafetyChex.vsto" KeyPath="yes"
 				  Name="OutlookSafetyChex.vsto" Source="$(var.AddinFiles)" />
 			</Component>
-
 			<Component  Id="OutlookSafetyChex.dll_Component">
 				<File Id="OutlookSafetyChex.dll" KeyPath="yes"
 				  Name="OutlookSafetyChex.dll" Source="$(var.AddinFiles)" />
 			</Component>
-
 			<Component Id="OutlookSafetyChex.dll.manifest_Component">
 				<File Id="OutlookSafetyChex.dll.manifest" KeyPath="yes"
 				  Name="OutlookSafetyChex.dll.manifest" Source="$(var.AddinFiles)" />
 			</Component>
-
-			<!-- Configuration Files -->
 			<Component Id="OutlookSafetyChex.dll.config_Component">
 				<File Id="OutlookSafetyChex.dll.config" KeyPath="yes"
 				  Name="OutlookSafetyChex.dll.config" Source="$(var.AddinFiles)" />
 			</Component>
 
-			<Component Id="log4net.config_Component">
-				<File Id="log4net.config" KeyPath="yes"
-				  Name="log4net.config" Source="$(var.AddinFiles)" />
-			</Component>
-
-			<!-- Microsoft Libraries -->
+			<!-- Microsoft Office Components -->
 			<Component  Id="Microsoft.Office.Tools.Common.v4.0.Utilities.dll_Component">
 				<File Id="Microsoft.Office.Tools.Common.v4.0.Utilities.dll" KeyPath="yes"
 				  Name="Microsoft.Office.Tools.Common.v4.0.Utilities.dll" Source="$(var.AddinFiles)" />
@@ -146,7 +137,16 @@
 				  Name="Microsoft.Office.Tools.Outlook.v4.0.Utilities.dll" Source="$(var.AddinFiles)" />
 			</Component>
 
-			<!-- Supporting Libraries -->
+			<!-- Supporting Components -->
+			<Component  Id="AngleSharp.dll_Component">
+				<File Id="AngleSharp.dll" KeyPath="yes"
+				  Name="AngleSharp.dll" Source="$(var.AddinFiles)" />
+			</Component>
+				<Component  Id="AngleSharp.xml_Component">
+					<File Id="AngleSharp.xml" KeyPath="yes"
+					Name="AngleSharp.xml" Source="$(var.AddinFiles)" />
+				</Component>
+
 			<Component  Id="DCSoft.RTF.dll_Component">
 				<File Id="DCSoft.RTF.dll" KeyPath="yes"
 					  Name="DCSoft.RTF.dll" Source="$(var.AddinFiles)" />
@@ -156,21 +156,32 @@
 				<File Id="DnsClient.dll" KeyPath="yes"
 					  Name="DnsClient.dll" Source="$(var.AddinFiles)" />
 			</Component>
-
-			<Component  Id="AngleSharp.dll_Component">
-				<File Id="AngleSharp.dll" KeyPath="yes"
-				  Name="AngleSharp.dll" Source="$(var.AddinFiles)" />
-			</Component>
+				<Component  Id="DnsClient.xml_Component">
+					<File Id="DnsClient.xml" KeyPath="yes"
+					Name="DnsClient.xml" Source="$(var.AddinFiles)" />
+				</Component>
 
 			<Component  Id="IPAddressRange.dll_Component">
 				<File Id="IPAddressRange.dll" KeyPath="yes"
 				  Name="IPAddressRange.dll" Source="$(var.AddinFiles)" />
 			</Component>
+				<Component  Id="IPAddressRange.xml_Component">
+					<File Id="IPAddressRange.xml" KeyPath="yes"
+					Name="IPAddressRange.xml" Source="$(var.AddinFiles)" />
+				</Component>
 
 			<Component  Id="log4net.dll_Component">
 				<File Id="log4net.dll" KeyPath="yes"
 				  Name="log4net.dll" Source="$(var.AddinFiles)" />
 			</Component>
+				<Component  Id="log4net.xml_Component">
+					<File Id="log4net.xml" KeyPath="yes"
+					Name="log4net.xml" Source="$(var.AddinFiles)" />
+				</Component>
+				<Component Id="log4net.config_Component">
+					<File Id="log4net.config" KeyPath="yes"
+					  Name="log4net.config" Source="$(var.AddinFiles)" />
+				</Component>
 
 			<Component  Id="MimeTypesMap.dll_Component">
 				<File Id="MimeTypesMap.dll" KeyPath="yes"
@@ -181,25 +192,14 @@
 				<File Id="Newtonsoft.Json.dll" KeyPath="yes"
 				  Name="Newtonsoft.Json.dll" Source="$(var.AddinFiles)" />
 			</Component>
+				<Component  Id="Newtonsoft.Json.xml_Component">
+					<File Id="Newtonsoft.Json.xml" KeyPath="yes"
+					Name="Newtonsoft.Json.xml" Source="$(var.AddinFiles)" />
+				</Component>
 
 			<Component  Id="Spamhaus.Net.dll_Component">
 				<File Id="Spamhaus.Net.dll" KeyPath="yes"
 				  Name="Spamhaus.Net.dll" Source="$(var.AddinFiles)" />
-			</Component>
-
-			<Component  Id="System.Buffers.dll_Component">
-				<File Id="System.Buffers.dll" KeyPath="yes"
-				  Name="System.Buffers.dll" Source="$(var.AddinFiles)" />
-			</Component>
-
-			<Component  Id="System.Net.Http.Extensions.dll_Component">
-				<File Id="System.Net.Http.Extensions.dll" KeyPath="yes"
-				  Name="System.Net.Http.Extensions.dll" Source="$(var.AddinFiles)" />
-			</Component>
-
-			<Component  Id="System.Net.Http.Primitives.dll_Component">
-				<File Id="System.Net.Http.Primitives.dll" KeyPath="yes"
-				  Name="System.Net.Http.Primitives.dll" Source="$(var.AddinFiles)" />
 			</Component>
 
 			<Component  Id="Tireless.IPTree.dll_Component">
@@ -216,51 +216,154 @@
 				<File Id="WhoisClient.dll" KeyPath="yes"
 				  Name="WhoisClient.dll" Source="$(var.AddinFiles)" />
 			</Component>
+				<Component  Id="WhoisClient.xml_Component">
+					<File Id="WhoisClient.xml" KeyPath="yes"
+					Name="WhoisClient.xml" Source="$(var.AddinFiles)" />
+				</Component>
 
-			<!-- Assembly Files -->
-			<Component  Id="DnsClient.xml_Component">
-				<File Id="DnsClient.xml" KeyPath="yes"
-				Name="DnsClient.xml" Source="$(var.AddinFiles)" />
+			<!-- Microsoft Dependencies -->
+			<Component  Id="Microsoft.Bcl.AsyncInterfaces.dll_Component">
+				<File Id="Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes"
+				Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="Microsoft.Bcl.AsyncInterfaces.xml_Component">
+				<File Id="Microsoft.Bcl.AsyncInterfaces.xml" KeyPath="yes"
+				Name="Microsoft.Bcl.AsyncInterfaces.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
-			<Component  Id="AngleSharp.xml_Component">
-				<File Id="AngleSharp.xml" KeyPath="yes"
-				Name="AngleSharp.xml" Source="$(var.AddinFiles)" />
+			<Component  Id="Microsoft.Win32.Registry.dll_Component">
+				<File Id="Microsoft.Win32.Registry.dll" KeyPath="yes"
+				Name="Microsoft.Win32.Registry.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="Microsoft.Win32.Registry.xml_Component">
+				<File Id="Microsoft.Win32.Registry.xml" KeyPath="yes"
+				Name="Microsoft.Win32.Registry.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
-			<Component  Id="IPAddressRange.xml_Component">
-				<File Id="IPAddressRange.xml" KeyPath="yes"
-				Name="IPAddressRange.xml" Source="$(var.AddinFiles)" />
+			<Component  Id="System.Buffers.dll_Component">
+				<File Id="System.Buffers.dll" KeyPath="yes"
+				  Name="System.Buffers.dll" Source="$(var.AddinFiles)" />
 			</Component>
-
-			<Component  Id="log4net.xml_Component">
-				<File Id="log4net.xml" KeyPath="yes"
-				Name="log4net.xml" Source="$(var.AddinFiles)" />
-			</Component>
-
-			<Component  Id="Newtonsoft.Json.xml_Component">
-				<File Id="Newtonsoft.Json.xml" KeyPath="yes"
-				Name="Newtonsoft.Json.xml" Source="$(var.AddinFiles)" />
-			</Component>
-
 			<Component  Id="System.Buffers.xml_Component">
 				<File Id="System.Buffers.xml" KeyPath="yes"
 				Name="System.Buffers.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
+			<Component  Id="System.Collections.Immutable.dll_Component">
+				<File Id="System.Collections.Immutable.dll" KeyPath="yes"
+				Name="System.Collections.Immutable.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Collections.Immutable.xml_Component">
+				<File Id="System.Collections.Immutable.xml" KeyPath="yes"
+				Name="System.Collections.Immutable.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Memory.dll_Component">
+				<File Id="System.Memory.dll" KeyPath="yes"
+				Name="System.Memory.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Memory.xml_Component">
+				<File Id="System.Memory.xml" KeyPath="yes"
+				Name="System.Memory.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Net.Http.Extensions.dll_Component">
+				<File Id="System.Net.Http.Extensions.dll" KeyPath="yes"
+				  Name="System.Net.Http.Extensions.dll" Source="$(var.AddinFiles)" />
+			</Component>
 			<Component  Id="System.Net.Http.Extensions.xml_Component">
 				<File Id="System.Net.Http.Extensions.xml" KeyPath="yes"
 				Name="System.Net.Http.Extensions.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
+			<Component  Id="System.Net.Http.Primitives.dll_Component">
+				<File Id="System.Net.Http.Primitives.dll" KeyPath="yes"
+				  Name="System.Net.Http.Primitives.dll" Source="$(var.AddinFiles)" />
+			</Component>
 			<Component  Id="System.Net.Http.Primitives.xml_Component">
 				<File Id="System.Net.Http.Primitives.xml" KeyPath="yes"
 				Name="System.Net.Http.Primitives.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
-			<Component  Id="WhoisClient.xml_Component">
-				<File Id="WhoisClient.xml" KeyPath="yes"
-				Name="WhoisClient.xml" Source="$(var.AddinFiles)" />
+			<Component  Id="System.Numerics.Vectors.dll_Component">
+				<File Id="System.Numerics.Vectors.dll" KeyPath="yes"
+				Name="System.Numerics.Vectors.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Numerics.Vectors.xml_Component">
+				<File Id="System.Numerics.Vectors.xml" KeyPath="yes"
+				Name="System.Numerics.Vectors.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Runtime.CompilerServices.Unsafe.dll_Component">
+				<File Id="System.Runtime.CompilerServices.Unsafe.dll" KeyPath="yes"
+				Name="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Runtime.CompilerServices.Unsafe.xml_Component">
+				<File Id="System.Runtime.CompilerServices.Unsafe.xml" KeyPath="yes"
+				Name="System.Runtime.CompilerServices.Unsafe.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Security.AccessControl.dll_Component">
+				<File Id="System.Security.AccessControl.dll" KeyPath="yes"
+				Name="System.Security.AccessControl.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Security.AccessControl.xml_Component">
+				<File Id="System.Security.AccessControl.xml" KeyPath="yes"
+				Name="System.Security.AccessControl.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Security.Principal.Windows.dll_Component">
+				<File Id="System.Security.Principal.Windows.dll" KeyPath="yes"
+				Name="System.Security.Principal.Windows.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Security.Principal.Windows.xml_Component">
+				<File Id="System.Security.Principal.Windows.xml" KeyPath="yes"
+				Name="System.Security.Principal.Windows.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Text.Encoding.CodePages.dll_Component">
+				<File Id="System.Text.Encoding.CodePages.dll" KeyPath="yes"
+				Name="System.Text.Encoding.CodePages.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Text.Encoding.CodePages.xml_Component">
+				<File Id="System.Text.Encoding.CodePages.xml" KeyPath="yes"
+				Name="System.Text.Encoding.CodePages.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Text.Encodings.Web.dll_Component">
+				<File Id="System.Text.Encodings.Web.dll" KeyPath="yes"
+				Name="System.Text.Encodings.Web.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Text.Encodings.Web.xml_Component">
+				<File Id="System.Text.Encodings.Web.xml" KeyPath="yes"
+				Name="System.Text.Encodings.Web.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Text.Json.dll_Component">
+				<File Id="System.Text.Json.dll" KeyPath="yes"
+				Name="System.Text.Json.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Text.Json.xml_Component">
+				<File Id="System.Text.Json.xml" KeyPath="yes"
+				Name="System.Text.Json.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.Threading.Tasks.Extensions.dll_Component">
+				<File Id="System.Threading.Tasks.Extensions.dll" KeyPath="yes"
+				Name="System.Threading.Tasks.Extensions.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.Threading.Tasks.Extensions.xml_Component">
+				<File Id="System.Threading.Tasks.Extensions.xml" KeyPath="yes"
+				Name="System.Threading.Tasks.Extensions.xml" Source="$(var.AddinFiles)" />
+			</Component>
+
+			<Component  Id="System.ValueTuple.dll_Component">
+				<File Id="System.ValueTuple.dll" KeyPath="yes"
+				Name="System.ValueTuple.dll" Source="$(var.AddinFiles)" />
+			</Component>
+			<Component  Id="System.ValueTuple.xml_Component">
+				<File Id="System.ValueTuple.xml" KeyPath="yes"
+				Name="System.ValueTuple.xml" Source="$(var.AddinFiles)" />
 			</Component>
 
 		</ComponentGroup>
