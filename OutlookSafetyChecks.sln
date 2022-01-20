@@ -13,7 +13,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BEACA0DB-9029-4C7F-8A8D-F399BEAEA01A}"
 	ProjectSection(SolutionItems) = preProject
 		Outlook Safety Check.pptx = Outlook Safety Check.pptx
-		OutlookSafetyChexSetup.msi = OutlookSafetyChexSetup.msi
+		OutlookSafetyChexSetup_Debug.msi = OutlookSafetyChexSetup_Debug.msi
+		OutlookSafetyChexSetup_Release.msi = OutlookSafetyChexSetup_Release.msi
 	EndProjectSection
 EndProject
 Global

@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("✓ Outlook Email Safety Checks")]
 [assembly: AssemblyDescription("https://github.com/CodeChex/OutlookSafetyChex")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("@CodeChex")]
+[assembly: AssemblyCompany("John C. Checco (@CodeChex)")]
 [assembly: AssemblyProduct("OutlookSafetyChex")]
-[assembly: AssemblyCopyright("© Copyright 2018")]
+[assembly: AssemblyCopyright("© Copyright 2018, Checco Services, All Rights Reserved")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

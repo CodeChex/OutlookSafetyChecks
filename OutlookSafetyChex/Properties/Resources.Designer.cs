@@ -121,6 +121,46 @@ namespace OutlookSafetyChex.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap EmailCheck_Banner1 {
+            get {
+                object obj = ResourceManager.GetObject("EmailCheck_Banner1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EmailCheck_Banner2 {
+            get {
+                object obj = ResourceManager.GetObject("EmailCheck_Banner2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EmailCheck_Banner3 {
+            get {
+                object obj = ResourceManager.GetObject("EmailCheck_Banner3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EmailCheck_Banner4 {
+            get {
+                object obj = ResourceManager.GetObject("EmailCheck_Banner4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap info_16x16 {
             get {
                 object obj = ResourceManager.GetObject("info_16x16", resourceCulture);

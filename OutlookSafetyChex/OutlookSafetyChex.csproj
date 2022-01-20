@@ -402,6 +402,10 @@
     <Content Include="Resources\arrow_right_16x16.png" />
     <Content Include="Resources\chevron_left_16x16.png" />
     <Content Include="Resources\chevron_right_16x16.png" />
+    <Content Include="Resources\EmailCheck_Banner1.jpg" />
+    <Content Include="Resources\EmailCheck_Banner2.jpg" />
+    <Content Include="Resources\EmailCheck_Banner3.png" />
+    <Content Include="Resources\EmailCheck_Banner4.gif" />
     <Content Include="Resources\info_16x16.png" />
     <Content Include="Resources\reload_16x16.png" />
     <Content Include="Resources\remove_16x16.png" />

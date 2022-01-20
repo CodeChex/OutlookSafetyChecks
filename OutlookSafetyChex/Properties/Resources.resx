@@ -127,17 +127,14 @@
   <data name="Title_Main" xml:space="preserve">
     <value>✓ Email Safety Chex</value>
   </data>
-  <data name="settings_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\settings_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Action_Run" xml:space="preserve">
     <value>Run Tests</value>
   </data>
   <data name="Title_Links" xml:space="preserve">
     <value>Links</value>
   </data>
-  <data name="ShortName" xml:space="preserve">
-    <value>✓ Safety Chex</value>
+  <data name="Title_Attachments" xml:space="preserve">
+    <value>Attachments</value>
   </data>
   <data name="Action_ClearCache" xml:space="preserve">
     <value>Clear Cache</value>
@@ -178,20 +175,23 @@
   <data name="Option_LookupHIBP" xml:space="preserve">
     <value>Check Breaches (HIBP) **</value>
   </data>
-  <data name="Title_Attachments" xml:space="preserve">
-    <value>Attachments</value>
+  <data name="Option_UseCache" xml:space="preserve">
+    <value>Use Cached Results</value>
   </data>
   <data name="Run_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Run_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Option_UseCache" xml:space="preserve">
-    <value>Use Cached Results</value>
+  <data name="ShortName" xml:space="preserve">
+    <value>✓ Safety Chex</value>
   </data>
   <data name="Label_Options" xml:space="preserve">
     <value>Options</value>
   </data>
   <data name="arrow_right_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow_right_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Option_VerifyContacts" xml:space="preserve">
+    <value>Verify Contact List *</value>
   </data>
   <data name="chevron_right_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\chevron_right_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,8 +205,11 @@
   <data name="remove_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\remove_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Option_VerifyContacts" xml:space="preserve">
-    <value>Verify Contact List *</value>
+  <data name="settings_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\settings_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="trash_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\trash_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Title_Routing" xml:space="preserve">
     <value>Routing</value>
@@ -232,7 +235,16 @@
   <data name="Label_Blacklists" xml:space="preserve">
     <value>Blacklists</value>
   </data>
-  <data name="trash_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trash_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="EmailCheck_Banner1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\EmailCheck_Banner1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EmailCheck_Banner2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\EmailCheck_Banner2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EmailCheck_Banner3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\EmailCheck_Banner3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EmailCheck_Banner4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\EmailCheck_Banner4.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

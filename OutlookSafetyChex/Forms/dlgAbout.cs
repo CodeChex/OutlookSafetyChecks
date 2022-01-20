@@ -17,9 +17,9 @@ namespace OutlookSafetyChex.Forms
             this.Text = String.Format("About {0}", AssemblyTitle);
             this.labelProductName.Text = AssemblyProduct;
             this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+            this.labelAuthor.Text = AssemblyCompany;
             this.labelCopyright.Text = AssemblyCopyright;
-            this.labelCompanyName.Text = AssemblyCompany;
-            this.textBoxDescription.Text = AssemblyDescription;
+            this.linkProjectSite.Text = AssemblyDescription;
         }
 
         #region Assembly Attribute Accessors
@@ -101,5 +101,13 @@ namespace OutlookSafetyChex.Forms
             }
         }
         #endregion
+
+        private void linkProjectSite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Navigate to a URL.
+            System.Diagnostics.Process.Start(linkProjectSite.Text);
+            // Specify that the link was visited.
+            this.linkProjectSite.LinkVisited = true;
+        }
     }
 }

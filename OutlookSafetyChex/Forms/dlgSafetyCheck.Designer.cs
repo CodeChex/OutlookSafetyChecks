@@ -416,7 +416,7 @@ namespace OutlookSafetyChex
             this.groupBoxContacts.Size = new System.Drawing.Size(868, 262);
             this.groupBoxContacts.TabIndex = 2;
             this.groupBoxContacts.TabStop = false;
-            this.groupBoxContacts.Text = "Recipients(s)";
+            this.groupBoxContacts.Text = "Recipient(s)";
             // 
             // recipientsGridView
             // 
@@ -465,7 +465,7 @@ namespace OutlookSafetyChex
             this.groupBox1.Size = new System.Drawing.Size(868, 234);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Route Checks";
+            this.groupBox1.Text = "Route Hosts, IPs";
             // 
             // routeCheckGridView
             // 
@@ -554,7 +554,7 @@ namespace OutlookSafetyChex
             this.groupBox3.Size = new System.Drawing.Size(868, 265);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Link Checks";
+            this.groupBox3.Text = "Link Hosts, IPs, Email Addresses";
             // 
             // linkCheckGridView
             // 
