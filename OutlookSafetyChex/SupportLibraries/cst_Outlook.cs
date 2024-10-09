@@ -14,7 +14,7 @@ namespace CheccoSafetyTools
 
         public static String getHeaders(Outlook.MailItem myItem)
         {
-            String headers = myItem.PropertyAccessor.GetProperty("http://schemas.microsoft.com/mapi/proptag/0x007D001E");
+            String headers = myItem.PropertyAccessor.GetProperty("http://schemas.microsoft.com/mapi/proptag/0x007D001E").ToString();
             headers = headers.Replace('\t', ' ');
             return headers;
         }

@@ -1,6 +1,5 @@
 ﻿// non-standard libraries
 using CheccoSafetyTools;
-using OutlookSafetyChex.Forms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -896,8 +895,8 @@ namespace OutlookSafetyChex
                         tNotes += tReason + "\r\n";
                     }
                     String tFileExt = Path.GetExtension(tAttachment.FileName).ToLower();
-                    tMimeType = HeyRed.Mime.MimeTypesMap.GetMimeType(tFileExt);
-                    tFileSig = System.Web.MimeMapping.GetMimeMapping(tAttachment.FileName);
+                    tMimeType = MimeMapping.MimeUtility.TypeMap[tFileExt];
+                    tFileSig = MimeMapping.MimeUtility.GetMimeMapping(tAttachment.FileName);
                     if (tFileExt.Equals("exe") || tFileExt.Equals("dll") || tFileExt.Equals("ocx"))
                     {
                         tNotes += "[EXECUTABLE BINARY]: ext = " + tFileExt + "\r\n";

@@ -222,15 +222,6 @@
 				</Component>
 
 			<!-- Microsoft Dependencies -->
-			<Component  Id="Microsoft.Bcl.AsyncInterfaces.dll_Component">
-				<File Id="Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes"
-				Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.AddinFiles)" />
-			</Component>
-			<Component  Id="Microsoft.Bcl.AsyncInterfaces.xml_Component">
-				<File Id="Microsoft.Bcl.AsyncInterfaces.xml" KeyPath="yes"
-				Name="Microsoft.Bcl.AsyncInterfaces.xml" Source="$(var.AddinFiles)" />
-			</Component>
-
 			<Component  Id="Microsoft.Win32.Registry.dll_Component">
 				<File Id="Microsoft.Win32.Registry.dll" KeyPath="yes"
 				Name="Microsoft.Win32.Registry.dll" Source="$(var.AddinFiles)" />

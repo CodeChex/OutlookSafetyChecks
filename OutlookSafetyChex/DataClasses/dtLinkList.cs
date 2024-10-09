@@ -1,5 +1,5 @@
 ﻿using CheccoSafetyTools;
-using DCSoft.RTF;
+using RtfDomParser;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -104,8 +104,7 @@ namespace OutlookSafetyChex
                 case Outlook.OlBodyFormat.olFormatRichText:
                     if (mLogger != null) mLogger.logMessage("Format = RTF", logArea);
                     // EXAMPLE: {\\field {\\*\\fldinst {HYPERLINK \"URL\"} {\\fldrslt {Link Description}}}
-                    byte[] buffer = myItem.RTFBody;
-                    string s = System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+                    string s = myItem.RTFBody.ToString(); // System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
                     RTFDomDocument rtfDoc = new RTFDomDocument();
                     rtfDoc.LoadRTFText(s);
                     if (mLogger != null)

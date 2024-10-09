@@ -1,7 +1,7 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using CheccoSafetyTools;
-using DCSoft.RTF;
+using RtfDomParser;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -166,10 +166,9 @@ namespace OutlookSafetyChex
                         }
                         break;
                     case Outlook.OlBodyFormat.olFormatRichText:
-                        byte[] buffer = myItem.RTFBody;
                         if (Properties.Settings.Default.test_Body)
                         {
-                            string s = System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+                            string s = myItem.RTFBody.ToString(); // System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
                             tNotes += instance.suspiciousText(s);
                             RTFDomDocument rtfDoc = new RTFDomDocument();
                             rtfDoc.LoadRTFText(s);

@@ -28,271 +28,281 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panelLeft = new System.Windows.Forms.Panel();
-            this.listBoxAvailable = new System.Windows.Forms.ListBox();
-            this.panelBottomLeft = new System.Windows.Forms.Panel();
-            this.labelLeft = new System.Windows.Forms.Label();
-            this.btnAddNew = new System.Windows.Forms.Button();
-            this.textInputNew = new System.Windows.Forms.TextBox();
-            this.panelRight = new System.Windows.Forms.Panel();
-            this.listBoxSelected = new System.Windows.Forms.ListBox();
-            this.panelRightBottom = new System.Windows.Forms.Panel();
-            this.labelRight = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnRevert = new System.Windows.Forms.Button();
-            this.panelMid = new System.Windows.Forms.Panel();
-            this.btnSuggested = new System.Windows.Forms.Button();
-            this.btnMoveAllRight = new System.Windows.Forms.Button();
-            this.btnMoveAllLeft = new System.Windows.Forms.Button();
-            this.btnMoveLeft = new System.Windows.Forms.Button();
-            this.btnMoveRight = new System.Windows.Forms.Button();
-            this.panelLeft.SuspendLayout();
-            this.panelRight.SuspendLayout();
-            this.panelRightBottom.SuspendLayout();
-            this.panelMid.SuspendLayout();
-            this.SuspendLayout();
+            panelLeft = new System.Windows.Forms.Panel();
+            listBoxAvailable = new System.Windows.Forms.ListBox();
+            panelBottomLeft = new System.Windows.Forms.Panel();
+            labelLeft = new System.Windows.Forms.Label();
+            btnAddNew = new System.Windows.Forms.Button();
+            textInputNew = new System.Windows.Forms.TextBox();
+            panelRight = new System.Windows.Forms.Panel();
+            listBoxSelected = new System.Windows.Forms.ListBox();
+            panelRightBottom = new System.Windows.Forms.Panel();
+            labelRight = new System.Windows.Forms.Label();
+            btnSave = new System.Windows.Forms.Button();
+            btnRevert = new System.Windows.Forms.Button();
+            panelMid = new System.Windows.Forms.Panel();
+            btnSuggested = new System.Windows.Forms.Button();
+            btnMoveAllRight = new System.Windows.Forms.Button();
+            btnMoveAllLeft = new System.Windows.Forms.Button();
+            btnMoveLeft = new System.Windows.Forms.Button();
+            btnMoveRight = new System.Windows.Forms.Button();
+            panelLeft.SuspendLayout();
+            panelRight.SuspendLayout();
+            panelRightBottom.SuspendLayout();
+            panelMid.SuspendLayout();
+            SuspendLayout();
             // 
             // panelLeft
             // 
-            this.panelLeft.Controls.Add(this.listBoxAvailable);
-            this.panelLeft.Controls.Add(this.panelBottomLeft);
-            this.panelLeft.Controls.Add(this.labelLeft);
-            this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelLeft.Location = new System.Drawing.Point(0, 0);
-            this.panelLeft.Name = "panelLeft";
-            this.panelLeft.Size = new System.Drawing.Size(220, 504);
-            this.panelLeft.TabIndex = 0;
+            panelLeft.Controls.Add(listBoxAvailable);
+            panelLeft.Controls.Add(panelBottomLeft);
+            panelLeft.Controls.Add(labelLeft);
+            panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            panelLeft.Location = new System.Drawing.Point(0, 0);
+            panelLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelLeft.Name = "panelLeft";
+            panelLeft.Size = new System.Drawing.Size(257, 582);
+            panelLeft.TabIndex = 0;
             // 
             // listBoxAvailable
             // 
-            this.listBoxAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBoxAvailable.FormattingEnabled = true;
-            this.listBoxAvailable.Location = new System.Drawing.Point(0, 30);
-            this.listBoxAvailable.Name = "listBoxAvailable";
-            this.listBoxAvailable.Size = new System.Drawing.Size(220, 401);
-            this.listBoxAvailable.TabIndex = 3;
+            listBoxAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
+            listBoxAvailable.FormattingEnabled = true;
+            listBoxAvailable.ItemHeight = 15;
+            listBoxAvailable.Location = new System.Drawing.Point(0, 35);
+            listBoxAvailable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            listBoxAvailable.Name = "listBoxAvailable";
+            listBoxAvailable.Size = new System.Drawing.Size(257, 463);
+            listBoxAvailable.TabIndex = 3;
             // 
             // panelBottomLeft
             // 
-            this.panelBottomLeft.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottomLeft.Location = new System.Drawing.Point(0, 431);
-            this.panelBottomLeft.Name = "panelBottomLeft";
-            this.panelBottomLeft.Size = new System.Drawing.Size(220, 73);
-            this.panelBottomLeft.TabIndex = 4;
+            panelBottomLeft.Dock = System.Windows.Forms.DockStyle.Bottom;
+            panelBottomLeft.Location = new System.Drawing.Point(0, 498);
+            panelBottomLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelBottomLeft.Name = "panelBottomLeft";
+            panelBottomLeft.Size = new System.Drawing.Size(257, 84);
+            panelBottomLeft.TabIndex = 4;
             // 
             // labelLeft
             // 
-            this.labelLeft.Dock = System.Windows.Forms.DockStyle.Top;
-            this.labelLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelLeft.Location = new System.Drawing.Point(0, 0);
-            this.labelLeft.Name = "labelLeft";
-            this.labelLeft.Size = new System.Drawing.Size(220, 30);
-            this.labelLeft.TabIndex = 0;
-            this.labelLeft.Text = "Available";
-            this.labelLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            labelLeft.Dock = System.Windows.Forms.DockStyle.Top;
+            labelLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            labelLeft.Location = new System.Drawing.Point(0, 0);
+            labelLeft.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            labelLeft.Name = "labelLeft";
+            labelLeft.Size = new System.Drawing.Size(257, 35);
+            labelLeft.TabIndex = 0;
+            labelLeft.Text = "Available";
+            labelLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnAddNew
             // 
-            this.btnAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddNew.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddNew.Image = global::OutlookSafetyChex.Properties.Resources.add_16x16;
-            this.btnAddNew.Location = new System.Drawing.Point(22, 37);
-            this.btnAddNew.Name = "btnAddNew";
-            this.btnAddNew.Size = new System.Drawing.Size(82, 24);
-            this.btnAddNew.TabIndex = 5;
-            this.btnAddNew.Text = "&Add New";
-            this.btnAddNew.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnAddNew.UseVisualStyleBackColor = true;
-            this.btnAddNew.Click += new System.EventHandler(this.addNew_Click);
+            btnAddNew.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnAddNew.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnAddNew.Image = Properties.Resources.add_16x16;
+            btnAddNew.Location = new System.Drawing.Point(26, 43);
+            btnAddNew.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnAddNew.Name = "btnAddNew";
+            btnAddNew.Size = new System.Drawing.Size(96, 28);
+            btnAddNew.TabIndex = 5;
+            btnAddNew.Text = "&Add New";
+            btnAddNew.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            btnAddNew.UseVisualStyleBackColor = true;
+            btnAddNew.Click += addNew_Click;
             // 
             // textInputNew
             // 
-            this.textInputNew.Location = new System.Drawing.Point(22, 12);
-            this.textInputNew.Name = "textInputNew";
-            this.textInputNew.Size = new System.Drawing.Size(200, 20);
-            this.textInputNew.TabIndex = 0;
+            textInputNew.Location = new System.Drawing.Point(26, 14);
+            textInputNew.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            textInputNew.Name = "textInputNew";
+            textInputNew.Size = new System.Drawing.Size(233, 23);
+            textInputNew.TabIndex = 0;
             // 
             // panelRight
             // 
-            this.panelRight.Controls.Add(this.listBoxSelected);
-            this.panelRight.Controls.Add(this.panelRightBottom);
-            this.panelRight.Controls.Add(this.labelRight);
-            this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelRight.Location = new System.Drawing.Point(320, 0);
-            this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(234, 504);
-            this.panelRight.TabIndex = 1;
+            panelRight.Controls.Add(listBoxSelected);
+            panelRight.Controls.Add(panelRightBottom);
+            panelRight.Controls.Add(labelRight);
+            panelRight.Dock = System.Windows.Forms.DockStyle.Right;
+            panelRight.Location = new System.Drawing.Point(373, 0);
+            panelRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelRight.Name = "panelRight";
+            panelRight.Size = new System.Drawing.Size(273, 582);
+            panelRight.TabIndex = 1;
             // 
             // listBoxSelected
             // 
-            this.listBoxSelected.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBoxSelected.FormattingEnabled = true;
-            this.listBoxSelected.Location = new System.Drawing.Point(0, 30);
-            this.listBoxSelected.Name = "listBoxSelected";
-            this.listBoxSelected.Size = new System.Drawing.Size(234, 399);
-            this.listBoxSelected.TabIndex = 2;
+            listBoxSelected.Dock = System.Windows.Forms.DockStyle.Fill;
+            listBoxSelected.FormattingEnabled = true;
+            listBoxSelected.ItemHeight = 15;
+            listBoxSelected.Location = new System.Drawing.Point(0, 35);
+            listBoxSelected.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            listBoxSelected.Name = "listBoxSelected";
+            listBoxSelected.Size = new System.Drawing.Size(273, 460);
+            listBoxSelected.TabIndex = 2;
             // 
             // panelRightBottom
             // 
-            this.panelRightBottom.Controls.Add(this.btnAddNew);
-            this.panelRightBottom.Controls.Add(this.textInputNew);
-            this.panelRightBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelRightBottom.Location = new System.Drawing.Point(0, 429);
-            this.panelRightBottom.MinimumSize = new System.Drawing.Size(225, 75);
-            this.panelRightBottom.Name = "panelRightBottom";
-            this.panelRightBottom.Size = new System.Drawing.Size(234, 75);
-            this.panelRightBottom.TabIndex = 3;
+            panelRightBottom.Controls.Add(btnAddNew);
+            panelRightBottom.Controls.Add(textInputNew);
+            panelRightBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            panelRightBottom.Location = new System.Drawing.Point(0, 495);
+            panelRightBottom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelRightBottom.MinimumSize = new System.Drawing.Size(262, 87);
+            panelRightBottom.Name = "panelRightBottom";
+            panelRightBottom.Size = new System.Drawing.Size(273, 87);
+            panelRightBottom.TabIndex = 3;
             // 
             // labelRight
             // 
-            this.labelRight.Dock = System.Windows.Forms.DockStyle.Top;
-            this.labelRight.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelRight.Location = new System.Drawing.Point(0, 0);
-            this.labelRight.Name = "labelRight";
-            this.labelRight.Size = new System.Drawing.Size(234, 30);
-            this.labelRight.TabIndex = 1;
-            this.labelRight.Text = "Selected";
-            this.labelRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            labelRight.Dock = System.Windows.Forms.DockStyle.Top;
+            labelRight.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            labelRight.Location = new System.Drawing.Point(0, 0);
+            labelRight.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            labelRight.Name = "labelRight";
+            labelRight.Size = new System.Drawing.Size(273, 35);
+            labelRight.TabIndex = 1;
+            labelRight.Text = "Selected";
+            labelRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnSave
             // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.btnSave.Image = global::OutlookSafetyChex.Properties.Resources.Save_16x_32;
-            this.btnSave.Location = new System.Drawing.Point(6, 466);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(88, 26);
-            this.btnSave.TabIndex = 4;
-            this.btnSave.Text = "Save";
-            this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
+            btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            btnSave.ForeColor = System.Drawing.Color.FromArgb(0, 0, 192);
+            btnSave.Image = Properties.Resources.Save_16x_32;
+            btnSave.Location = new System.Drawing.Point(7, 538);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(103, 30);
+            btnSave.TabIndex = 4;
+            btnSave.Text = "Save";
+            btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // btnRevert
             // 
-            this.btnRevert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRevert.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRevert.Image = global::OutlookSafetyChex.Properties.Resources.reload_16x16;
-            this.btnRevert.Location = new System.Drawing.Point(6, 407);
-            this.btnRevert.Name = "btnRevert";
-            this.btnRevert.Size = new System.Drawing.Size(88, 24);
-            this.btnRevert.TabIndex = 5;
-            this.btnRevert.Text = "Revert";
-            this.btnRevert.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnRevert.UseVisualStyleBackColor = true;
-            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
+            btnRevert.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnRevert.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnRevert.Image = Properties.Resources.reload_16x16;
+            btnRevert.Location = new System.Drawing.Point(7, 470);
+            btnRevert.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnRevert.Name = "btnRevert";
+            btnRevert.Size = new System.Drawing.Size(103, 28);
+            btnRevert.TabIndex = 5;
+            btnRevert.Text = "Revert";
+            btnRevert.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            btnRevert.UseVisualStyleBackColor = true;
+            btnRevert.Click += btnRevert_Click;
             // 
             // panelMid
             // 
-            this.panelMid.Controls.Add(this.btnSuggested);
-            this.panelMid.Controls.Add(this.btnRevert);
-            this.panelMid.Controls.Add(this.btnSave);
-            this.panelMid.Controls.Add(this.btnMoveAllRight);
-            this.panelMid.Controls.Add(this.btnMoveAllLeft);
-            this.panelMid.Controls.Add(this.btnMoveLeft);
-            this.panelMid.Controls.Add(this.btnMoveRight);
-            this.panelMid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMid.Location = new System.Drawing.Point(220, 0);
-            this.panelMid.MinimumSize = new System.Drawing.Size(100, 500);
-            this.panelMid.Name = "panelMid";
-            this.panelMid.Size = new System.Drawing.Size(100, 504);
-            this.panelMid.TabIndex = 2;
+            panelMid.Controls.Add(btnSuggested);
+            panelMid.Controls.Add(btnRevert);
+            panelMid.Controls.Add(btnSave);
+            panelMid.Controls.Add(btnMoveAllRight);
+            panelMid.Controls.Add(btnMoveAllLeft);
+            panelMid.Controls.Add(btnMoveLeft);
+            panelMid.Controls.Add(btnMoveRight);
+            panelMid.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelMid.Location = new System.Drawing.Point(257, 0);
+            panelMid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelMid.MinimumSize = new System.Drawing.Size(117, 577);
+            panelMid.Name = "panelMid";
+            panelMid.Size = new System.Drawing.Size(117, 582);
+            panelMid.TabIndex = 2;
             // 
             // btnSuggested
             // 
-            this.btnSuggested.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSuggested.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSuggested.Location = new System.Drawing.Point(6, 3);
-            this.btnSuggested.Name = "btnSuggested";
-            this.btnSuggested.Size = new System.Drawing.Size(88, 47);
-            this.btnSuggested.TabIndex = 6;
-            this.btnSuggested.Text = "Suggested Selections";
-            this.btnSuggested.UseVisualStyleBackColor = true;
-            this.btnSuggested.Click += new System.EventHandler(this.btnSuggested_Click);
+            btnSuggested.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnSuggested.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnSuggested.Location = new System.Drawing.Point(7, 3);
+            btnSuggested.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSuggested.Name = "btnSuggested";
+            btnSuggested.Size = new System.Drawing.Size(103, 54);
+            btnSuggested.TabIndex = 6;
+            btnSuggested.Text = "Suggested Selections";
+            btnSuggested.UseVisualStyleBackColor = true;
+            btnSuggested.Click += btnSuggested_Click;
             // 
             // btnMoveAllRight
             // 
-            this.btnMoveAllRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMoveAllRight.Image = global::OutlookSafetyChex.Properties.Resources.chevron_right_16x16;
-            this.btnMoveAllRight.Location = new System.Drawing.Point(6, 96);
-            this.btnMoveAllRight.Name = "btnMoveAllRight";
-            this.btnMoveAllRight.Size = new System.Drawing.Size(88, 38);
-            this.btnMoveAllRight.TabIndex = 3;
-            this.btnMoveAllRight.Text = "Add All";
-            this.btnMoveAllRight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnMoveAllRight.UseVisualStyleBackColor = true;
-            this.btnMoveAllRight.Click += new System.EventHandler(this.addAll_Click);
+            btnMoveAllRight.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnMoveAllRight.Image = Properties.Resources.chevron_right_16x16;
+            btnMoveAllRight.Location = new System.Drawing.Point(7, 111);
+            btnMoveAllRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMoveAllRight.Name = "btnMoveAllRight";
+            btnMoveAllRight.Size = new System.Drawing.Size(103, 44);
+            btnMoveAllRight.TabIndex = 3;
+            btnMoveAllRight.Text = "Add All";
+            btnMoveAllRight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            btnMoveAllRight.UseVisualStyleBackColor = true;
+            btnMoveAllRight.Click += addAll_Click;
             // 
             // btnMoveAllLeft
             // 
-            this.btnMoveAllLeft.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMoveAllLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMoveAllLeft.Image = global::OutlookSafetyChex.Properties.Resources.trash_16x16;
-            this.btnMoveAllLeft.Location = new System.Drawing.Point(6, 321);
-            this.btnMoveAllLeft.Name = "btnMoveAllLeft";
-            this.btnMoveAllLeft.Size = new System.Drawing.Size(88, 38);
-            this.btnMoveAllLeft.TabIndex = 2;
-            this.btnMoveAllLeft.Text = "Remove All";
-            this.btnMoveAllLeft.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.btnMoveAllLeft.UseVisualStyleBackColor = true;
-            this.btnMoveAllLeft.Click += new System.EventHandler(this.removeAll_Click);
+            btnMoveAllLeft.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnMoveAllLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnMoveAllLeft.Image = Properties.Resources.trash_16x16;
+            btnMoveAllLeft.Location = new System.Drawing.Point(7, 370);
+            btnMoveAllLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMoveAllLeft.Name = "btnMoveAllLeft";
+            btnMoveAllLeft.Size = new System.Drawing.Size(103, 44);
+            btnMoveAllLeft.TabIndex = 2;
+            btnMoveAllLeft.Text = "Remove All";
+            btnMoveAllLeft.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            btnMoveAllLeft.UseVisualStyleBackColor = true;
+            btnMoveAllLeft.Click += removeAll_Click;
             // 
             // btnMoveLeft
             // 
-            this.btnMoveLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMoveLeft.Image = global::OutlookSafetyChex.Properties.Resources.remove_16x16;
-            this.btnMoveLeft.Location = new System.Drawing.Point(6, 233);
-            this.btnMoveLeft.Name = "btnMoveLeft";
-            this.btnMoveLeft.Size = new System.Drawing.Size(88, 38);
-            this.btnMoveLeft.TabIndex = 1;
-            this.btnMoveLeft.Text = "Remove Selected";
-            this.btnMoveLeft.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.btnMoveLeft.UseVisualStyleBackColor = true;
-            this.btnMoveLeft.Click += new System.EventHandler(this.removeSelected_Click);
+            btnMoveLeft.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnMoveLeft.Image = Properties.Resources.remove_16x16;
+            btnMoveLeft.Location = new System.Drawing.Point(7, 269);
+            btnMoveLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMoveLeft.Name = "btnMoveLeft";
+            btnMoveLeft.Size = new System.Drawing.Size(103, 44);
+            btnMoveLeft.TabIndex = 1;
+            btnMoveLeft.Text = "Remove Selected";
+            btnMoveLeft.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            btnMoveLeft.UseVisualStyleBackColor = true;
+            btnMoveLeft.Click += removeSelected_Click;
             // 
             // btnMoveRight
             // 
-            this.btnMoveRight.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMoveRight.Image = global::OutlookSafetyChex.Properties.Resources.arrow_right_16x16;
-            this.btnMoveRight.Location = new System.Drawing.Point(6, 178);
-            this.btnMoveRight.Name = "btnMoveRight";
-            this.btnMoveRight.Size = new System.Drawing.Size(88, 38);
-            this.btnMoveRight.TabIndex = 0;
-            this.btnMoveRight.Text = "Add Selected";
-            this.btnMoveRight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnMoveRight.UseVisualStyleBackColor = true;
-            this.btnMoveRight.Click += new System.EventHandler(this.addSelected_Click);
+            btnMoveRight.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnMoveRight.Image = Properties.Resources.arrow_right_16x16;
+            btnMoveRight.Location = new System.Drawing.Point(7, 205);
+            btnMoveRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMoveRight.Name = "btnMoveRight";
+            btnMoveRight.Size = new System.Drawing.Size(103, 44);
+            btnMoveRight.TabIndex = 0;
+            btnMoveRight.Text = "Add Selected";
+            btnMoveRight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            btnMoveRight.UseVisualStyleBackColor = true;
+            btnMoveRight.Click += addSelected_Click;
             // 
             // templateOptionList
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(554, 504);
-            this.Controls.Add(this.panelMid);
-            this.Controls.Add(this.panelRight);
-            this.Controls.Add(this.panelLeft);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "templateOptionList";
-            this.Text = "Option List Editor";
-            this.panelLeft.ResumeLayout(false);
-            this.panelRight.ResumeLayout(false);
-            this.panelRightBottom.ResumeLayout(false);
-            this.panelRightBottom.PerformLayout();
-            this.panelMid.ResumeLayout(false);
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(646, 582);
+            Controls.Add(panelMid);
+            Controls.Add(panelRight);
+            Controls.Add(panelLeft);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "templateOptionList";
+            Text = "Option List Editor";
+            panelLeft.ResumeLayout(false);
+            panelRight.ResumeLayout(false);
+            panelRightBottom.ResumeLayout(false);
+            panelRightBottom.PerformLayout();
+            panelMid.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion
